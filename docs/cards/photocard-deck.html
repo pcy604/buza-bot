@@ -1,0 +1,883 @@
+<title>포토카드 제작 파이프라인</title>
+<style>
+  :root {
+    --paper: #f6f3ec;
+    --paper-raised: #ffffff;
+    --ink: #1c1f26;
+    --ink-dim: #5b5f6b;
+    --ink-faint: #8b8e97;
+    --line: rgba(28,31,38,.13);
+    --accent: #c8720c;
+    --accent-soft: #f2dfc4;
+    --green: #4f8a3d;
+    --green-soft: #e2eddb;
+    --red: #b0392b;
+    --red-soft: #f4ded9;
+    --blue: #2f6a8f;
+    --blue-soft: #dde8ef;
+    --shadow: 0 1px 2px rgba(28,31,38,.06), 0 8px 24px -12px rgba(28,31,38,.18);
+    --font-display: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Times New Roman', serif;
+    --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #14161b; --paper-raised: #1b1e25; --ink: #e8e6df; --ink-dim: #a3a7b0; --ink-faint: #6c707a;
+      --line: rgba(232,230,223,.13); --accent: #e0932f; --accent-soft: #3a2c15;
+      --green: #7cb36a; --green-soft: #223021; --red: #d9695b; --red-soft: #341f1c;
+      --blue: #6ea6c6; --blue-soft: #1b2c36;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #14161b; --paper-raised: #1b1e25; --ink: #e8e6df; --ink-dim: #a3a7b0; --ink-faint: #6c707a;
+    --line: rgba(232,230,223,.13); --accent: #e0932f; --accent-soft: #3a2c15;
+    --green: #7cb36a; --green-soft: #223021; --red: #d9695b; --red-soft: #341f1c;
+    --blue: #6ea6c6; --blue-soft: #1b2c36;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+  }
+  :root[data-theme="light"] {
+    --paper: #f6f3ec; --paper-raised: #ffffff; --ink: #1c1f26; --ink-dim: #5b5f6b; --ink-faint: #8b8e97;
+    --line: rgba(28,31,38,.13); --accent: #c8720c; --accent-soft: #f2dfc4;
+    --green: #4f8a3d; --green-soft: #e2eddb; --red: #b0392b; --red-soft: #f4ded9;
+    --blue: #2f6a8f; --blue-soft: #dde8ef;
+    --shadow: 0 1px 2px rgba(28,31,38,.06), 0 8px 24px -12px rgba(28,31,38,.18);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: var(--font-body); line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--accent-soft); }
+  a:focus-visible, nav.jump a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .topbar {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 20px;
+  }
+  .topbar-inner {
+    max-width: 900px; margin: 0 auto;
+    display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  }
+  .brand { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .brand h1 {
+    font-family: var(--font-display); font-size: 19px; font-weight: 700; margin: 0;
+    letter-spacing: .01em;
+  }
+  .brand .sub { font-size: 12.5px; color: var(--ink-faint); font-family: var(--font-mono); }
+  nav.jump { display: flex; gap: 4px; flex-wrap: wrap; }
+  nav.jump a {
+    font-size: 12px; color: var(--ink-dim); text-decoration: none; padding: 5px 10px;
+    border-radius: 100px; border: 1px solid var(--line); font-family: var(--font-mono);
+    white-space: nowrap;
+  }
+  nav.jump a:hover { border-color: var(--accent); color: var(--accent); }
+  .meta-row {
+    max-width: 900px; margin: 8px auto 0; font-size: 12px; color: var(--ink-faint);
+    font-family: var(--font-mono); display: flex; gap: 14px; flex-wrap: wrap;
+  }
+
+  main { max-width: 900px; margin: 0 auto; padding: 28px 20px 90px; display: flex; flex-direction: column; gap: 28px; }
+
+  section.card {
+    background: var(--paper-raised); border: 1px solid var(--line); border-radius: 14px;
+    box-shadow: var(--shadow); overflow: hidden; scroll-margin-top: 90px;
+  }
+  .card-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 18px 22px; border-bottom: 1px solid var(--line); flex-wrap: wrap;
+  }
+  .card-head h2 {
+    font-family: var(--font-display); font-size: 21px; margin: 0; font-weight: 700;
+    display: flex; align-items: center; gap: 10px; text-wrap: balance;
+  }
+  .card-num {
+    font-family: var(--font-mono); font-size: 12px; color: var(--ink-faint);
+    border: 1px solid var(--line); border-radius: 6px; padding: 1px 7px;
+  }
+  .card-body { padding: 20px 22px 24px; }
+  .badge {
+    font-family: var(--font-mono); font-size: 11.5px; font-weight: 600; letter-spacing: .02em;
+    padding: 4px 10px; border-radius: 100px; white-space: nowrap;
+  }
+  .badge.go { background: var(--green-soft); color: var(--green); }
+  .badge.wait { background: var(--accent-soft); color: var(--accent); }
+  .badge.stuck { background: var(--red-soft); color: var(--red); }
+
+  .next-action {
+    margin-top: 16px; padding: 12px 14px; border-radius: 10px;
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    font-size: 13.5px;
+  }
+  .next-action b.lbl { color: var(--accent); font-family: var(--font-mono); font-size: 11.5px;
+    letter-spacing: .04em; text-transform: uppercase; display: block; margin-bottom: 4px; }
+
+  .callout {
+    margin-top: 16px; padding: 13px 15px; border-radius: 10px; font-size: 13px;
+    background: color-mix(in srgb, var(--ink) 5%, transparent);
+    border: 1px solid var(--line); color: var(--ink-dim);
+  }
+  .callout b { color: var(--ink); }
+
+  /* ── 원페이저 ── */
+  .kv { display: grid; grid-template-columns: 88px 1fr; gap: 12px 16px; align-items: start; }
+  .kv dt {
+    font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-faint);
+    text-transform: uppercase; letter-spacing: .04em; padding-top: 3px;
+  }
+  .kv dd { margin: 0; font-size: 14px; }
+  .kv dd b { color: var(--accent); }
+
+  /* ── 워크플로우 ── */
+  .flow { display: flex; flex-direction: column; }
+  .step {
+    display: grid; grid-template-columns: 34px 1fr auto; gap: 14px; align-items: start;
+    padding: 13px 0; border-bottom: 1px dashed var(--line);
+  }
+  .step:last-child { border-bottom: none; }
+  .step-n {
+    width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 13px; color: var(--ink-dim); flex-shrink: 0;
+  }
+  .step.auto .step-n { border-color: var(--green); color: var(--green); }
+  .step.manual .step-n { border-color: var(--accent); color: var(--accent); }
+  .step.missing .step-n { border-color: var(--red); color: var(--red); border-style: dashed; }
+  .step.missing .step-body b { color: var(--red); }
+  .step-body b { display: block; font-size: 14.5px; margin-bottom: 2px; }
+  .step-body span { font-size: 13px; color: var(--ink-dim); }
+  .step-cost {
+    font-family: var(--font-mono); font-size: 11px; text-align: right; white-space: nowrap;
+    padding-top: 2px;
+  }
+  .step-cost.zero { color: var(--green); }
+  .step-cost.mid { color: #b08a2e; }
+  .step-cost.high { color: var(--accent); }
+  .step-cost.na { color: var(--ink-faint); }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 16px; font-size: 12px; color: var(--ink-faint); }
+  .legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+  /* ── 처리량·소요시간 ── */
+  .budget { display: flex; flex-direction: column; gap: 9px; }
+  .brow { display: grid; grid-template-columns: 150px 1fr 96px; gap: 12px; align-items: center; }
+  .brow .bname { font-size: 13.5px; }
+  .brow .bname i { display: block; font-style: normal; font-size: 11.5px; color: var(--ink-faint); }
+  .btrack { height: 12px; border-radius: 100px; background: color-mix(in srgb, var(--ink) 7%, transparent); overflow: hidden; }
+  .bfill { height: 100%; border-radius: 100px; }
+  .bfill.measured { background: var(--green); }
+  .bfill.estimated { background: repeating-linear-gradient(45deg, var(--accent), var(--accent) 4px, transparent 4px, transparent 8px);
+    border: 1px solid var(--accent); }
+  .bfill.human { background: var(--red); }
+  .btime { font-family: var(--font-mono); font-size: 12.5px; text-align: right; font-variant-numeric: tabular-nums; }
+  .throughput { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 12px; margin-top: 18px; }
+  .tp { border: 1px solid var(--line); border-radius: 10px; padding: 13px 15px; }
+  .tp .tp-l { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: .04em; }
+  .tp .tp-v { font-family: var(--font-mono); font-size: 21px; font-weight: 600; margin: 5px 0 3px; font-variant-numeric: tabular-nums; }
+  .tp .tp-f { font-size: 12px; color: var(--ink-dim); }
+
+  /* ── 신뢰도 ── */
+  .trust { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .tcol { border: 1px solid var(--line); border-radius: 10px; padding: 14px 15px; }
+  .tcol.det { border-left: 3px solid var(--green); }
+  .tcol.llm { border-left: 3px solid var(--red); }
+  .tcol h3 { margin: 0 0 3px; font-size: 14.5px; font-family: var(--font-display); }
+  .tcol .grade { font-family: var(--font-mono); font-size: 11.5px; margin-bottom: 9px; }
+  .tcol.det .grade { color: var(--green); }
+  .tcol.llm .grade { color: var(--red); }
+  .tcol ul { margin: 0; padding-left: 17px; font-size: 12.5px; color: var(--ink-dim); }
+  .tcol li { margin-bottom: 3px; }
+  .layers { display: flex; flex-direction: column; gap: 6px; margin-top: 16px; }
+  .layer { display: grid; grid-template-columns: 128px 1fr; gap: 12px; font-size: 12.5px;
+    padding: 8px 12px; border-radius: 8px; background: color-mix(in srgb, var(--ink) 4%, transparent); }
+  .layer code { font-family: var(--font-mono); font-size: 11.5px; color: var(--blue); }
+  .layer span { color: var(--ink-dim); }
+  .layer.human { background: var(--accent-soft); }
+  .layer.human code { color: var(--accent); }
+  .evid { margin-top: 16px; width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .evid th, .evid td { text-align: left; padding: 7px 9px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .evid th { font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: .04em; }
+  .evid td:first-child { font-family: var(--font-mono); white-space: nowrap; color: var(--ink-dim); }
+  .scroll-x { overflow-x: auto; }
+
+  /* ── 경쟁 지형 ── */
+  .map {
+    position: relative; aspect-ratio: 1.35; min-height: 300px; margin-top: 6px;
+    border: 1px solid var(--line); border-radius: 10px;
+    background:
+      linear-gradient(to right, transparent 49.7%, var(--line) 49.7%, var(--line) 50.3%, transparent 50.3%),
+      linear-gradient(to bottom, transparent 49.7%, var(--line) 49.7%, var(--line) 50.3%, transparent 50.3%);
+  }
+  .pin { position: absolute; transform: translate(-50%,-50%); text-align: center; width: 128px; }
+  .pin i { display: block; width: 9px; height: 9px; border-radius: 50%; background: var(--ink-faint); margin: 0 auto 4px; }
+  .pin b { display: block; font-size: 12.5px; font-weight: 600; line-height: 1.25; }
+  .pin span { font-size: 11px; color: var(--ink-faint); line-height: 1.3; display: block; }
+  .pin.us i { width: 13px; height: 13px; background: var(--accent); box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 22%, transparent); }
+  .pin.us b { color: var(--accent); font-size: 13.5px; }
+  .axis { position: absolute; font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); }
+  .ax-t { top: 8px; left: 50%; transform: translateX(-50%); }
+  .ax-b { bottom: 8px; left: 50%; transform: translateX(-50%); }
+  .ax-l { left: 10px; top: 50%; transform: translateY(-50%) rotate(-90deg); transform-origin: left center; }
+  .ax-r { right: 10px; top: 50%; transform: translateY(-50%) rotate(90deg); transform-origin: right center; }
+  .edge { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+  .edge-item { display: grid; grid-template-columns: 22px 1fr; gap: 10px; font-size: 13px; }
+  .edge-item em { font-style: normal; font-family: var(--font-mono); color: var(--accent); font-size: 12px; padding-top: 1px; }
+  .edge-item b { display: block; }
+  .edge-item span { color: var(--ink-dim); font-size: 12.5px; }
+
+  /* ── SWOT ── */
+  .swot { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .q { border: 1px solid var(--line); border-radius: 10px; padding: 14px 15px; }
+  .q h3 { margin: 0 0 10px; font-size: 13px; font-family: var(--font-mono); letter-spacing: .04em; text-transform: uppercase; }
+  .q.s { border-top: 3px solid var(--green); } .q.s h3 { color: var(--green); }
+  .q.w { border-top: 3px solid var(--red); } .q.w h3 { color: var(--red); }
+  .q.o { border-top: 3px solid var(--blue); } .q.o h3 { color: var(--blue); }
+  .q.t { border-top: 3px solid var(--accent); } .q.t h3 { color: var(--accent); }
+  .q ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 11px; }
+  .q li { font-size: 13px; }
+  .q li b { display: block; margin-bottom: 2px; }
+  .q li span { display: block; font-size: 12px; color: var(--ink-dim); padding-left: 12px; border-left: 2px solid var(--line); }
+  .q li span::before { content: '→ '; color: var(--ink-faint); }
+
+  /* ── 열린 전선 ── */
+  .front { display: flex; flex-direction: column; gap: 10px; }
+  .front-item {
+    border: 1px solid var(--line); border-radius: 10px; padding: 13px 15px;
+    display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: start;
+  }
+  .front-item.stuck { border-left: 3px solid var(--red); }
+  .front-item.wait { border-left: 3px solid var(--accent); }
+  .front-title { font-size: 14.5px; font-weight: 600; margin: 0 0 4px; }
+  .front-detail { font-size: 12.5px; color: var(--ink-dim); margin: 0; }
+  .front-who { font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); margin: 6px 0 0; }
+  .age-chip {
+    font-family: var(--font-mono); font-size: 11px; padding: 3px 9px; border-radius: 100px;
+    white-space: nowrap; height: fit-content;
+  }
+  .closed { font-size: 12.5px; color: var(--green); margin: 0 0 12px; }
+
+  /* ── 마스터플랜 ── */
+  .ladder { list-style: none; margin: 0; padding: 0; position: relative; }
+  .ladder::before {
+    content: ''; position: absolute; left: 11px; top: 6px; bottom: 6px; width: 1.5px; background: var(--line);
+  }
+  .rung { position: relative; padding: 0 0 20px 34px; }
+  .rung:last-child { padding-bottom: 0; }
+  .rung::before {
+    content: ''; position: absolute; left: 3px; top: 3px; width: 17px; height: 17px;
+    border-radius: 50%; background: var(--paper-raised); border: 2px solid var(--line);
+  }
+  .rung.done::before { border-color: var(--green); background: var(--green); }
+  .rung.next::before { border-color: var(--accent); }
+  .rung-title { font-size: 14.5px; font-weight: 600; margin: 0 0 2px; }
+  .rung.done .rung-title { color: var(--ink-dim); }
+  .rung-cond { font-size: 12.5px; color: var(--ink-dim); font-family: var(--font-mono); margin: 0; }
+  .rung.done .rung-cond { color: var(--ink-faint); }
+
+  /* ── 트랙션 ── */
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+  .stat { border: 1px solid var(--line); border-radius: 10px; padding: 14px 15px; }
+  .stat.unmeasured { border-style: dashed; }
+  .stat-label {
+    font-size: 11.5px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: .04em;
+    font-family: var(--font-mono); margin-bottom: 6px;
+  }
+  .stat-value { font-family: var(--font-mono); font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .stat.unmeasured .stat-value { color: var(--ink-faint); font-size: 20px; }
+  .stat-foot { font-size: 11.5px; color: var(--ink-dim); margin-top: 4px; }
+
+  footer {
+    max-width: 900px; margin: 0 auto; padding: 0 20px 40px; font-size: 11.5px; color: var(--ink-faint);
+    font-family: var(--font-mono);
+  }
+
+  @media (max-width: 620px) {
+    .card-head h2 { font-size: 18px; }
+    .step { grid-template-columns: 28px 1fr; }
+    .step-cost { grid-column: 2; text-align: left; padding-top: 0; }
+    .trust, .swot { grid-template-columns: 1fr; }
+    .brow { grid-template-columns: 1fr 78px; }
+    .brow .btrack { grid-column: 1 / -1; }
+    .kv { grid-template-columns: 1fr; gap: 3px 0; }
+    .kv dd { margin-bottom: 8px; }
+    .layer { grid-template-columns: 1fr; gap: 2px; }
+    .pin { width: 104px; }
+    .pin b { font-size: 11.5px; }
+    .pin span { display: none; }
+  }
+</style>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <h1>포토카드 제작 파이프라인</h1>
+      <span class="sub">buza-bot/decks · 12p 딥리포트 · stock_studian</span>
+    </div>
+    <nav class="jump">
+      <a href="#one">원페이저</a>
+      <a href="#throughput">처리량</a>
+      <a href="#trust">데이터 신뢰도</a>
+      <a href="#workflow">워크플로우</a>
+      <a href="#compete">경쟁 지형</a>
+      <a href="#swot">SWOT</a>
+      <a href="#traction">트랙션</a>
+      <a href="#fronts">열린 전선</a>
+      <a href="#plan">마스터플랜</a>
+    </nav>
+  </div>
+  <div class="meta-row">
+    <span>최종갱신 2026-08-17</span>
+    <span>데이터파일 보유 14종목 · 발행 4 · 대기 5 · 차단 0</span>
+    <span>상태 🟡 제작은 도는데 인스타 출구가 없음</span>
+  </div>
+</div>
+
+<main>
+
+  <section class="card" id="one">
+    <div class="card-head">
+      <h2><span class="card-num">01</span> 원페이저</h2>
+      <span class="badge wait">발행 직전</span>
+    </div>
+    <div class="card-body">
+      <dl class="kv">
+        <dt>문제</dt>
+        <dd>미국 스몰캡은 한국어 리서치가 사실상 없다. 증권사는 커버하지 않고, 인스타 카드뉴스는 출처가 없고, LLM에 직접 물으면 숫자를 지어낸다.</dd>
+        <dt>대상</dt>
+        <dd>미국 개별주(특히 스몰캡)를 직접 고르는 한국어 개인투자자. 1차 사용자는 본인.</dd>
+        <dt>해법</dt>
+        <dd><b>SEC 공시·XBRL에서 뽑은 숫자로 12페이지 정사각 카드덱을 종목당 수 분에 찍어낸다.</b> 숫자는 기계가 계산하고, 서술만 LLM이 쓰고, 못 채우면 빈칸으로 둔다.</dd>
+        <dt>현재</dt>
+        <dd>렌더러·자동생성·검수게이트까지 완성. 14종목 데이터 보유, 텔레그램으로 4종목 발행됨. <b>인스타 발행은 0건 — 코드에 업로드 경로가 한 줄도 없다.</b></dd>
+        <dt>다음</dt>
+        <dd>인스타 캐러셀 1건을 실제로 올려서 12p 포맷이 그 매체에서 읽히는지 확인 (→ 카드 09 M8)</dd>
+      </dl>
+      <div class="next-action">
+        <b class="lbl">그래서 다음 행동</b>
+        발행 대기 5종목(CORT·PLTR·QLYS·SATL·WDAY) 중 <b>가장 자신 있는 1종목을 인스타에 수동으로 올린다.</b>
+        자동화를 붙이기 전에 "이 포맷이 인스타에서 읽히는가"부터 1건으로 확인하는 게 순서다.
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="throughput">
+    <div class="card-head">
+      <h2><span class="card-num">02</span> 처리량 · 소요시간</h2>
+      <span class="badge go">실측 2026-08-17</span>
+    </div>
+    <div class="card-body">
+      <p style="margin:0 0 14px;font-size:13px;color:var(--ink-dim)">신규 종목 1건을 0에서 발행까지. 막대는 로그 감각의 상대 길이(사람 검수는 스케일 밖).</p>
+      <div class="budget">
+        <div class="brow">
+          <div class="bname">사전점검 <code style="font-family:var(--font-mono);font-size:11px">probe.py</code><i>EDGAR·Yahoo만 — 안 되는 종목 미리 걸러냄</i></div>
+          <div class="btrack"><div class="bfill measured" style="width:6%"></div></div>
+          <div class="btime">~3초</div>
+        </div>
+        <div class="brow">
+          <div class="bname">원자재 수집<i>SEC XBRL·Yahoo·위임장·뉴스 — LLM 0콜</i></div>
+          <div class="btrack"><div class="bfill measured" style="width:14%"></div></div>
+          <div class="btime">13초 실측</div>
+        </div>
+        <div class="brow">
+          <div class="bname">LLM 6콜<i>서사·실적·재무해석·위임장·TAM·종합(폴백)</i></div>
+          <div class="btrack"><div class="bfill estimated" style="width:52%"></div></div>
+          <div class="btime">2~10분 ❓</div>
+        </div>
+        <div class="brow">
+          <div class="bname">12p 렌더 <code style="font-family:var(--font-mono);font-size:11px">build.py</code><i>PNG 12장, SS×3 슈퍼샘플</i></div>
+          <div class="btrack"><div class="bfill measured" style="width:8%"></div></div>
+          <div class="btime">7초 실측</div>
+        </div>
+        <div class="brow">
+          <div class="bname" style="color:var(--red)">초안 검수<i>생략 불가 — AAPL 라운드에서 30+건 발견</i></div>
+          <div class="btrack"><div class="bfill human" style="width:100%"></div></div>
+          <div class="btime" style="color:var(--red)">수 시간</div>
+        </div>
+        <div class="brow">
+          <div class="bname">발행<i>텔레그램 앨범 10+2장 — 인스타는 수동</i></div>
+          <div class="btrack"><div class="bfill measured" style="width:5%"></div></div>
+          <div class="btime">수 초</div>
+        </div>
+      </div>
+
+      <div class="throughput">
+        <div class="tp">
+          <div class="tp-l">기계 시간 합계</div>
+          <div class="tp-v">3~11분</div>
+          <div class="tp-f">수집 13초 + 렌더 7초는 실측, LLM 6콜만 미측정 구간</div>
+        </div>
+        <div class="tp">
+          <div class="tp-l">실측 생산 페이스</div>
+          <div class="tp-v">0.64종/일</div>
+          <div class="tp-f">07-26 SATL → 08-17 WDAY, 22일간 14종목</div>
+        </div>
+        <div class="tp">
+          <div class="tp-l">최근 6일 페이스</div>
+          <div class="tp-v">1.2종/일</div>
+          <div class="tp-f">08-12~08-17에 7종목 — 가속 중(autogen 안정화 효과)</div>
+        </div>
+        <div class="tp">
+          <div class="tp-l">기존 종목 재렌더</div>
+          <div class="tp-v">7초 / 건</div>
+          <div class="tp-f">LLM 0콜 — 실적 시즌에 14종목 전량 갱신해도 2분</div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <b>답: 하루 1~2종목이 현실 상한이고, 그 상한을 만드는 건 기계가 아니라 검수다.</b>
+        기계만 보면 하루 수십 건도 가능하지만 두 개의 천장이 먼저 걸린다 —
+        ① <b>Gemini 무료 일일 쿼터</b>(정확한 한도는 ❓미측정. 폴백 3모델 중 <code>gemini-2.0-flash</code>는 무료 티어가 아예 없음(limit 0)이 실측 확인돼 실사용 모델은 2종. IONQ에서 8콜 중 2콜만 성공하고 429로 죽은 적 있음 — 그래서 체크포인트로 성공 단계를 이어붙인다)
+        ② <b>사람 검수</b>. ①은 돈으로 풀리고 ②는 안 풀린다.
+        <b>재발행·갱신은 사실상 무제한</b>(LLM 0콜, 건당 7초)이라, "매일 새 종목"보다 <b>"기존 14종목을 실적마다 갱신"</b>이 이 파이프라인의 강점에 맞는 운영이다.
+      </div>
+
+      <div class="next-action">
+        <b class="lbl">그래서 다음 행동</b>
+        LLM 6콜 구간이 유일한 미측정 구간이다. <b>다음 신규 종목 돌릴 때 <code>time</code>으로 벽시계 시간을 한 번만 재서</b> 이 카드의 ❓를 지운다.
+        하루 상한도 같이 확인된다(429가 몇 번째 종목에서 나오는지).
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="trust">
+    <div class="card-head">
+      <h2><span class="card-num">03</span> 데이터 신뢰도</h2>
+      <span class="badge wait">숫자 높음 · 서술 중간</span>
+    </div>
+    <div class="card-body">
+      <div class="trust">
+        <div class="tcol det">
+          <h3>기계가 만든 것</h3>
+          <p class="grade">신뢰도 높음 — 공시 원문 수준</p>
+          <ul>
+            <li>재무 시계열 — SEC XBRL <code>companyfacts</code> 직접 조회</li>
+            <li>CEO·경영진 — Form 4의 구조화 XML 파싱(5/5종목 성공)</li>
+            <li>기관지분 13F, 주주구성 — Yahoo/SEC</li>
+            <li>주가·이평·MDD·매물대 — Yahoo 차트 API</li>
+            <li>시총·P/S — 발행주식수(공시 표지)×현재가 직접 계산</li>
+            <li>QoQ/YoY·CANSLIM C점수·종합평가(SUMMARY) — 파이썬 조립, LLM 0콜</li>
+          </ul>
+        </div>
+        <div class="tcol llm">
+          <h3>LLM이 쓴 것</h3>
+          <p class="grade">신뢰도 중간 — 무검수 발행 금지</p>
+          <ul>
+            <li>연혁 서사·사업부문 설명 (LLM A)</li>
+            <li>최근실적 해설·체크포인트 (LLM B)</li>
+            <li>재무 해석·CANSLIM 참고 (LLM C)</li>
+            <li>위임장 CEO bio·지배구조 (LLM D)</li>
+            <li>TAM — 구글뉴스 헤드라인에서 추출 (LLM H)</li>
+            <li>인용문 — <b>원문 대조로 걸러지지만 애초에 지어내려 함</b></li>
+          </ul>
+        </div>
+      </div>
+
+      <p style="font-size:12.5px;color:var(--ink-faint);margin:18px 0 8px;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.04em">발행까지 통과해야 하는 관문 8개</p>
+      <div class="layers">
+        <div class="layer"><code>probe.py</code><span>EDGAR·Yahoo로 사전점검 — 안 되는 종목에 쿼터를 태우지 않음</span></div>
+        <div class="layer"><code>_ground_quotes</code><span>CEO 발언을 원문 문자열과 대조, 없으면 삭제 — ABCL에서 실제로 없는 발언을 지어냄</span></div>
+        <div class="layer"><code>_ground_bio</code><span>CEO 약력이 위임장 원문에 근거하는지 확인</span></div>
+        <div class="layer"><code>checkpoints.drop_past</code><span>"앞으로 볼 것"에 과거를 섞는 것 차단 — AGL은 6건 중 4건이 지난 분기 요약이었음</span></div>
+        <div class="layer"><code>_fix_money_units</code><span>"$109,417백만" 같은 단위 붕괴 교정</span></div>
+        <div class="layer"><code>crosscheck.py</code><span>같은 지표가 두 값으로 적히면 XBRL 계산값 기준으로 자동 교정. 금액 자체가 다르면 고치지 않고 보고만</span></div>
+        <div class="layer"><code>check.py</code><span>발행 게이트 — 필수 항목 비면 BLOCK. 현재 14종목 전부 차단 0</span></div>
+        <div class="layer human"><code>사람 검수</code><span>위 7개를 다 통과해도 남는 것 — 생략 불가로 확정됨</span></div>
+      </div>
+
+      <div class="scroll-x">
+      <table class="evid">
+        <thead><tr><th>실측 사례</th><th>무슨 일이 있었나</th><th>지금 상태</th></tr></thead>
+        <tbody>
+          <tr><td>AAPL</td><td>무검수 초안에서 사업부문 지역/제품 혼동, RSU 오표시, CEO bio 영문 잔존 등 30+건</td><td>전부 수정 + 렌더러 공용 버그로 환원</td></tr>
+          <tr><td>ABCL</td><td>존재하지 않는 CEO 발언 생성 — "$655.0M" vs 원문 "over $675 million"</td><td>원문 대조 필터 신설</td></tr>
+          <tr><td>WDAY</td><td>같은 페이지에 영업이익 +767%와 +762%가 나란히(XBRL 계산은 766.7%)</td><td>crosscheck 신설, 자동 교정</td></tr>
+          <tr><td>TAM</td><td>남의 산업 시장규모를 물어옴</td><td>산업 카테고리 필터 추가(커밋 20e246d)</td></tr>
+          <tr><td>10-K 파싱</td><td>iXBRL 숨김 메타 13.6만자를 본문으로 오인 — 모든 파이프라인에 영향</td><td>수정 완료</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div class="callout">
+        <b>정직하게 비워두는 것</b> — TAM(뉴스에 숫자가 안 걸리면 빈칸), 경쟁사 재무비교(삼성·샤오미 등은 비SEC 등록이라 XBRL 없음),
+        CANSLIM N 항목 5개 중 4개(탑티어·성장연수·지배구조·신시장CAGR은 애널리스트 주관). <b>채우지 않는 것이 이 파이프라인의 신뢰도 설계 그 자체다.</b>
+      </div>
+
+      <div class="next-action">
+        <b class="lbl">그래서 다음 행동</b>
+        신뢰도를 <b>독자에게도 보이게</b> 만들 차례다. 지금은 카드에 "기계가 센 숫자"와 "LLM이 쓴 해석"이 같은 톤으로 나란히 있다.
+        12p 렌더러가 이미 "해석:" 접두어를 색으로 구분하니, <b>같은 원칙을 숫자 출처 캡션에도 적용</b>해 "SEC 10-Q 기준일 YYYY-MM-DD"를 눈에 띄게 올린다.
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="workflow">
+    <div class="card-head">
+      <h2><span class="card-num">04</span> 워크플로우</h2>
+      <span class="badge stuck">출구 끊김</span>
+    </div>
+    <div class="card-body">
+      <div class="flow">
+        <div class="step auto">
+          <div class="step-n">1</div>
+          <div class="step-body">
+            <b>feed.py — 다음에 뭘 만들지 스크리너가 정함</b>
+            <span>stock_screener의 <code>leaders_signal.json</code>을 읽어 제작 큐 생성. 종목 선택이 손에서 기계로 넘어옴</span>
+          </div>
+          <div class="step-cost zero">토큰 0</div>
+        </div>
+        <div class="step auto">
+          <div class="step-n">2</div>
+          <div class="step-body">
+            <b>autogen.py TICKER — 데이터 초안 자동생성</b>
+            <span>probe 사전점검(LLM 0콜) 후 Gemini 6콜. 단계별 체크포인트 저장 — 쿼터가 중간에 끊겨도 성공한 단계는 안 버림</span>
+          </div>
+          <div class="step-cost mid">Gemini 6콜<br>(Claude 세션 불필요)</div>
+        </div>
+        <div class="step manual">
+          <div class="step-n">3</div>
+          <div class="step-body">
+            <b>초안 검수 — 생략 불가</b>
+            <span>기계 방어 7겹을 다 통과해도 남는 오류가 있다(카드 03). 여기가 파이프라인 전체 소요시간의 90% 이상</span>
+          </div>
+          <div class="step-cost high">토큰 大<br>(사람 또는 Claude)</div>
+        </div>
+        <div class="step auto">
+          <div class="step-n">4</div>
+          <div class="step-body">
+            <b>build.py TICKER — 12p 렌더 + 발행 게이트</b>
+            <span>PNG 12장(7초 실측). 렌더 끝에 check.py가 자동으로 붙어 차단·경고를 그 자리에서 알림</span>
+          </div>
+          <div class="step-cost zero">토큰 0</div>
+        </div>
+        <div class="step auto">
+          <div class="step-n">5</div>
+          <div class="step-body">
+            <b>publish.py TICKER — 텔레그램 앨범 발행</b>
+            <span>차단 0일 때만 통과. 10장 상한이라 10+2로 쪼개 전송. 현재 4종목 발행됨</span>
+          </div>
+          <div class="step-cost zero">토큰 0</div>
+        </div>
+        <div class="step missing">
+          <div class="step-n">6</div>
+          <div class="step-body">
+            <b>인스타 업로드 — 경로 없음 🔴</b>
+            <span>코드 전체에 인스타 업로드 코드 0줄(grep 확인). PNG를 손으로 폰에 옮겨 올리는 것 외에 방법이 없다. <b>이 프로젝트의 목적지가 인스타라면 지금 파이프라인은 목적지 직전에서 끊겨 있다</b></span>
+          </div>
+          <div class="step-cost na">사람 작업</div>
+        </div>
+        <div class="step missing">
+          <div class="step-n">7</div>
+          <div class="step-body">
+            <b>대시보드 연동 — 미착수</b>
+            <span>티커 입력 → 카드 다운로드 왕복. 08-03 갱신 이후 진전 없음</span>
+          </div>
+          <div class="step-cost na">미착수</div>
+        </div>
+      </div>
+      <div class="legend">
+        <span><i class="dot" style="background:var(--green)"></i>자동·토큰 0</span>
+        <span><i class="dot" style="background:var(--accent)"></i>사람/Claude 개입</span>
+        <span><i class="dot" style="background:var(--red)"></i>경로 없음</span>
+      </div>
+      <div class="next-action">
+        <b class="lbl">08-03 대비 바뀐 것</b>
+        1·5번이 새로 생겼다 — 종목 선택(feed)과 발행(publish)이 손에서 코드로 넘어와, <b>"만들었는데 나가는 문이 없다"가 텔레그램에서는 해결됐다.</b>
+        그런데 <b>인스타에서는 그 문이 아직 없다.</b> 08-03 카드는 5번을 "인스타 업로드(사람 작업)"로 적어뒀지만, 지금 기준으로는 사람 작업이라기보다 <b>미구현 구간</b>으로 재분류하는 게 정직하다.
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="compete">
+    <div class="card-head">
+      <h2><span class="card-num">05</span> 경쟁 지형</h2>
+      <span class="badge go">빈자리 있음</span>
+    </div>
+    <div class="card-body">
+      <div class="map">
+        <span class="axis ax-t">깊이 ↑ 12페이지 딥리포트</span>
+        <span class="axis ax-b">깊이 ↓ 한 장 요약</span>
+        <span class="axis ax-l">사람이 씀</span>
+        <span class="axis ax-r">기계가 씀</span>
+
+        <div class="pin" style="left:24%;top:18%">
+          <i></i><b>증권사 리포트</b><span>깊이 최고 · 미국 스몰캡 커버 안 함</span>
+        </div>
+        <div class="pin" style="left:26%;top:74%">
+          <i></i><b>인스타 카드뉴스 계정</b><span>빠름 · 출처 없음</span>
+        </div>
+        <div class="pin" style="left:74%;top:33%">
+          <i></i><b>Simply Wall St</b><span>자동·비주얼 강함 · 영어 · 유료</span>
+        </div>
+        <div class="pin" style="left:80%;top:70%">
+          <i></i><b>Finviz · Stock Analysis</b><span>데이터 O · 이야기 X</span>
+        </div>
+        <div class="pin" style="left:56%;top:57%">
+          <i></i><b>LLM에 직접 질문</b><span>깊이 가변 · 출처 불명</span>
+        </div>
+        <div class="pin us" style="left:70%;top:14%">
+          <i></i><b>stock_studian</b><span>한국어 × 미국 스몰캡 × 공시기반 12p</span>
+        </div>
+      </div>
+
+      <div class="edge">
+        <div class="edge-item"><em>01</em><div><b>한국어 × 미국 스몰캡</b><span>SATL·AXTI·ABCL·CORT급을 한국어로 12p 다루는 곳이 사실상 없다. 증권사는 대형주만, 영어권 툴은 한국어를 안 한다. <b>이게 유일하게 진짜인 해자다.</b></span></div></div>
+        <div class="edge-item"><em>02</em><div><b>숫자는 기계, 서술만 LLM</b><span>경쟁 카드뉴스와 갈리는 지점. "모르면 빈칸"이 규칙이라 틀린 숫자를 자신 있게 말하지 않는다.</span></div></div>
+        <div class="edge-item"><em>03</em><div><b>재렌더 7초</b><span>실적 시즌에 보유 14종목을 2분 만에 전량 갱신할 수 있다. 사람이 쓰는 리포트로는 불가능한 운영.</span></div></div>
+      </div>
+
+      <div class="callout">
+        <b>이 카드가 깨지는 지점(먼저 적는다)</b> —
+        ① <b>인스타 사용자는 12p를 안 읽는다.</b> 캐러셀 소비는 보통 앞 3장이다. 12p 정보밀도는 인스타와 구조적으로 안 맞을 수 있고, 그러면 위 축의 세로(깊이 ↑)가 강점이 아니라 약점이 된다.
+        ② <b>발행자 신뢰가 0이다.</b> 리포트의 설득력은 포맷이 아니라 발행자에게서 온다 — 팔로워 ❓미측정.
+        ③ <b>Simply Wall St가 한국어를 켜면</b> 축 01이 통째로 사라진다. 방어는 "스몰캡 + 한국 투자자 맥락(환율·세금·거래시간)"뿐이고, 아직 안 넣었다.
+      </div>
+
+      <div class="next-action">
+        <b class="lbl">그래서 다음 행동</b>
+        ①을 <b>1건으로 검증한다</b> — 12p를 그대로 올리지 말고 <b>앞 3장을 "훅"으로 재배열</b>해 1건 올린 뒤 저장·공유 수를 본다.
+        포맷 논쟁은 데이터 없이 끝나지 않는다.
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="swot">
+    <div class="card-head">
+      <h2><span class="card-num">06</span> SWOT</h2>
+      <span class="badge wait">칸마다 액션 1개</span>
+    </div>
+    <div class="card-body">
+      <div class="swot">
+        <div class="q s">
+          <h3>강점</h3>
+          <ul>
+            <li><b>공시 원문 기반 결정론 설계</b><span>이미 완성 — 유지하려면 crosscheck를 신규 종목마다 돌린다</span></li>
+            <li><b>재렌더 7초 · LLM 0콜</b><span>실적 시즌 일괄 갱신을 정례 작업으로 박아둔다</span></li>
+            <li><b>게이트가 실제로 돈다(차단 0/14)</b><span>발행 대기 5종목을 실제로 내보내 게이트를 "실전 사용"으로 만든다</span></li>
+          </ul>
+        </div>
+        <div class="q w">
+          <h3>약점</h3>
+          <ul>
+            <li><b>인스타 발행 경로 0줄</b><span>수동 1건이라도 먼저 올린다 — 자동화는 그 다음</span></li>
+            <li><b>검수가 종목당 수 시간</b><span>AAPL식 전수검수 대신 "게이트 경고 20건"만 도는 체크리스트로 좁힌다</span></li>
+            <li><b>6종목이 데이터 고치고 재렌더 안 됨</b><span>발행 전 <code>build.py</code> 재실행을 의식적 습관이 아니라 publish의 전제조건으로 만든다</span></li>
+          </ul>
+        </div>
+        <div class="q o">
+          <h3>기회</h3>
+          <ul>
+            <li><b>한국어 미국 스몰캡 공백</b><span>커버 종목을 스몰캡 쪽으로 의도적으로 치우친다(feed 가중치)</span></li>
+            <li><b>스크리너 신호 → 리포트 연결됨</b><span>"신호 뜬 종목을 그 주에 발행"을 주간 리듬으로 고정</span></li>
+            <li><b>블로그 연재와 소재 공유</b><span>같은 종목 1건을 인스타·블로그 양쪽에 재사용해 제작비를 나눈다</span></li>
+          </ul>
+        </div>
+        <div class="q t">
+          <h3>위협</h3>
+          <ul>
+            <li><b>유사투자자문 규제</b><span>종목분석 공개 발행은 회색지대다. 카드에 "투자권유 아님·정보제공" 고지를 렌더러 푸터에 <b>코드로</b> 박는다</span></li>
+            <li><b>Gemini 무료 쿼터 축소</b><span>결정론으로 옮길 수 있는 LLM 콜을 계속 줄인다(SUMMARY·CEO는 이미 이관)</span></li>
+            <li><b>LLM 오류 1건이 계정 신뢰를 끝냄</b><span>발행분 원문 링크를 카드에 넣어 독자가 직접 검증 가능하게</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="next-action">
+        <b class="lbl">그래서 다음 행동</b>
+        위협 ①이 유일하게 <b>되돌릴 수 없는</b> 항목이다. 인스타 첫 발행 전에 <b>고지 문구를 <code>deck16.py</code> 푸터에 코드로 넣는다</b> — 사람이 매번 기억해서 붙이는 방식은 반드시 빠진다.
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="traction">
+    <div class="card-head">
+      <h2><span class="card-num">07</span> 트랙션 보드</h2>
+      <span class="badge stuck">독자 지표 전무</span>
+    </div>
+    <div class="card-body">
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="stat-label">데이터 보유 종목</div>
+          <div class="stat-value">14</div>
+          <div class="stat-foot">08-03 5종목 → 14종목 (+9). 가장 크게 움직인 숫자</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">발행됨 / 대기</div>
+          <div class="stat-value">4 / 5</div>
+          <div class="stat-foot">텔레그램 기준. ABCL·CRWV·IONQ·PLUG 발행 완료</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">발행 차단</div>
+          <div class="stat-value">0</div>
+          <div class="stat-foot">경고는 20건 — 차단이 0이면 발행 미룰 사유가 아니다</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">재렌더 필요</div>
+          <div class="stat-value">6</div>
+          <div class="stat-foot">데이터 고치고 렌더 안 함 — 이대로 나가면 옛 숫자가 나감</div>
+        </div>
+        <div class="stat unmeasured">
+          <div class="stat-label">인스타 발행 건수</div>
+          <div class="stat-value">0</div>
+          <div class="stat-foot">08-03과 동일 — 2주째 변화 없음</div>
+        </div>
+        <div class="stat unmeasured">
+          <div class="stat-label">팔로워 · 저장 · 공유</div>
+          <div class="stat-value">❓ 미측정</div>
+          <div class="stat-foot">발행이 0이므로 측정 대상 자체가 없음</div>
+        </div>
+      </div>
+      <div class="callout">
+        <b>2주 전과 비교하면 지표의 성격이 바뀌었다.</b> 08-03 트랙션 카드는 전부 <i>제작</i> 지표였다(검증 종목 5, 발견 버그 30+, 재발 4).
+        지금은 제작이 14종목·차단 0으로 안정됐고, <b>비어 있는 칸이 전부 독자 쪽으로 이동했다</b> — 이건 진전이다.
+        다만 <b>"인스타 발행 0"은 2주 연속 그대로다.</b> 이 숫자가 3주째에도 0이면, 문제는 파이프라인이 아니라 발행 결심이다.
+      </div>
+      <div class="next-action">
+        <b class="lbl">그래서 다음 행동</b>
+        다음 갱신 때 반드시 채워야 할 칸 하나: <b>인스타 발행 건수 ≥ 1</b>. 나머지 지표(저장·공유·팔로워)는 그게 1이 되기 전까지 측정할 방법이 없다.
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="fronts">
+    <div class="card-head">
+      <h2><span class="card-num">08</span> 열린 전선</h2>
+      <span class="badge wait">7건 · 신규 3</span>
+    </div>
+    <div class="card-body">
+      <p class="closed">✅ 08-03 이후 닫힘: <b>미커밋 백로그 22개 파일 → 작업트리 clean</b>(2주 넘게 최악의 전선이었던 것이 해소됨) · 발행 경로 신설(publish.py) · 종목 선택 자동화(feed.py) · 교차검증 신설(crosscheck.py)</p>
+      <div class="front">
+        <div class="front-item stuck">
+          <div>
+            <p class="front-title">인스타 업로드 경로가 코드에 0줄</p>
+            <p class="front-detail">텔레그램 발행은 publish.py로 뚫렸는데 인스타는 grep 0건. 이 프로젝트의 선언된 목적지가 인스타라면 가장 중요한 결손이다. 수동 업로드조차 아직 1건도 없다</p>
+            <p class="front-who">담당: 사용자 — 자동화 전에 수동 1건이 먼저</p>
+          </div>
+          <span class="age-chip" style="background:var(--red-soft);color:var(--red)">14일+ 🔴</span>
+        </div>
+        <div class="front-item stuck">
+          <div>
+            <p class="front-title">스톡 대시보드 ↔ 포토카드 연동</p>
+            <p class="front-detail">티커 입력 → 카드 다운로드. 07-27·08-03 갱신에서 연속 언급됐고 이번에도 진전 0. <b>3회 연속 변화 없음 — 폐기할지 결정할 때다</b></p>
+            <p class="front-who">담당: 사용자 결정(계속/폐기)</p>
+          </div>
+          <span class="age-chip" style="background:var(--red-soft);color:var(--red)">21일+ 🔴</span>
+        </div>
+        <div class="front-item wait">
+          <div>
+            <p class="front-title">데이터 고치고 재렌더 안 한 종목 6개</p>
+            <p class="front-detail">AAPL·AGL·AXTI·IONQ·SNDK·TSLA. 이 상태로 발행하면 카드에 옛 숫자가 나간다. build.py 6번이면 42초</p>
+            <p class="front-who">담당: Claude 또는 사용자 · 즉시 가능</p>
+          </div>
+          <span class="age-chip" style="background:var(--accent-soft);color:var(--accent)">신규</span>
+        </div>
+        <div class="front-item wait">
+          <div>
+            <p class="front-title">check.py가 이 PC 콘솔에서 크래시</p>
+            <p class="front-detail">CP949 콘솔에서 <code>—</code> 출력 시 UnicodeEncodeError로 죽는다(오늘 실측). brief.py·preflight.py는 <code>reconfigure(utf-8)</code>로 고쳤는데 check.py만 빠졌다. <b>환경 때문에 못 도는 게이트는 없는 게이트다</b> — 2줄 수정</p>
+            <p class="front-who">담당: Claude · 미착수</p>
+          </div>
+          <span class="age-chip" style="background:var(--accent-soft);color:var(--accent)">신규</span>
+        </div>
+        <div class="front-item wait">
+          <div>
+            <p class="front-title">발행 대기 5종목이 대기만 함</p>
+            <p class="front-detail">CORT·PLTR·QLYS·SATL·WDAY. 전부 차단 0인데 안 나갔다. check.py 자신이 "차단 0이면 발행을 미룰 사유가 아니다"라고 출력 중</p>
+            <p class="front-who">담당: 사용자 — 발행 결심</p>
+          </div>
+          <span class="age-chip" style="background:var(--accent-soft);color:var(--accent)">신규</span>
+        </div>
+        <div class="front-item wait">
+          <div>
+            <p class="front-title">PPTX export 실물 미검증</p>
+            <p class="front-detail">이 환경에 PowerPoint·LibreOffice가 없어 렌더 결과를 못 봄. 08-03부터 그대로</p>
+            <p class="front-who">담당: 사용자 확인 대기</p>
+          </div>
+          <span class="age-chip" style="background:var(--accent-soft);color:var(--accent)">14일+</span>
+        </div>
+        <div class="front-item wait">
+          <div>
+            <p class="front-title">RSI·MACD 미연결 / CANSLIM N 4-of-5 미입력</p>
+            <p class="front-detail">둘 다 08-03에서 이월. RSI·MACD는 코드는 있으나 배치 페이지 미정, CANSLIM N은 애널리스트 판단 영역이라 구조적으로 자동화 어려움</p>
+            <p class="front-who">담당: Claude(배치 결정) / 사람(판단 입력)</p>
+          </div>
+          <span class="age-chip" style="background:var(--accent-soft);color:var(--accent)">14일+</span>
+        </div>
+      </div>
+      <div class="next-action">
+        <b class="lbl">그래서 다음 행동</b>
+        7건 중 <b>42초짜리 하나(재렌더 6종목)와 2줄짜리 하나(check.py 인코딩)를 먼저 지운다.</b>
+        나머지 5건은 전부 "사용자의 결심"이 필요한 항목이라, 작은 것부터 치워 목록을 실제로 짧게 만드는 게 낫다.
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="plan">
+    <div class="card-head">
+      <h2><span class="card-num">09</span> 마스터플랜</h2>
+      <span class="badge go">7/11 완료</span>
+    </div>
+    <div class="card-body">
+      <ul class="ladder">
+        <li class="rung done">
+          <p class="rung-title">M0~M2 · SATL 구축 → PLTR 범용성 검증 → 피드백 반영</p>
+          <p class="rung-cond">완료: 렌더러 무수정, 데이터 파일 교체만으로 정상 출력</p>
+        </li>
+        <li class="rung done">
+          <p class="rung-title">M2.5 · autogen.py — 데이터 초안 자동생성</p>
+          <p class="rung-cond">완료: Gemini 무료 6콜로 초안, Claude 세션 불필요. 14종목 실사용</p>
+        </li>
+        <li class="rung done">
+          <p class="rung-title">M6 · 신규 종목 무결성 스트레스테스트</p>
+          <p class="rung-cond">완료: AAPL 라운드에서 렌더러 공용 버그 다수 발굴</p>
+        </li>
+        <li class="rung done">
+          <p class="rung-title">M3 · 변경분 커밋 · 푸시</p>
+          <p class="rung-cond">완료(08-17): 22개 파일 백로그 해소, 작업트리 clean</p>
+        </li>
+        <li class="rung done">
+          <p class="rung-title">M8 · 발행 경로 신설(신규 · 계획에 없던 것)</p>
+          <p class="rung-cond">완료: feed.py(제작 큐) → check.py(게이트) → publish.py(텔레그램 앨범). 4종목 실제 발행</p>
+        </li>
+        <li class="rung next">
+          <p class="rung-title">M9 · 인스타 첫 발행 1건 (신규 · 최우선)</p>
+          <p class="rung-cond">완료조건: 발행 대기 5종목 중 1개를 실제 계정에 캐러셀로 올리고, 7일 뒤 저장·공유 수를 이 카드에 기록</p>
+        </li>
+        <li class="rung">
+          <p class="rung-title">M10 · 인스타 포맷 적응 (신규)</p>
+          <p class="rung-cond">완료조건: 앞 3장을 훅으로 재배열한 버전과 12p 원본을 각 1건씩 올려 저장률 비교 — 어느 쪽이 나은지 데이터로 결정</p>
+        </li>
+        <li class="rung">
+          <p class="rung-title">M11 · 고지문구 코드화 (신규)</p>
+          <p class="rung-cond">완료조건: "투자권유 아님" 문구가 deck16.py 푸터에서 전 종목 자동 출력 — M9보다 먼저 끝나야 함</p>
+        </li>
+        <li class="rung">
+          <p class="rung-title">M4 · RSI·MACD 패널 연결</p>
+          <p class="rung-cond">완료조건: 배치 페이지 결정 후 렌더 확인. 우선순위 낮음</p>
+        </li>
+        <li class="rung">
+          <p class="rung-title">M5 · 대시보드 연동 — <b>계속할지 결정 필요</b></p>
+          <p class="rung-cond">3회 연속 진전 0. 인스타가 채널로 확정됐다면 이 마일스톤은 폐기 후보다</p>
+        </li>
+        <li class="rung">
+          <p class="rung-title">M7 · PPTX export 실물 검증</p>
+          <p class="rung-cond">완료조건: 사용자가 PowerPoint에서 직접 열어 서식 확인</p>
+        </li>
+      </ul>
+      <div class="next-action">
+        <b class="lbl">그래서 다음 행동</b>
+        순서는 <b>M11(고지문구·코드 30분) → M9(인스타 1건) → M10(포맷 비교)</b>.
+        M11을 앞에 두는 이유는 하나다 — 되돌릴 수 없는 리스크는 첫 발행 전에만 막을 수 있다.
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  docs/cards/photocard-deck.html · 실측일 2026-08-17 · buza-bot 저장소 전체 카드 덱은 별도(docs/cards/deck.html)
+</footer>

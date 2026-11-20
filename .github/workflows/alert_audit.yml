@@ -1,0 +1,50 @@
+# 알림 오탐·누락 점검 — 수동 실행 전용. 결과는 audit-out 브랜치에만 올린다(main 은 안 건드림).
+# 개발 환경에선 SEC·DART 접속이 막혀 있어 러너에서 원천과 대조한다(tools/alert_audit.py).
+name: alert-audit
+
+permissions:
+  contents: write
+  actions: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      days:
+        description: '점검 기간(일)'
+        required: true
+        default: '30'
+      tickers:
+        description: '(선택) 가상 감시 목록 — 비우면 실제 감시 목록'
+        required: false
+        default: ''
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - name: 원천 대조
+        env:
+          GITHUB_TOKEN:   ${{ secrets.GITHUB_TOKEN }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          GEMINI_KEY:     ${{ secrets.GEMINI_KEY }}
+          SUPABASE_URL:   ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY:   ${{ secrets.SUPABASE_KEY }}
+          DART_KEY:       ${{ secrets.DART_KEY }}
+          AUDIT_TICKERS:  ${{ github.event.inputs.tickers }}
+        run: python tools/alert_audit.py ${{ github.event.inputs.days }}
+      - name: 결과를 audit-out 브랜치로
+        if: always()
+        run: |
+          git config user.name "buza-bot"
+          git config user.email "buza-bot@users.noreply.github.com"
+          cp audit_out.md audit_out.json /tmp/ 2>/dev/null || true
+          git checkout -q --orphan audit-out
+          git rm -rq --cached .
+          cp /tmp/audit_out.md /tmp/audit_out.json . 2>/dev/null || true
+          git add audit_out.md audit_out.json && git commit -qm "alert-audit 결과" && git push -qf origin audit-out

@@ -1,0 +1,32 @@
+# Cloudflare Worker 배포 설정.
+#
+# 대시보드 에디터에 worker.js를 손으로 붙여넣는 대신 이걸로 배포한다:
+#
+#     cd webhook
+#     npx wrangler deploy
+#
+# 대시보드 복붙은 실제로 사고가 났다 — 파일 "경로"를 코드 칸에 붙여넣어
+# 문법오류 13개가 뜬 채로 배포될 뻔했다. CLI는 파일을 그대로 올리니 그 사고가 없다.
+#
+# 시크릿(TELEGRAM_TOKEN·GH_TOKEN·GH_REPO·WEBHOOK_SECRET)은 여기 적지 않는다.
+# 이 파일은 git에 올라가므로 값이 들어가면 그대로 유출된다.
+# 대시보드 Settings → Variables and Secrets 에서 Secret 타입으로 넣거나,
+# 터미널에서 `npx wrangler secret put TELEGRAM_TOKEN` 으로 넣는다.
+# 코드 재배포로 시크릿이 지워지지는 않는다.
+
+name = "buza-webhook"
+main = "worker.js"
+compatibility_date = "2026-08-01"
+
+# GH_REPO는 비밀이 아니라 공개 레포 경로일 뿐이라 평문 변수로 둔다.
+# 이렇게 해두면 사람이 대시보드에서 넣어야 할 시크릿이 4개에서 3개로 준다.
+[vars]
+GH_REPO = "pcy604/buza-bot"
+
+# 관측: 실패한 dispatch를 로그로 보려면 대시보드 → Logs → Real-time logs.
+# worker.js가 gh.ok가 아닐 때 상태코드와 본문을 console.log로 남긴다.
+
+# 정시 작업 — 크론 하나(5분마다, 2026-11-06 시황 앞당김), 할 일은 worker.js PLAN 표가 UTC 시각·요일로 정한다(2026-10-24).
+# 예전 '1-5' 요일 표기는 Cloudflare 에서 일~목이라 금요일 시황이 빠졌다.
+[triggers]
+crons = ["*/5 * * * *"]

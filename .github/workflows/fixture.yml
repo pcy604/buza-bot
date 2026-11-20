@@ -1,0 +1,56 @@
+# 리포트 오프라인 렌더용 fixture 캡처 — 수동 실행 전용.
+# 개발 환경(클라우드 작업공간·노트북 VM)은 SEC·Yahoo 접속이 막혀 리포트를 그려 볼 수 없다.
+# 러너에서 라이브 번들을 받아 decks/fixtures/ 에 커밋해 두면, 그걸로 어디서든 렌더해
+# 페이지를 눈으로 확인할 수 있다(decks/live.py 하단). 2026-10-20 신설.
+name: fixture-capture
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      tickers:
+        description: '공백으로 구분한 티커 (예: SATL AXTI)'
+        required: true
+        default: 'SATL'
+
+concurrency:
+  group: buza-fixture
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - name: 한글 폰트
+        run: sudo apt-get install -y -q fonts-nanum >/dev/null
+      - name: 라이브 번들 캡처
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          GEMINI_KEY:     ${{ secrets.GEMINI_KEY }}
+          SUPABASE_URL:   ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY:   ${{ secrets.SUPABASE_KEY }}
+          DART_KEY:       ${{ secrets.DART_KEY }}
+          LIVE_FIXTURE_DIR: decks/fixtures
+          LIVE_DUMP: '1'
+        run: |
+          cd decks
+          for t in ${{ github.event.inputs.tickers }}; do
+            LIVE_FIXTURE_DIR=fixtures python -c "import build,sys; build.build(sys.argv[1])" "$t" > /dev/null || echo "::warning::$t 렌더 실패(캡처는 됐을 수 있음)"
+          done
+          ls -la fixtures
+      - name: 커밋
+        run: |
+          git config user.name "buza-bot"
+          git config user.email "buza-bot@users.noreply.github.com"
+          git add -f decks/fixtures
+          git diff --cached --quiet && exit 0
+          git commit -m "fixture: ${{ github.event.inputs.tickers }} 라이브 번들 캡처"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 5; done

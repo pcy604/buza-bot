@@ -1,0 +1,227 @@
+# 부자알람 봇 — 인바운드 처리 + (6시간마다) 분석·팬아웃·IR감시.
+# 상태(감시목록·분기재무캐시·회사개요캐시·명령로그·주기작업게이트)는 매 실행 후
+# 이 레포에 커밋해 다음 실행이 이어받음 — GH Actions는 매번 새 컨테이너라 Supabase에
+# 없는 로컬 파일 상태는 커밋 없이는 유지가 안 됨.
+name: buza-run
+
+permissions:
+  contents: write   # 상태 커밋(git push)에 필요 — 없으면 403으로 실패함
+
+on:
+  workflow_dispatch:       # 수동 실행 버튼
+  repository_dispatch:     # 텔레그램 웹훅(Cloudflare Worker) → 즉시 실행
+    types: [telegram, market, tick]   # tick = Cloudflare 정시 깨우기(뉴스 08·20시), 2026-10-24   # market = Cloudflare 크론의 시황 발송 신호(2026-10-21)
+  schedule:
+    # 정각·매15분 정각(:00,:15,:30,:45)은 전세계 크론이 몰려 GitHub이 크게 지연시킴(공식 문서화된
+    # 동작) — 4분 오프셋으로 혼잡 시각을 피함. 그래도 무료 크론 특성상 지연은 있을 수 있음(관찰상
+    # 15분 설정에도 실제 1~2시간 간격으로 밀린 사례 있음 — 급하면 Actions 탭에서 수동 Run workflow).
+    # 2026-08-22: 15분(4,19,34,49) → 2시간으로 줄였다.
+    #   Actions 가 계정 단위로 차단됐다("The job was not started because recent account
+    #   payments have failed or your spending limit needs to be increased") — 08-22
+    #   08:08 UTC 이후 크론·웹훅 전부 4~7초 만에 실패. 원인은 이 크론이다.
+    #   USE_WEBHOOK 이 켜져 있어 **크론 실행은 텔레그램 폴링을 건너뛴다**(run.py 95행).
+    #   크론이 실제로 하는 건 주기작업뿐인데 그건 JOB_INTERVAL_H=6, 즉 6시간에 한 번이다.
+    #   그런데 15분 크론이면 하루 96회가 돌고 그중 92회는 컨테이너만 띄웠다 끝난다.
+    #   Actions 는 작업당 1분 미만도 **1분으로 올림 과금**하므로:
+    #       96회/일 × 최소 1분 = 2,880분/월  >  무료 한도 2,000분/월
+    #   실행이 아무리 빨라도 한도를 넘게 설계돼 있었다.
+    #   2시간이면 12회/일 = 최소 360분/월(한도의 18%)이고, 6시간 게이트에 대해
+    #   기회가 3번씩 있어 GitHub 크론 지연(공식 문서화된 1~2시간)도 흡수한다.
+    #   ⚠️ 명령 응답성은 그대로다 — 텔레그램 웹훅(repository_dispatch)이 즉시 실행한다.
+    # 2026-10-20: 3시간 → 매시. 감시 뉴스를 사용자마다 자기 시간대의 정해진 시각에 보내려면
+    #   시 단위 기회가 필요하다(prefs.py). 6시간 게이트(공시 감시·영상 갱신)는 run.py 가 그대로
+    #   지키므로 무거운 작업 빈도는 안 늘어난다. 늘어나는 건 실행 횟수뿐이다:
+    #   24회/일 × 최소 1분 ≈ 720분/월 (비공개 레포 무료 한도 2,000분/월 — stock-dashboard 와 합산).
+    #   한도가 빠듯해지면 '7 */2 * * *'(2시간 단위 시각)로 되돌릴 것.
+    - cron: '7 15 * * *'   # 2026-11-20: 매시 → 하루 1회(00:07 KST) 안전망. 정기 작업은 Cloudflare tick(하루 4회)이 맡는다 — 둘이 같은 일을 겹쳐 돌려 월 2,000분을 넘겼고 11-19부터 Actions 결제 차단으로 봇이 멈췄다.
+    # 이전:   # 2026-08-30: 2시간 → 3시간. 계정 한도 초과의 실제 주범은 이 레포가 아니라 stock-dashboard 였다(상세: 커밋 메시지). 3시간이면 run.py 의 JOB_INTERVAL_H=6 게이트가 정확히 6시간마다 통과한다.
+
+concurrency:
+  # 웹훅 실행은 명령마다 독립적이라 서로 막을 이유가 없음 — 실행 id로 분리해 병렬 허용.
+  # 크론 실행만 하나의 그룹으로 묶어 getUpdates offset 충돌을 막는다.
+  group: >-
+    buza-run-${{ github.event_name == 'repository_dispatch' && github.run_id || 'cron' }}
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    # 14분은 신규 종목 생성에 모자란다. autogen은 Gemini 무료 티어의 **분당** 한도에
+    # 걸리면 단계마다 59초씩 대기하는데, 남은 LLM 단계가 5개면 그것만으로 5분이
+    # 그냥 사라진다. 실제로 14분에 cancelled로 죽어 사용자가 아무 응답도 못 받았다
+    # (/report AGL — 10분 넘게 무응답).
+    # 이미 만든 종목의 렌더는 30초면 끝나므로 이 값이 커져도 비용은 안 늘어난다
+    # (Actions는 실제 사용 시간만 과금/차감).
+    timeout-minutes: 30
+    env:
+      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+      GITHUB_TOKEN: ${{ github.token }}   # 시황 JSON 을 GitHub API 로 캐시 없이 읽기(공유 러너 IP 비인증 한도 회피), 2026-11-06
+      GEMINI_KEY:     ${{ secrets.GEMINI_KEY }}
+      SUPABASE_URL:   ${{ secrets.SUPABASE_URL }}
+      SUPABASE_KEY:   ${{ secrets.SUPABASE_KEY }}
+      YT_PROXY:       ${{ secrets.YT_PROXY }}
+      # 한국주식 포토카드용(DART 전자공시). 없으면 KR 종목만 못 만들고 나머지는 정상 동작 —
+      # decks/dart_client.py 가 파일 없으면 os.environ['DART_KEY'] 로 폴백한다.
+      # 값은 stock-dashboard 레포에 등록된 것과 같다(무료 키, 하루 20,000회).
+      DART_KEY:       ${{ secrets.DART_KEY }}
+      USE_WEBHOOK:    ${{ vars.USE_WEBHOOK }}
+      # 웹훅으로 들어온 텔레그램 업데이트 원문 — 있으면 run.py가 이것만 처리하고 끝낸다
+      TG_UPDATE:      ${{ toJSON(github.event.client_payload) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - run: pip install -r requirements.txt
+
+      # 2026-08-22: apt-get 을 캐시로 감쌌다. update+install 이 매 실행 20초 안팎인데
+      #   Actions 는 1분 미만도 1분으로 올림 과금하므로, 이 20초가 실행을 2분 구간으로
+      #   밀어 넣고 있었다. 캐시 복원은 2~3초다. 폰트(8MB)를 레포에 커밋하는 방법도
+      #   있지만 저장소가 1.5MB뿐이라 6배로 불리는 건 과하다.
+      - name: 한글 폰트 캐시
+        uses: actions/cache@v4
+        with:
+          path: .fonts
+          key: nanum-fonts-v1
+
+      - name: 한글 폰트 준비 (캐시 미스일 때만 apt)
+        run: |
+          if [ ! -f .fonts/NanumGothic.ttf ] || [ ! -f .fonts/NanumGothicBold.ttf ]; then
+            echo "캐시 미스 — apt 로 설치"
+            sudo apt-get update -y && sudo apt-get install -y fonts-nanum
+            mkdir -p .fonts
+            cp /usr/share/fonts/truetype/nanum/NanumGothic.ttf                /usr/share/fonts/truetype/nanum/NanumGothicBold.ttf .fonts/
+          else
+            echo "캐시 적중 — apt 생략"
+          fi
+
+      # 러너는 3.11인데 로컬엔 3.14도 깔려 있어, 3.12+에서만 되는 문법(PEP 701
+      # 중첩 f-string 등)이 섞여 들어와도 로컬에선 안 보인다. 실제로 autogen.py가
+      # 그렇게 죽어서 사용자가 폰에서 "자료 생성에 실패했어요"만 받았다.
+      # 여기서 먼저 컴파일해 터뜨리면 조용히 지나가지 않는다.
+      # 2026-08-22: 웹훅 실행(사용자 명령)에서는 건너뛴다. 코드는 실행 사이에 안 바뀌고,
+      #   2시간마다 도는 크론이 어차피 검증한다. 사용자 명령은 응답 속도가 전부인데
+      #   문법·임포트 검사에 10~15초를 쓰는 건 낭비다(분 과금에도 그대로 반영된다).
+      - name: 문법 검사 (러너 파이썬 기준)
+        if: github.event_name != 'repository_dispatch'
+        run: python -m compileall -q . -x '(\.venv|__pycache__)'
+
+      # compileall은 문법만 본다. "파일 자체가 레포에 없어서" 죽는 건 못 잡는다 —
+      # decks/probe.py가 커밋 안 된 채였고, autogen이 그걸 임포트해서 폰에서
+      # /report CORT가 "자료 생성에 실패했어요"로만 끝났다. 임포트까지 해본다.
+      - name: 임포트 검사 (모듈 누락 탐지)
+        if: github.event_name != 'repository_dispatch'
+        run: |
+          python -c "import bot, run, deck_live, deck_store, brief, prefs, ir_site"
+          python -c "import sys; sys.path.insert(0, 'decks'); import probe, build, check, autogen, autogen_kr, sources_kr, deck_pages, officers, summarize, checkpoints, refresh"
+
+      # 2026-11-20 사용자 상태(채팅 ID·명령 기록·관심종목)는 git 이 아니라 Supabase state_files 에 둔다 — 레포 공개 전환용.
+      - name: 사용자 상태 내려받기 (실패하면 중단 — 빈 상태로 덮어쓰기 방지)
+        run: python tools/state_store.py pull
+
+      - name: 부자알람 실행 (공개 로그 — 채팅 ID 마스킹)
+        shell: bash
+        run: |
+          set -o pipefail
+          python -u run.py 2>&1 | python tools/mask_log.py
+
+      - name: 사용자 상태 올리기
+        if: always()
+        run: python tools/state_store.py push
+
+      # 실행이 죽으면 사용자는 아무 응답도 못 받는다. 실제로 /report AGL이 14분
+      # 타임아웃에 cancelled 되면서 "자료부터 만들어요" 뒤로 10분 넘게 침묵했다.
+      # 침묵은 최악의 실패 모드다 — 뭐가 잘못됐는지도, 다시 시도해야 하는지도 모른다.
+      - name: 실패 알림 (사용자에게 침묵하지 않기)
+        if: failure() || cancelled()
+        env:
+          PAYLOAD: ${{ toJSON(github.event.client_payload) }}
+        run: |
+          CHAT=$(python -c "
+          import json, os
+          p = os.environ.get('PAYLOAD') or ''
+          try:
+              d = json.loads(p) or {}
+              m = (d.get('update') or d).get('message') or {}
+              print((m.get('chat') or {}).get('id') or '')
+          except Exception:
+              print('')
+          ")
+          if [ -z "$CHAT" ]; then
+            # 정기(크론) 실행 실패 → 운영자에게(2026-10-21). 예전엔 아무에게도 안 알렸다.
+            # 취소(cancelled)는 concurrency 중복 방지라 정상 — 알리지 않는다.
+            [ "${{ job.status }}" = "failure" ] || { echo "취소된 실행 — 알림 없음"; exit 0; }
+            python -c "import health; health._send_owner('🛠️ <b>부자알람 운영 알림</b>\n\n🔴 정기 실행이 실패했어요. 다음 실행에서 이어지지만 반복되면 확인이 필요해요.\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}')" || true
+            exit 0
+          fi
+          curl -s -o /dev/null -X POST \
+            "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
+            -d chat_id="$CHAT" \
+            -d parse_mode=HTML \
+            --data-urlencode text="⚠️ 요청 처리가 중간에 멈췄어요(시간 초과 또는 오류).
+          이미 만든 자료는 남아 있어서 다시 요청하면 이어서 진행돼요."
+
+      - name: 상태 커밋 (감시목록·재무캐시·회사개요·명령로그·주기작업게이트)
+        if: always()
+        run: |
+          git config user.name  "github-actions"
+          git config user.email "actions@github.com"
+          # 2026-10-23: 병렬 웹훅 실행이 같은 상태 JSON(한 줄 파일)에 동시에 줄을 붙이면 rebase 가
+          #   텍스트 충돌로 3회 다 실패해 '이번 실행분 유실'이 났다(10-21 14:27·10-22 06:46).
+          #   .gitattributes 의 merge=jsonstate → JSON 3-way 병합(둘 다 추가된 항목 보존).
+          git config merge.jsonstate.driver "python tools/state_merge.py %O %A %B"
+          # git add는 pathspec이 하나라도 안 맞으면 fatal로 죽으면서 *아무것도*
+          # 스테이징하지 않는다. 예전엔 7개를 한 줄에 넘겼는데 ir_state.json과
+          # job_state.json은 레포에 커밋된 적이 없어(감시목록이 없거나 첫 실행이면
+          # 파일 자체가 안 생긴다) 매번 그 fatal에 걸렸고, 2>/dev/null이 에러를
+          # 삼켜서 "상태 변경 없음 — 커밋 스킵"으로 조용히 넘어갔다. 그 결과
+          # 240회 실행이 전부 success인데 auto: 커밋은 30일간 0건이었다.
+          # → 존재하는 파일만 하나씩 add하고, 에러는 더 이상 숨기지 않는다.
+          staged=0
+          # deck_files.json(발행된 12장의 file_id)·deck_quota.json(autogen 하루 상한)도
+          # 상태다. 러너는 매 실행이 새 컨테이너라 커밋하지 않으면 상한이 매번 초기화돼
+          # 무료 Gemini 쿼터가 하루에 여러 번 털린다.
+          # 사람 정보가 든 파일은 여기 없다 → tools/state_store.py (Supabase)
+          for f in ir_financials.json ir_profile.json \
+                   ir_transcript.json cik_map.json job_state.json \
+                   deck_files.json deck_quota.json officers.json \
+                   deck_refresh.json verify_log.json news_log.json \
+                   ir_site_state.json kr_names.json kr_market.json quality_log.json earnings_state.json; do
+            if [ -f "$f" ]; then
+              git add "$f" && staged=1
+            else
+              echo "  (없음, 건너뜀: $f)"
+            fi
+          done
+          # autogen이 러너에서 만든 종목 데이터도 상태다. 이걸 안 남기면 Gemini를
+          # 8콜이나 태워 만든 결과가 컨테이너와 함께 사라져, 같은 종목을 또 요청할 때
+          # 처음부터 다시 만든다(QLYS에서 실제로 날아갔다).
+          if git add decks/*_data.py 2>/dev/null; then staged=1; fi
+
+          if [ "$staged" = "0" ]; then
+            echo "::warning::상태 파일이 하나도 없다 — run.py가 아무것도 안 썼다는 뜻"
+            exit 0
+          fi
+          if git diff --staged --quiet; then
+            echo "상태 변경 없음 — 커밋 스킵"
+            exit 0
+          fi
+          git commit -m "auto: 부자알람 상태 갱신 $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          # 다른 실행이 그 사이 먼저 푸시했을 수 있어 rebase 후 재시도 (최대 3회).
+          # 이전 버전은 rebase 충돌 시 조용히 포기하고도 스텝이 "성공"으로 끝나
+          # cmd_log 등 상태가 유실돼도 아무 표시가 안 났음 — abort로 정리 후 재시도,
+          # 그래도 실패하면 스텝 자체를 실패시켜 Actions 화면에 드러나게 함.
+          for i in 1 2 3; do
+            if git pull --rebase origin main && git push; then
+              echo "커밋·푸시 성공"
+              exit 0
+            fi
+            echo "푸시 충돌, 재시도 $i/3"
+            git rebase --abort 2>/dev/null || true
+            sleep 5
+          done
+          echo "::error::상태 커밋 3회 재시도 후에도 실패 — cmd_log 등 이번 실행분 유실됨"
+          exit 1

@@ -1,0 +1,827 @@
+[
+ {
+  "date": "2026-09-12",
+  "blocked": {
+   "AAPL": "AS_OF",
+   "IONQ": "AS_OF",
+   "TSLA": "AS_OF"
+  },
+  "yt": {
+   "n24": 1,
+   "ok24": 1,
+   "errs": {}
+  }
+ },
+ {
+  "date": "2026-09-13",
+  "blocked": {
+   "AAPL": "AS_OF",
+   "CORT": "AS_OF",
+   "IONQ": "AS_OF",
+   "TSLA": "AS_OF"
+  },
+  "yt": {
+   "n24": 4,
+   "ok24": 1,
+   "errs": {
+    "503/504": 2,
+    "기타": 1
+   }
+  }
+ },
+ {
+  "date": "2026-09-14",
+  "blocked": {
+   "AAPL": "AS_OF",
+   "CORT": "AS_OF",
+   "IONQ": "AS_OF"
+  },
+  "yt": {
+   "n24": 4,
+   "ok24": 4,
+   "errs": {}
+  }
+ },
+ {
+  "date": "2026-09-16",
+  "blocked": {
+   "AAPL": "AS_OF",
+   "CORT": "AS_OF",
+   "CRWV": "AS_OF",
+   "IONQ": "AS_OF",
+   "PLUG": "AS_OF"
+  },
+  "yt": {
+   "n24": 6,
+   "ok24": 4,
+   "errs": {
+    "토큰초과": 1,
+    "503/504": 1
+   }
+  }
+ },
+ {
+  "date": "2026-09-17",
+  "blocked": {
+   "AAPL": "AS_OF",
+   "CORT": "AS_OF",
+   "IONQ": "AS_OF",
+   "PLUG": "AS_OF",
+   "WDAY": "AS_OF"
+  },
+  "yt": {
+   "n24": 6,
+   "ok24": 6,
+   "errs": {}
+  }
+ },
+ {
+  "date": "2026-09-18",
+  "blocked": {
+   "AAPL": "AS_OF",
+   "CORT": "AS_OF",
+   "IONQ": "AS_OF",
+   "WDAY": "AS_OF"
+  },
+  "yt": {
+   "n24": 7,
+   "ok24": 3,
+   "errs": {
+    "토큰초과": 1,
+    "503/504": 1,
+    "타임아웃": 2
+   }
+  }
+ },
+ {
+  "date": "2026-09-19",
+  "blocked": {
+   "AAPL": "AS_OF",
+   "CORT": "AS_OF",
+   "FSLY": "AS_OF",
+   "IONQ": "AS_OF"
+  },
+  "yt": {
+   "n24": 4,
+   "ok24": 4,
+   "errs": {}
+  }
+ },
+ {
+  "date": "2026-09-20",
+  "blocked": {
+   "AAPL": "AS_OF",
+   "CORT": "AS_OF",
+   "IONQ": "AS_OF"
+  },
+  "yt": {
+   "n24": 3,
+   "ok24": 2,
+   "errs": {
+    "기타": 1
+   }
+  }
+ },
+ {
+  "date": "2026-09-22",
+  "blocked": {
+   "AAPL": "AS_OF",
+   "CORT": "AS_OF",
+   "IONQ": "AS_OF",
+   "247540.KQ": "AS_OF",
+   "MRNA": "AS_OF"
+  },
+  "yt": {
+   "n24": 5,
+   "ok24": 5,
+   "errs": {}
+  }
+ },
+ {
+  "date": "2026-09-23",
+  "blocked": {
+   "AAPL": "AS_OF",
+   "CORT": "AS_OF",
+   "IONQ": "AS_OF",
+   "MRNA": "AS_OF"
+  },
+  "yt": {
+   "n24": 6,
+   "ok24": 5,
+   "errs": {
+    "토큰초과": 1
+   }
+  }
+ },
+ {
+  "date": "2026-09-24",
+  "blocked": {
+   "AAPL": "AS_OF",
+   "CORT": "AS_OF",
+   "IONQ": "AS_OF",
+   "MRNA": "AS_OF",
+   "SCCO": "AS_OF"
+  },
+  "yt": {
+   "n24": 6,
+   "ok24": 6,
+   "errs": {}
+  }
+ },
+ {
+  "date": "2026-09-25",
+  "blocked": {
+   "CORT": "AS_OF",
+   "IONQ": "AS_OF",
+   "MRNA": "AS_OF",
+   "SCCO": "AS_OF"
+  },
+  "yt": {
+   "n24": 1,
+   "ok24": 1,
+   "errs": {}
+  }
+ },
+ {
+  "date": "2026-09-26",
+  "blocked": {
+   "CORT": "AS_OF",
+   "IONQ": "AS_OF",
+   "SCCO": "AS_OF"
+  },
+  "yt": {
+   "n24": 1,
+   "ok24": 1,
+   "errs": {}
+  }
+ },
+ {
+  "date": "2026-09-27",
+  "blocked": {
+   "CORT": "AS_OF",
+   "IONQ": "AS_OF"
+  },
+  "yt": {
+   "n24": 1,
+   "ok24": 1,
+   "errs": {}
+  }
+ },
+ {
+  "date": "2026-09-28",
+  "blocked": {
+   "CORT": "AS_OF"
+  },
+  "yt": {
+   "n24": 2,
+   "ok24": 1,
+   "errs": {
+    "토큰초과": 1
+   }
+  }
+ },
+ {
+  "date": "2026-09-29",
+  "blocked": {
+   "CORT": "AS_OF"
+  },
+  "yt": {
+   "n24": 7,
+   "ok24": 3,
+   "errs": {
+    "503/504": 3,
+    "기타": 1
+   }
+  }
+ },
+ {
+  "date": "2026-09-30",
+  "blocked": {},
+  "yt": {
+   "n24": 5,
+   "ok24": 4,
+   "errs": {
+    "503/504": 1
+   }
+  }
+ },
+ {
+  "date": "2026-10-01",
+  "blocked": {},
+  "yt": {
+   "n24": 7,
+   "ok24": 3,
+   "errs": {
+    "타임아웃": 3,
+    "503/504": 1
+   }
+  }
+ },
+ {
+  "date": "2026-10-02",
+  "blocked": {},
+  "yt": {
+   "n24": 9,
+   "ok24": 6,
+   "errs": {
+    "타임아웃": 1,
+    "503/504": 2
+   }
+  }
+ },
+ {
+  "date": "2026-10-04",
+  "blocked": {},
+  "yt": {
+   "n24": 0,
+   "ok24": 0,
+   "errs": {}
+  }
+ },
+ {
+  "date": "2026-10-05",
+  "blocked": {},
+  "yt": {
+   "n24": 1,
+   "ok24": 0,
+   "errs": {
+    "503/504": 1
+   }
+  }
+ },
+ {
+  "date": "2026-10-06",
+  "blocked": {},
+  "yt": {
+   "n24": 5,
+   "ok24": 1,
+   "errs": {
+    "503/504": 4
+   }
+  }
+ },
+ {
+  "date": "2026-10-07",
+  "blocked": {
+   "AXTI": "AS_OF"
+  },
+  "yt": {
+   "n24": 7,
+   "ok24": 4,
+   "errs": {
+    "기타": 1,
+    "타임아웃": 1,
+    "503/504": 1
+   }
+  }
+ },
+ {
+  "date": "2026-10-09",
+  "blocked": {
+   "AXTI": "AS_OF",
+   "SATL": "AS_OF"
+  },
+  "yt": {
+   "n24": 6,
+   "ok24": 6,
+   "errs": {}
+  }
+ },
+ {
+  "date": "2026-10-10",
+  "blocked": {
+   "AXTI": "AS_OF",
+   "PLTR": "AS_OF"
+  },
+  "yt": {
+   "n24": 4,
+   "ok24": 4,
+   "errs": {}
+  }
+ },
+ {
+  "date": "2026-10-11",
+  "blocked": {
+   "AXTI": "AS_OF",
+   "LMB": "AS_OF",
+   "PLTR": "AS_OF",
+   "SNDK": "AS_OF"
+  },
+  "yt": {
+   "n24": 2,
+   "ok24": 2,
+   "errs": {}
+  }
+ },
+ {
+  "date": "2026-10-12",
+  "blocked": {
+   "AXTI": "AS_OF",
+   "LMB": "AS_OF",
+   "PLTR": "AS_OF"
+  },
+  "yt": {
+   "n24": 7,
+   "ok24": 6,
+   "errs": {
+    "기타": 1
+   }
+  }
+ },
+ {
+  "date": "2026-10-14",
+  "blocked": {
+   "ABCL": "AS_OF",
+   "AXTI": "AS_OF",
+   "LMB": "AS_OF",
+   "PLTR": "AS_OF",
+   "QLYS": "AS_OF"
+  },
+  "yt": {
+   "n24": 8,
+   "ok24": 6,
+   "errs": {
+    "503/504": 1,
+    "기타": 1
+   }
+  }
+ },
+ {
+  "date": "2026-10-15",
+  "blocked": {
+   "ABCL": "AS_OF",
+   "DELL": "AS_OF",
+   "LMB": "AS_OF",
+   "PLTR": "AS_OF",
+   "QLYS": "AS_OF",
+   "TSLA": "AS_OF"
+  },
+  "yt": {
+   "n24": 6,
+   "ok24": 6,
+   "errs": {}
+  }
+ },
+ {
+  "date": "2026-10-16",
+  "blocked": {
+   "ABCL": "AS_OF",
+   "AGL": "AS_OF",
+   "LMB": "AS_OF",
+   "PLTR": "AS_OF",
+   "QLYS": "AS_OF",
+   "TSLA": "AS_OF"
+  },
+  "yt": {
+   "n24": 4,
+   "ok24": 4,
+   "errs": {}
+  }
+ },
+ {
+  "date": "2026-10-17",
+  "blocked": {
+   "ABCL": "AS_OF",
+   "AGL": "AS_OF",
+   "CRWV": "AS_OF",
+   "LMB": "AS_OF",
+   "PLTR": "AS_OF",
+   "QLYS": "AS_OF"
+  },
+  "yt": {
+   "n24": 3,
+   "ok24": 3,
+   "errs": {}
+  }
+ },
+ {
+  "date": "2026-10-18",
+  "blocked": {
+   "ABCL": "AS_OF",
+   "CRWV": "AS_OF",
+   "LMB": "AS_OF",
+   "PLTR": "AS_OF",
+   "PLUG": "AS_OF",
+   "QLYS": "AS_OF"
+  },
+  "yt": {
+   "n24": 3,
+   "ok24": 2,
+   "errs": {
+    "기타": 1
+   }
+  }
+ },
+ {
+  "date": "2026-10-20",
+  "blocked": {
+   "ABCL": "AS_OF",
+   "LMB": "AS_OF",
+   "QLYS": "AS_OF"
+  },
+  "yt": {
+   "n24": 4,
+   "ok24": 4,
+   "errs": {}
+  }
+ },
+ {
+  "date": "2026-10-21",
+  "blocked": {
+   "ABCL": "AS_OF",
+   "QLYS": "AS_OF"
+  },
+  "yt": {
+   "n24": 8,
+   "ok24": 6,
+   "errs": {
+    "기타": 2
+   }
+  }
+ },
+ {
+  "date": "2026-10-22",
+  "blocked": {},
+  "yt": {
+   "n24": 7,
+   "ok24": 4,
+   "errs": {
+    "기타": 3
+   }
+  }
+ },
+ {
+  "date": "2026-10-23",
+  "blocked": {
+   "005930.KS": "BUSINESS"
+  },
+  "yt": {
+   "n24": 7,
+   "ok24": 4,
+   "errs": {
+    "기타": 2,
+    "503/504": 1
+   },
+   "samples": [
+    "JCsByLDQi0k: 403 PERMISSION_DENIED. {'error': {'code': 403, 'message': 'The caller does not have permission', 'status': 'PERMISSION_D",
+    "a4vLiofm0wU: 403 PERMISSION_DENIED. {'error': {'code': 403, 'message': 'The caller does not have permission', 'status': 'PERMISSION_D",
+    "-Lpc19brf9k: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand "
+   ]
+  }
+ },
+ {
+  "date": "2026-10-24",
+  "blocked": {
+   "247540.KQ": "AS_OF"
+  },
+  "yt": {
+   "n24": 1,
+   "ok24": 0,
+   "errs": {
+    "타임아웃": 1
+   },
+   "samples": [
+    "oYwxemi8E6w: The read operation timed out"
+   ]
+  }
+ },
+ {
+  "date": "2026-10-25",
+  "blocked": {},
+  "yt": {
+   "n24": 2,
+   "ok24": 2,
+   "errs": {},
+   "samples": []
+  }
+ },
+ {
+  "date": "2026-10-26",
+  "blocked": {},
+  "yt": {
+   "n24": 6,
+   "ok24": 5,
+   "errs": {
+    "JSON 파싱": 1
+   },
+   "samples": [
+    "aOOV5yX-9zY: JSON 파싱"
+   ]
+  }
+ },
+ {
+  "date": "2026-10-27",
+  "blocked": {},
+  "yt": {
+   "n24": 6,
+   "ok24": 6,
+   "errs": {},
+   "samples": []
+  }
+ },
+ {
+  "date": "2026-10-28",
+  "blocked": {
+   "417840.KQ": "BUSINESS"
+  },
+  "yt": {
+   "n24": 5,
+   "ok24": 5,
+   "errs": {},
+   "samples": []
+  }
+ },
+ {
+  "date": "2026-10-29",
+  "blocked": {},
+  "yt": {
+   "n24": 7,
+   "ok24": 5,
+   "errs": {
+    "타임아웃": 1,
+    "503/504": 1
+   },
+   "samples": [
+    "DFuuPZ9qI1E: The read operation timed out",
+    "XmXsCpHMMH8: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand "
+   ]
+  }
+ },
+ {
+  "date": "2026-10-30",
+  "blocked": {},
+  "yt": {
+   "n24": 9,
+   "ok24": 5,
+   "errs": {
+    "타임아웃": 1,
+    "기타": 2,
+    "JSON 파싱": 1
+   },
+   "samples": [
+    "Oe1J8hon-5A: The read operation timed out",
+    "FaxVfgHq5S8: 403 PERMISSION_DENIED. {'error': {'code': 403, 'message': 'The caller does not have permission', 'status': 'PERMISSION_D",
+    "vZ9LGDYj8Ao: JSON 파싱"
+   ]
+  }
+ },
+ {
+  "date": "2026-11-01",
+  "blocked": {},
+  "yt": {
+   "n24": 0,
+   "ok24": 0,
+   "errs": {},
+   "samples": []
+  }
+ },
+ {
+  "date": "2026-11-02",
+  "blocked": {},
+  "yt": {
+   "n24": 6,
+   "ok24": 6,
+   "errs": {},
+   "samples": []
+  }
+ },
+ {
+  "date": "2026-11-03",
+  "blocked": {},
+  "yt": {
+   "n24": 5,
+   "ok24": 3,
+   "errs": {
+    "타임아웃": 2
+   },
+   "samples": [
+    "sEYMggjo5Xw: The read operation timed out",
+    "M6ajwsPBtGc: The read operation timed out"
+   ]
+  }
+ },
+ {
+  "date": "2026-11-04",
+  "blocked": {},
+  "yt": {
+   "n24": 1,
+   "ok24": 1,
+   "errs": {},
+   "samples": []
+  }
+ },
+ {
+  "date": "2026-11-05",
+  "blocked": {},
+  "yt": {
+   "n24": 6,
+   "ok24": 3,
+   "errs": {
+    "JSON 파싱": 2,
+    "503/504": 1
+   },
+   "samples": [
+    "TXYwOvTbha0: JSON 파싱",
+    "4DF7fG-ieH4: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+    "aNNQcJ1waFk: JSON 파싱"
+   ]
+  }
+ },
+ {
+  "date": "2026-11-06",
+  "blocked": {},
+  "yt": {
+   "n24": 4,
+   "ok24": 2,
+   "errs": {
+    "JSON 파싱": 1,
+    "기타": 1
+   },
+   "samples": [
+    "KDcZetfBb-s: JSON 파싱",
+    "iYbEpUYCdfk: Server disconnected without sending a response."
+   ]
+  }
+ },
+ {
+  "date": "2026-11-07",
+  "blocked": {},
+  "yt": {
+   "n24": 4,
+   "ok24": 4,
+   "errs": {},
+   "samples": []
+  }
+ },
+ {
+  "date": "2026-11-08",
+  "blocked": {},
+  "yt": {
+   "n24": 4,
+   "ok24": 4,
+   "errs": {},
+   "samples": []
+  }
+ },
+ {
+  "date": "2026-11-09",
+  "blocked": {},
+  "yt": {
+   "n24": 5,
+   "ok24": 4,
+   "errs": {
+    "기타": 1
+   },
+   "samples": [
+    "w2-I6oPWuXY: Server disconnected without sending a response."
+   ]
+  }
+ },
+ {
+  "date": "2026-11-11",
+  "blocked": {},
+  "yt": {
+   "n24": 7,
+   "ok24": 7,
+   "errs": {},
+   "samples": []
+  }
+ },
+ {
+  "date": "2026-11-12",
+  "blocked": {},
+  "yt": {
+   "n24": 7,
+   "ok24": 6,
+   "errs": {
+    "503/504": 1
+   },
+   "samples": [
+    "qQvmbjl2Fr0: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand "
+   ]
+  }
+ },
+ {
+  "date": "2026-11-13",
+  "blocked": {},
+  "yt": {
+   "n24": 4,
+   "ok24": 4,
+   "errs": {},
+   "samples": []
+  }
+ },
+ {
+  "date": "2026-11-14",
+  "blocked": {
+   "005930.KS": "BUSINESS"
+  },
+  "yt": {
+   "n24": 5,
+   "ok24": 5,
+   "errs": {},
+   "samples": []
+  }
+ },
+ {
+  "date": "2026-11-15",
+  "blocked": {},
+  "yt": {
+   "n24": 2,
+   "ok24": 2,
+   "errs": {},
+   "samples": []
+  }
+ },
+ {
+  "date": "2026-11-16",
+  "blocked": {
+   "AAPL": "BUSINESS"
+  },
+  "yt": {
+   "n24": 6,
+   "ok24": 5,
+   "errs": {
+    "타임아웃": 1
+   },
+   "samples": [
+    "ubl7z6Sp3TY: The read operation timed out"
+   ]
+  }
+ },
+ {
+  "date": "2026-11-18",
+  "blocked": {},
+  "yt": {
+   "n24": 8,
+   "ok24": 1,
+   "errs": {
+    "503/504": 4,
+    "JSON 파싱": 1,
+    "타임아웃": 1,
+    "기타": 1
+   },
+   "samples": [
+    "SRDGOovbH4g: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+    "xZHld6KdReU: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+    "4x1cDlOVNCI: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand "
+   ]
+  }
+ },
+ {
+  "date": "2026-11-19",
+  "blocked": {},
+  "yt": {
+   "n24": 9,
+   "ok24": 7,
+   "errs": {
+    "503/504": 1,
+    "기타": 1
+   },
+   "samples": [
+    "Vy2KSdTuQ2w: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+    "FmOvuiAqZMU: 403 PERMISSION_DENIED. {'error': {'code': 403, 'message': 'The caller does not have permission', 'status': 'PERMISSION_D"
+   ]
+  }
+ }
+]

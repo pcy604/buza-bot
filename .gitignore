@@ -1,0 +1,64 @@
+# 비밀 — 절대 커밋 금지
+.env
+*.key
+
+# 파이썬
+__pycache__/
+*.pyc
+
+# 결과/캐시
+results/
+*.png
+
+# 회사 로고 캐시 — 위키피디아에서 그때그때 재요청 가능, 레포에 안 실음
+logos/
+
+# 로컬 실행 시 생기는 로그(크론 실행은 GitHub Actions 로그로 확인)
+daemon.log
+daemon.old.log
+
+# ir_state.json · ir_financials.json · ir_profile.json · ir_transcript.json · cik_map.json ·
+# cmd_log.json · job_state.json 은 의도적으로 커밋됨 — GitHub Actions는 매 실행이 별도
+# 컨테이너라 이 상태 파일들을 커밋해둬야 다음 실행이 이어받음(감시목록·분기캐시·
+# 어닝콜캐시·주기작업 게이트 등).
+
+# 딥리포트 렌더 결과물(PNG) — .gitignore의 *.png로 이미 제외되지만 명시
+decks/out/
+decks/_cache/
+
+# 작업 중 뽑아본 중간 덤프(decks/_ionq_static_v2.json, decks/_rsu_dump.txt 등)
+decks/_*
+
+# wrangler 빌드 캐시
+webhook/.wrangler/
+
+# 브랜드 자산(산출물 아님) — 러너 렌더에 반드시 필요
+!decks/assets/
+!decks/assets/*.png
+
+# 조사 중 남는 임시 덤프
+scratch_*
+.fonts/
+
+# 품질 채점 산출물 — 매 실행마다 바뀌고 커밋할 가치가 없다.
+# quality_log.json 은 추세를 보려고 남기므로 커밋한다(여기 안 넣는다).
+quality_packets/
+
+# 재생성 직전본 보관 — 로컬에서 diff 볼 용도. 커밋하면 종목마다 매 생성분이
+# 쌓여 예전에 정리한 용량이 그대로 되돌아온다.
+decks/history/
+
+# 오프라인 렌더용 fixture(라이브 번들 + 로고·사진) — 의도적으로 커밋 (decks/live.py 하단)
+!decks/fixtures/*.png
+social/out/*_dry.txt
+
+# 사용자 상태 — Supabase state_files 에 보관(tools/state_store.py). 공개 레포에 절대 커밋 금지
+.state_base/
+user_prefs.json
+cmd_log.json
+activity_log.json
+ir_state.json
+nudge_state.json
+people_state.json
+corner_prefs.json
+voc_log.json

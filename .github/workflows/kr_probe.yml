@@ -1,0 +1,71 @@
+# 한국 종목 감시 경로 실측 — 수동 실행 전용. 결과는 probe-out 브랜치에만 올린다(main 은 안 건드림).
+# 개발 환경에선 DART·네이버·구글뉴스(한국어)에 접속이 막혀 있어, 러너에서 실제 응답을 찍어 본다.
+name: kr-probe
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      tickers:
+        description: '공백으로 구분한 한국 심볼 (예: 005930.KS 247540.KQ)'
+        required: true
+        default: '005930.KS'
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - name: DART 공시 · 수급 · 한국어 뉴스
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          GEMINI_KEY:     ${{ secrets.GEMINI_KEY }}
+          SUPABASE_URL:   ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY:   ${{ secrets.SUPABASE_KEY }}
+          DART_KEY:       ${{ secrets.DART_KEY }}
+        run: |
+          python - ${{ github.event.inputs.tickers }} > /tmp/probe_out.txt 2>&1 <<'PY' || true
+          import sys, json, requests
+          from datetime import datetime, timezone, timedelta
+          import ir, kr
+          print('names:', len(kr.names()), '종목')
+          for t in sys.argv[1:]:
+              print('=' * 60, t, ir.display_name(t))
+              fs = ir.kr_filings(t)
+              print(f'DART 14일 {len(fs)}건 (★{sum(f["major"] for f in fs)} · 접기 {sum(f["fold"] for f in fs)})')
+              for f in fs[:12]:
+                  print(' ', '★' if f['major'] else '·', f['rcept_dt'], f['report_nm'])
+              raw = requests.get(ir.NAVER_TREND.format(code=t[:6]), params={'pageSize': 3},
+                                 headers={'User-Agent': ir.NEWS_UA, 'Referer': 'https://m.stock.naver.com/'}, timeout=15)
+              print('naver', raw.status_code, raw.text[:700])
+              print('flow:', ir.kr_flow(t, since=datetime.now(timezone.utc) - timedelta(days=3)))
+              print('react:', ir.price_reaction(t, datetime.now(timezone.utc) - timedelta(days=3)))
+              _, name = ir.watch_company(t)
+              allr = ir._rss_items(name, ir.NEWS_LOCALES_KR)
+              items = ir.company_news(name, days=2, limit=15, locales=ir.NEWS_LOCALES_KR)
+              print(f'뉴스 원본 {len(allr)}건 → 2일·잡음·묶음 후 {len(items)}건')
+              for n in items:
+                  print(f'  [{n["date"]}] x{n.get("echo",1)} {n["title"]} ({n["source"]})')
+              junk = [r["title"] for r in allr[:60] if ir._news_is_junk({"title": r["title"], "source": r["source"]})]
+              print(f'잡음으로 거른 것(상위 60 중) {len(junk)}건:')
+              for j in junk[:15]:
+                  print('  ✗', j)
+          PY
+          cat /tmp/probe_out.txt
+      - name: 결과를 probe-out 브랜치로
+        run: |
+          git config user.name "buza-bot"
+          git config user.email "buza-bot@users.noreply.github.com"
+          git checkout -q --orphan probe-out
+          cp kr_names.json /tmp/ 2>/dev/null || true
+          git rm -rq --cached . && cp /tmp/probe_out.txt probe_out.txt
+          cp /tmp/kr_names.json . 2>/dev/null || true
+          git add probe_out.txt; git add kr_names.json 2>/dev/null || true
+          git add probe_out.txt && git commit -qm "kr-probe 결과" && git push -qf origin probe-out

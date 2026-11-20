@@ -1,0 +1,47 @@
+# R&D 1 — 뉴스 선별 정답셋 후보 만들기 (2026-11-12)
+#   수동 실행 → goldset/news_*.md 를 main 에 커밋. 차니가 GitHub 웹에서 '판정' 칸에 O/X 를 적고 커밋하면
+#   `python tools/news_goldset.py score` 가 정밀도·재현율을 낸다(선별 규칙 바꿀 때마다 비교).
+name: news-goldset
+permissions:
+  contents: write
+on:
+  workflow_dispatch:
+    inputs:
+      tickers:
+        description: '종목(공백 구분)'
+        default: 'TSLA NVDA PLTR 005930.KS 000660.KS'
+      hours:
+        description: '최근 몇 시간'
+        default: '48'
+jobs:
+  make:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -q -r requirements.txt
+      - name: 후보 사건 표 만들기
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          GEMINI_KEY:     ${{ secrets.GEMINI_KEY }}
+          SUPABASE_URL:   ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY:   ${{ secrets.SUPABASE_KEY }}
+          DART_KEY:       ${{ secrets.DART_KEY }}
+        run: |
+          python - ${{ github.event.inputs.hours }} ${{ github.event.inputs.tickers }} <<'PY'
+          import sys; sys.path.insert(0, 'tools')
+          import news_goldset as G
+          G.make(sys.argv[2:], hours=int(sys.argv[1]))
+          PY
+          # R&D 2: 한국 종목은 사건 묶기 실험 표도 같이(바이그램 추가 병합 후보 → O/X)
+          KR=$(echo "${{ github.event.inputs.tickers }}" | tr ' ' '\n' | grep -E '^[0-9]{6}\.' | tr '\n' ' ')
+          if [ -n "$KR" ]; then python tools/kr_cluster_exp.py $KR || true; fi
+      - name: 커밋
+        run: |
+          git config user.name "buza-bot"; git config user.email "actions@github.com"
+          git add goldset/
+          git commit -m "goldset: 뉴스 선별 후보 표(판정 대기)" || exit 0
+          for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && break; sleep 5; done

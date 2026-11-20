@@ -1,0 +1,22 @@
+# 상태 JSON: 병렬 실행이 동시에 줄을 붙여도 텍스트 충돌 대신 JSON 3-way 병합 (tools/state_merge.py, run.yml 에서 드라이버 등록)
+ir_state.json merge=jsonstate
+ir_financials.json merge=jsonstate
+ir_profile.json merge=jsonstate
+ir_transcript.json merge=jsonstate
+cik_map.json merge=jsonstate
+cmd_log.json merge=jsonstate
+job_state.json merge=jsonstate
+deck_files.json merge=jsonstate
+deck_quota.json merge=jsonstate
+officers.json merge=jsonstate
+deck_refresh.json merge=jsonstate
+verify_log.json merge=jsonstate
+corner_prefs.json merge=jsonstate
+news_log.json merge=jsonstate
+people_state.json merge=jsonstate
+user_prefs.json merge=jsonstate
+ir_site_state.json merge=jsonstate
+kr_names.json merge=jsonstate
+kr_market.json merge=jsonstate
+voc_log.json merge=jsonstate
+activity_log.json merge=jsonstate

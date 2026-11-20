@@ -1,0 +1,97 @@
+# 요약 품질 실측 — 수동 실행 전용(2026-10-24). 실제로 사용자에게 갔을 메시지를 **보내지 않고** 만들어
+#   probe-out 브랜치(quality_probe.txt)에 남긴다. 뉴스: 감시 종목 최근 48시간, 유튜브: 최근 분석 5건(DB).
+#   뉴스 본문 보강 후보(야후 RSS 설명·네이버 종목 뉴스)도 같이 찍어 본다. main·상태 파일은 안 건드림.
+name: quality-probe
+permissions:
+  contents: write
+on:
+  workflow_dispatch:
+    inputs:
+      tickers:
+        description: '뉴스 볼 종목(공백 구분)'
+        default: 'TSLA SATL 005930.KS'
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -q -r requirements.txt
+      - run: sudo apt-get install -y -q fonts-nanum >/dev/null
+      - name: 실측
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          GEMINI_KEY:     ${{ secrets.GEMINI_KEY }}
+          SUPABASE_URL:   ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY:   ${{ secrets.SUPABASE_KEY }}
+          DART_KEY:       ${{ secrets.DART_KEY }}
+        run: |
+          python - ${{ github.event.inputs.tickers }} > /tmp/q.txt 2>&1 <<'PY' || true
+          import sys, json, re, requests
+          from datetime import datetime, timezone, timedelta
+          import tg
+          OUT = []
+          tg.send_message = lambda c, t, **k: (OUT.append(t), True)[1]
+          import ir, bot, engine, db
+          ir.note_news = lambda r: None
+          now = datetime.now(timezone.utc)
+          for t in sys.argv[1:]:
+              print('=' * 70, 'NEWS', t)
+              cik, company = ir.watch_company(t)
+              items = ir.company_news(company, limit=ir.NEWS_DIGEST_LIMIT, since=now - timedelta(hours=48),
+                                      locales=ir.NEWS_LOCALES_KR if ir.is_kr(t) else None, rank=True)
+              raw = ir.company_news(company, limit=200, since=now - timedelta(hours=48), raw=True,
+                                    locales=ir.NEWS_LOCALES_KR if ir.is_kr(t) else None)
+              print(f'raw articles {len(raw)} → events(pool) {items[0].get("_pool") if items else 0} → to AI {len(items)}')
+              for n in items:
+                  print('  -', n.get('score'), n.get('date'), n.get('source'), f"T{ir._tier(n.get('source'))}", '|', n.get('title'), f"(echo {n.get('echo',1)})")
+              dg = ir.summarize_news(t, company, items, lang='ko')
+              print('--- SLOT 2 (같은 기사, 지난 요약 기억 있음) ---')
+              dg2 = ir.summarize_news(t, company, items, lang='ko', known=[d['headline'] for d in (dg or [])])
+              print('slot2 digest:', json.dumps(dg2, ensure_ascii=False))
+              print('digest:', json.dumps(dg, ensure_ascii=False, indent=1))
+              OUT.clear()
+              try:
+                  react = ir.price_reaction(t, now - timedelta(hours=24))
+              except Exception as e:
+                  react = None
+              if dg:
+                  bot.send_ir_news(0, t, items, dg, lang='ko', reaction=react)
+                  print('--- MESSAGE ---'); print(OUT[-1] if OUT else '(none)')
+              # 본문 보강 후보
+              try:
+                  if ir.is_kr(t):
+                      r = requests.get(f'https://m.stock.naver.com/api/news/stock/{t[:6]}', params={'pageSize': 5, 'page': 1},
+                                       headers={'User-Agent': 'Mozilla/5.0', 'Referer': 'https://m.stock.naver.com/'}, timeout=15)
+                      print('--- NAVER', r.status_code, r.text[:2500])
+                  else:
+                      r = requests.get('https://feeds.finance.yahoo.com/rss/2.0/headline', params={'s': t, 'region': 'US', 'lang': 'en-US'},
+                                       headers={'User-Agent': 'Mozilla/5.0'}, timeout=15)
+                      print('--- YAHOO RSS', r.status_code)
+                      for it in re.findall(r'<item>(.*?)</item>', r.text, re.S)[:6]:
+                          ti = re.search(r'<title>(.*?)</title>', it, re.S); de = re.search(r'<description>(.*?)</description>', it, re.S)
+                          print('  *', (ti.group(1) if ti else '')[:150], '||', (de.group(1) if de else '')[:300])
+              except Exception as e:
+                  print('enrich ERR', e)
+          print('=' * 70, 'YOUTUBE')
+          rows = sorted(db.all_analyses() if hasattr(db, 'all_analyses') else db.unfinished_analyses(),
+                        key=lambda r: str(r.get('analyzed_at') or r.get('created_at') or ''), reverse=True)[:6]
+          for r in rows:
+              print('-' * 50, r.get('video_id'), r.get('title'), '| source', r.get('source'), '| attempts', r.get('attempts'))
+              try:
+                  print(engine.build_message(r, r.get('channel_name') or ''))
+              except Exception as e:
+                  print('build ERR', e, json.dumps({k: str(v)[:300] for k, v in r.items()}, ensure_ascii=False))
+          PY
+          head -c 60000 /tmp/q.txt > /tmp/quality_probe.txt; tail -40 /tmp/quality_probe.txt
+      - name: 결과를 probe-out 브랜치로
+        run: |
+          git config user.name "buza-bot"
+          git config user.email "buza-bot@users.noreply.github.com"
+          git fetch -q origin probe-out && git checkout -q probe-out || git checkout -q --orphan probe-out
+          git rm -rq --cached . >/dev/null 2>&1 || true
+          cp /tmp/quality_probe.txt quality_probe.txt
+          git add quality_probe.txt && git commit -qm "quality-probe 결과" && git push -qf origin HEAD:probe-out

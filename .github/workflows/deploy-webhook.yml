@@ -1,0 +1,32 @@
+# Cloudflare 웹훅(webhook/) 자동 배포 — 2026-10-22
+#   노트북에서 `npx wrangler deploy` 를 치지 않아도 되게. webhook/ 가 바뀌어 main 에 올라오면 자동 배포,
+#   수동 실행 버튼(workflow_dispatch)도 있다.
+#   필요한 GitHub Secrets: CLOUDFLARE_API_TOKEN('Edit Cloudflare Workers' 템플릿 토큰) · CLOUDFLARE_ACCOUNT_ID
+#   워커 시크릿(TELEGRAM_TOKEN·GH_TOKEN·WEBHOOK_SECRET)은 배포로 지워지지 않는다.
+name: deploy-webhook
+on:
+  push:
+    branches: [main]
+    paths: ['webhook/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: 시크릿 확인 (값은 찍지 않는다)
+        env:
+          T: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          A: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          [ -n "$T" ] || { echo "::error title=CLOUDFLARE_API_TOKEN 없음::GitHub Secrets 에 등록 필요"; exit 1; }
+          [ -n "$A" ] || { echo "::error title=CLOUDFLARE_ACCOUNT_ID 없음::GitHub Secrets 에 등록 필요"; exit 1; }
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: webhook
+          command: deploy

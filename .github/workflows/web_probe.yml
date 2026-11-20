@@ -1,0 +1,66 @@
+# 웹 페이지 실측 — 수동 실행 전용(2026-10-23). 개발 환경에서 막힌 사이트(한국 기업 홈페이지 등)를
+#   러너에서 받아 앞부분과 로고 후보를 probe-out 브랜치(web_probe.txt)에 남긴다. main 은 안 건드림.
+name: web-probe
+permissions:
+  contents: write
+on:
+  workflow_dispatch:
+    inputs:
+      urls:
+        description: '공백으로 구분한 URL'
+        required: true
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -q requests pillow
+      - name: 받기
+        run: |
+          python - ${{ github.event.inputs.urls }} > /tmp/web_probe.txt 2>&1 <<'PY' || true
+          import sys, re, requests
+          sys.path.insert(0, 'decks')
+          import live
+          for u in sys.argv[1:]:
+              print('=' * 70, u)
+              try:
+                  r = requests.get(u, headers={'User-Agent': 'Mozilla/5.0 (buza-alarm-bot logo)'}, timeout=20)
+                  print('status', r.status_code, 'final', r.url, 'len', len(r.content), 'ctype', r.headers.get('content-type'))
+                  ct = r.headers.get('content-type') or ''
+                  if ct.startswith('image/'):
+                      import os, hashlib
+                      os.makedirs('/tmp/probe_files', exist_ok=True)
+                      ext = ct.split('/')[1].split('+')[0].split(';')[0]
+                      fn = f"/tmp/probe_files/{hashlib.md5(u.encode()).hexdigest()[:8]}.{ext}"
+                      open(fn, 'wb').write(r.content); print('saved', fn)
+                      continue
+                  r.encoding = r.encoding or 'utf-8'
+                  html = r.text
+                  print('--- img tags (logo/ci) ---')
+                  for t in re.findall(r'<img\b[^>]*>', html, re.I):
+                      if re.search(r'logo|\bci\b', t, re.I):
+                          print(' ', t[:300])
+                  print('--- other logo mentions ---')
+                  for m in re.finditer(r'logo', html, re.I):
+                      print(' ', html[max(0, m.start() - 150):m.end() + 150].replace('\n', ' ')[:300])
+                      break
+                  print('--- candidates ---', live._logo_candidates(html, r.url))
+                  print('--- head 3000 ---')
+                  print(html[:3000])
+              except Exception as e:
+                  print('ERR', e)
+          PY
+          cat /tmp/web_probe.txt | head -80
+      - name: 결과를 probe-out 브랜치로
+        run: |
+          git config user.name "buza-bot"
+          git config user.email "buza-bot@users.noreply.github.com"
+          git fetch -q origin probe-out && git checkout -q probe-out || git checkout -q --orphan probe-out
+          git rm -rq --cached . >/dev/null 2>&1 || true
+          cp /tmp/web_probe.txt web_probe.txt
+          rm -rf probe_files; cp -r /tmp/probe_files probe_files 2>/dev/null || true
+          git add web_probe.txt; git add probe_files 2>/dev/null || true && git commit -qm "web-probe 결과" && git push -qf origin HEAD:probe-out

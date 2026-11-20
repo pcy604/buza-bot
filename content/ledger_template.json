@@ -1,0 +1,27 @@
+{
+  "slug": "ledger_YYYYWW",
+  "hook": "실전 원장 #{n} — 이번 주 계좌 {ret:+.1f}% · 같은 기간 코스피 {kospi:+.1f}% · 코스닥 {kosdaq:+.1f}%",
+  "core": [
+    "이번 주 규칙 판정: {gate}(코스피·코스닥 주봉 5주선)",
+    "매매: {trades}",
+    "보유 {n_hold}종 · 현금 비중 {cash:.0f}% · 손절선 5% 이내 {near_stop}종",
+    "규칙 밖 행동: {override}"
+  ],
+  "numbers": [
+    "누적(시작 이후): 계좌 {cum:+.1f}% vs 코스피 {cum_kospi:+.1f}%",
+    "최대 낙폭(시작 이후): {mdd:.1f}%"
+  ],
+  "takeaway": "{one_line}",
+  "caveat": "체결 후 공개 · 과거 기록이며 매수 권유가 아닙니다.",
+  "cta": "같은 규칙의 이번 주 후보는 대시보드 🔎 종목 발굴",
+  "cta_url": "https://stock-dashboard-dmfvhcig7brge7utl7et5r.streamlit.app/",
+  "images": [],
+  "tags": [
+    "실전원장",
+    "투자일지",
+    "주식데이터",
+    "퀀트",
+    "백테스트",
+    "stock_studian"
+  ]
+}

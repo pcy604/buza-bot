@@ -1,0 +1,174 @@
+{
+ "AAPL": {
+  "last_try": "2026-11-17T03:47:24.569837+00:00",
+  "last_error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+  "fails": 0,
+  "last_ok": "2026-11-17T03:47:24.569844+00:00"
+ },
+ "AXTI": {
+  "last_try": "2026-11-04T06:04:59.475146+00:00",
+  "fails": 0,
+  "last_error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+  "last_ok": "2026-11-04T06:04:59.475153+00:00"
+ },
+ "BE": {
+  "last_try": "2026-10-30T02:03:54.911024+00:00",
+  "fails": 0,
+  "last_ok": "2026-10-30T02:03:54.911032+00:00"
+ },
+ "IONQ": {
+  "last_try": "2026-11-18T06:13:59.739161+00:00",
+  "last_error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+  "fails": 0,
+  "last_ok": "2026-11-18T06:13:59.739168+00:00"
+ },
+ "PLTR": {
+  "last_try": "2026-11-01T06:03:25.968221+00:00",
+  "fails": 0,
+  "last_ok": "2026-11-01T06:03:25.968229+00:00",
+  "last_error": "ReadTimeout: The read operation timed out"
+ },
+ "SNDK": {
+  "last_try": "2026-11-02T00:41:09.125980+00:00",
+  "fails": 0,
+  "last_ok": "2026-11-02T00:41:09.125987+00:00"
+ },
+ "QLYS": {
+  "last_try": "2026-11-11T11:09:40.411795+00:00",
+  "fails": 0,
+  "last_ok": "2026-11-11T11:09:40.411801+00:00",
+  "last_error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}"
+ },
+ "ABCL": {
+  "last_try": "2026-11-12T06:05:23.351831+00:00",
+  "fails": 0,
+  "last_ok": "2026-11-12T06:05:23.351839+00:00",
+  "last_error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}"
+ },
+ "CORT": {
+  "last_try": "2026-11-19T06:15:17.183635+00:00",
+  "last_error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+  "fails": 0,
+  "last_ok": "2026-11-19T06:15:17.183644+00:00"
+ },
+ "AGL": {
+  "last_try": "2026-11-08T02:22:50.534873+00:00",
+  "fails": 0,
+  "last_ok": "2026-11-08T02:22:50.534879+00:00"
+ },
+ "CRWV": {
+  "last_try": "2026-11-09T00:54:04.743149+00:00",
+  "fails": 0,
+  "last_ok": "2026-11-09T00:54:04.743155+00:00"
+ },
+ "PLUG": {
+  "last_try": "2026-11-09T06:07:34.236666+00:00",
+  "fails": 0,
+  "last_ok": "2026-11-09T06:07:34.236674+00:00"
+ },
+ "WDAY": {
+  "last_try": "2026-11-10T02:09:38.748996+00:00",
+  "fails": 0,
+  "last_ok": "2026-11-10T02:09:38.749005+00:00"
+ },
+ "FSLY": {
+  "last_try": "2026-11-11T05:59:13.482507+00:00",
+  "fails": 0,
+  "last_ok": "2026-11-11T05:59:13.482515+00:00"
+ },
+ "005930.KS": {
+  "last_try": "2026-11-15T01:52:51.321537+00:00",
+  "fails": 0,
+  "last_ok": "2026-11-15T01:52:51.321544+00:00"
+ },
+ "247540.KQ": {
+  "last_try": "2026-11-15T06:04:03.463524+00:00",
+  "fails": 0,
+  "last_ok": "2026-11-15T06:04:03.463532+00:00"
+ },
+ "MRNA": {
+  "last_try": "2026-11-17T23:11:18.047562+00:00",
+  "last_error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+  "fails": 0,
+  "last_ok": "2026-10-26T23:04:28.166958+00:00"
+ },
+ "SCCO": {
+  "last_try": "2026-11-18T03:42:01.017501+00:00",
+  "last_error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+  "fails": 0,
+  "last_ok": "2026-11-18T03:42:01.017509+00:00"
+ },
+ "SATL": {
+  "last_try": "2026-10-31T06:20:08.677477+00:00",
+  "last_error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+  "fails": 0,
+  "last_ok": "2026-10-31T06:20:08.677485+00:00"
+ },
+ "LMB": {
+  "last_try": "2026-11-10T06:03:57.729460+00:00",
+  "last_error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+  "fails": 0,
+  "last_ok": "2026-11-10T06:03:57.729468+00:00"
+ },
+ "DELL": {
+  "last_try": "2026-11-05T02:13:38.817475+00:00",
+  "fails": 0,
+  "last_ok": "2026-11-05T02:13:38.817482+00:00"
+ },
+ "TSLA": {
+  "last_try": "2026-11-07T00:58:52.131096+00:00",
+  "fails": 0,
+  "last_ok": "2026-11-07T00:58:52.131104+00:00"
+ },
+ "036930.KQ": {
+  "last_try": "2026-11-14T02:14:03.494846+00:00",
+  "fails": 0,
+  "last_ok": "2026-11-14T02:14:03.494854+00:00"
+ },
+ "FCEL": {
+  "last_try": "2026-11-16T01:57:26.067915+00:00",
+  "fails": 0,
+  "last_ok": "2026-10-25T06:01:29.309933+00:00",
+  "last_error": "ServerError: 504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'Deadline expired before operation could complete.', 'status': 'DEADLINE_EXCEEDED'}}"
+ },
+ "RBLX": {
+  "last_try": "2026-11-16T06:10:05.557496+00:00",
+  "fails": 0,
+  "last_ok": "2026-11-16T06:10:05.557502+00:00"
+ },
+ "417840.KQ": {
+  "last_try": "2026-11-19T03:20:50.990203+00:00",
+  "fails": 0,
+  "last_ok": "2026-11-19T03:20:50.990211+00:00"
+ },
+ "373220.KS": {
+  "last_try": "2026-10-29T23:09:30.347289+00:00",
+  "fails": 0,
+  "last_ok": "2026-10-29T23:09:30.347297+00:00"
+ },
+ "PFE": {
+  "last_try": "2026-10-30T23:12:23.881275+00:00",
+  "fails": 0,
+  "last_ok": "2026-10-30T23:12:23.881282+00:00"
+ },
+ "LITE": {
+  "last_try": "2026-11-01T02:17:36.649163+00:00",
+  "fails": 0,
+  "last_ok": "2026-11-01T02:17:36.649170+00:00"
+ },
+ "LLY": {
+  "last_try": "2026-11-12T03:03:09.782056+00:00",
+  "fails": 0,
+  "last_ok": "2026-11-12T03:03:09.782063+00:00"
+ },
+ "031980.KQ": {
+  "last_try": "2026-11-13T00:10:04.800245+00:00",
+  "fails": 0,
+  "last_ok": "2026-11-13T00:10:04.800256+00:00"
+ },
+ "089970.KQ": {
+  "last_try": "2026-11-13T06:11:58.587155+00:00",
+  "fails": 0,
+  "last_ok": "2026-11-13T06:11:58.587162+00:00"
+ }
+}

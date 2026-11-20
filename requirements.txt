@@ -1,0 +1,8 @@
+requests>=2.31
+supabase>=2.0
+google-genai>=1.0
+youtube-transcript-api>=1.0
+pillow>=10.0
+tzdata>=2024.1  # zoneinfo 시간대 DB — Windows 로컬에는 기본 포함이 안 됨 (prefs.py)
+pypdf>=4.0          # IR 발표자료 PDF 본문 추출 (ir_site.py)
+requests-oauthlib>=1.3  # social/publish_x.py (X API OAuth1)

@@ -1,0 +1,186 @@
+{
+ "v": 1,
+ "sym": "AAA",
+ "market": "US",
+ "asof": "2026-11-13",
+ "name": "Triple A",
+ "type": {
+  "label": "고성장",
+  "sub": "매출 YoY +30% — PEG·성장 지속성이 핵심",
+  "cyclical": false
+ },
+ "blocks": {
+  "수급": {
+   "tone": "mid",
+   "cards": [
+    {
+     "label": "업종 온도 (같은 무리 RS 중앙값 순위)",
+     "value": "반도체 · 1/1위",
+     "sub": "무리 RS 중앙 82 · 상위 100% · 6종",
+     "tone": "bad"
+    },
+    {
+     "label": "종목 강도 (RS · 52주 고점)",
+     "value": "RS 92 · 고점 대비 +0.0%",
+     "sub": "52주 고점 $200.00 (2026-02-24, 0주 전) · 종가 기준",
+     "tone": "good"
+    },
+    {
+     "label": "수급 판정",
+     "value": "혼자 강함 — 업종 지원 없음",
+     "sub": "업종 상위 100% · 종목 RS 92 · 거래량 1.0배(5일÷20일)",
+     "tone": "mid"
+    }
+   ],
+   "detail": [],
+   "error": null
+  },
+  "이익 방향": {
+   "tone": "good",
+   "cards": [
+    {
+     "label": "앞으로 (컨센서스·리비전) — 대표",
+     "value": "-",
+     "sub": "애널리스트 추정치 없음",
+     "tone": "na"
+    },
+    {
+     "label": "사이클 위치 (자기 이익률 분포)",
+     "value": "-",
+     "sub": "분기 재무 부족",
+     "tone": "na"
+    },
+    {
+     "label": "지금까지 (최근 분기 YoY)",
+     "value": "영업익 +40% · 매출 +30%",
+     "sub": "이익 가속 신호 없음 · 사이클 기업은 바닥에서 이 숫자가 가장 나쁘다",
+     "tone": "good"
+    }
+   ],
+   "detail": [],
+   "error": null
+  },
+  "가격": {
+   "tone": "bad",
+   "cards": [
+    {
+     "label": "밸류 종합 (참고 — 매수 판정엔 안 씀)",
+     "value": "비쌈",
+     "sub": "PEG 1.50 · 자기 과거 80% 기간보다 비쌈 · 업종 대비 2.07배",
+     "tone": "bad"
+    },
+    {
+     "label": "자기 과거 (P/E 밴드)",
+     "value": "30.0배 · 80% 기간보다 비쌈",
+     "sub": "과거 중앙 22.0배 · 사업 구조가 바뀌었으면 과거 비교는 의미가 약하다",
+     "tone": "bad"
+    },
+    {
+     "label": "동종 대비 · 성장 대비",
+     "value": "P/E 30.0배 vs 업종 14.5배",
+     "sub": "PEG 1.50 (1 미만 = 성장 대비 쌈, 린치)",
+     "tone": "bad"
+    }
+   ],
+   "detail": [],
+   "error": null
+  },
+  "정체": {
+   "tone": "na",
+   "cards": [
+    {
+     "label": "유형 (린치 6유형 · v1 규칙 — 사이클 여부는 이익률 분포로 자동 판정, 틀릴 수 있음)",
+     "value": "고성장",
+     "sub": "매출 YoY +30% — PEG·성장 지속성이 핵심",
+     "tone": "na"
+    },
+    {
+     "label": "업종 내 위치",
+     "value": "반도체 · 시총 1/6위",
+     "sub": "RS 1/6위 · 박세익: 산업 1등·과점인가가 첫 질문",
+     "tone": "good"
+    },
+    {
+     "label": "이 회사는 무엇인가",
+     "value": "Triple A makes widgets for data centers.",
+     "sub": "사업부문·고객은 아래 상세 · 숫자 없는 이야기는 이야기일 뿐(다모다란)",
+     "tone": "na"
+    }
+   ],
+   "detail": [],
+   "error": null
+  },
+  "깨지는 조건·촉매": {
+   "tone": "good",
+   "cards": [
+    {
+     "label": "판단이 깨지는 조건",
+     "value": "3개 중 0개 이미 해당",
+     "sub": "아직 해당 없음 — 아래 근거에 지금 거리",
+     "tone": "good"
+    },
+    {
+     "label": "다음 실적 발표",
+     "value": "-",
+     "sub": "일정 미상",
+     "tone": "na"
+    },
+    {
+     "label": "리스크 점검",
+     "value": "-",
+     "sub": "해당 없음",
+     "tone": "na"
+    }
+   ],
+   "detail": [
+    {
+     "state": "ok",
+     "name": "RS 70 아래 (실전 v1.9 탈락 매도)",
+     "detail": "지금 RS 92"
+    },
+    {
+     "state": "ok",
+     "name": "52주 고점 −20% (실전 손절선 기준은 보유 중 고점)",
+     "detail": "지금 고점 대비 +0.0%"
+    },
+    {
+     "state": "ok",
+     "name": "소속 지수 주봉 5주선 이탈 (신규 매수 중지)",
+     "detail": "지금 위"
+    }
+   ],
+   "error": null,
+   "expand": false
+  },
+  "원자료": {
+   "tone": "na",
+   "cards": [],
+   "detail": [],
+   "error": null
+  }
+ },
+ "verdict": {
+  "head": "좋아지는 회사, 시장 관심은 부분적",
+  "type_chip": "고성장",
+  "cards": [
+   {
+    "label": "🌊 수급·관심",
+    "value": "보통",
+    "sub": "시장 관심은 부분적",
+    "tone": "mid"
+   },
+   {
+    "label": "🏭 이익 방향 (앞으로 우선)",
+    "value": "개선",
+    "sub": "좋아지는 회사",
+    "tone": "good"
+   },
+   {
+    "label": "⚖️ 가격 (참고)",
+    "value": "비쌈",
+    "sub": "사이클 기업·적자면 판정 보류",
+    "tone": "bad"
+   }
+  ]
+ }
+}

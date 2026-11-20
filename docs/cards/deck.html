@@ -1,0 +1,454 @@
+<title>buza-bot — 프로젝트 카드 덱</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+:root{
+  --bg:#0b0f14; --surface:#131a22; --surface-2:#0f151c; --line:#232d38;
+  --ink:#e7ebef; --ink-dim:#aab4c0; --ink-faint:#6b7684;
+  --accent:#e8b04b; --accent-dim:#a9812f;
+  --good:#46c284; --good-bg:#12241c; --warn:#d99136; --warn-bg:#271e10; --bad:#e0575c; --bad-bg:#2a1416;
+  --mono:ui-monospace,"SFMono-Regular","Cascadia Mono","Consolas","Liberation Mono",monospace;
+  --sans:-apple-system,"Segoe UI","Pretendard","Malgun Gothic",sans-serif;
+  --disp:"Segoe UI Semibold",-apple-system,"Pretendard",sans-serif;
+}
+:root[data-theme="light"]{
+  --bg:#f4f5f7; --surface:#ffffff; --surface-2:#eceef1; --line:#dde1e6;
+  --ink:#1a2129; --ink-dim:#57626e; --ink-faint:#8a94a0;
+  --accent:#a9721c; --accent-dim:#c98d2c;
+  --good:#1f8a55; --good-bg:#e7f5ee; --warn:#9a6114; --warn-bg:#fbf1de; --bad:#b3342f; --bad-bg:#fbeaea;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#f4f5f7; --surface:#ffffff; --surface-2:#eceef1; --line:#dde1e6;
+    --ink:#1a2129; --ink-dim:#57626e; --ink-faint:#8a94a0;
+    --accent:#a9721c; --accent-dim:#c98d2c;
+    --good:#1f8a55; --good-bg:#e7f5ee; --warn:#9a6114; --warn-bg:#fbf1de; --bad:#b3342f; --bad-bg:#fbeaea;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{padding-bottom:60px}
+::selection{background:var(--accent);color:#1a1305}
+
+/* ── 상단 네비 ── */
+.topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:10px 14px}
+.topbar .brand{font-family:var(--mono);font-weight:700;color:var(--accent);font-size:13px;letter-spacing:.06em;
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.topbar .brand span.sub{color:var(--ink-faint);font-weight:400}
+.nav{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{flex:0 0 auto;font-size:12px;color:var(--ink-dim);text-decoration:none;padding:5px 10px;
+  border:1px solid var(--line);border-radius:100px;white-space:nowrap;font-family:var(--mono)}
+.nav a:hover{border-color:var(--accent);color:var(--accent)}
+
+.deck{max-width:720px;margin:0 auto;padding:0 14px}
+
+/* ── 카드 공통 ── */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin-top:16px;
+  padding:20px 20px 22px;min-height:calc(100svh - 110px);display:flex;flex-direction:column;
+  scroll-margin-top:74px}
+.card:last-of-type{min-height:auto}
+.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+  padding-bottom:14px;margin-bottom:16px;border-bottom:1px solid var(--line)}
+.card-head h2{font-family:var(--disp);font-size:20px;margin:0 0 4px;letter-spacing:-.01em;
+  text-wrap:balance;display:flex;align-items:center;gap:8px}
+.card-head .eyebrow{font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:.08em;
+  text-transform:uppercase;margin-bottom:6px;display:block}
+.updated{font-family:var(--mono);font-size:11px;color:var(--ink-faint);white-space:nowrap;padding-top:2px}
+.badge{font-family:var(--mono);font-size:11px;font-weight:600;padding:3px 9px;border-radius:100px;
+  white-space:nowrap;letter-spacing:.02em}
+.badge.go{background:var(--good-bg);color:var(--good)}
+.badge.stall{background:var(--warn-bg);color:var(--warn)}
+.badge.blocked{background:var(--bad-bg);color:var(--bad)}
+.card-body{flex:1;display:flex;flex-direction:column;gap:14px}
+.next{margin-top:auto;padding-top:14px;border-top:1px dashed var(--line);font-size:14px}
+.next b{color:var(--accent);font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+  text-transform:uppercase;display:block;margin-bottom:4px}
+
+p{line-height:1.55;font-size:14.5px;color:var(--ink-dim);margin:0}
+strong{color:var(--ink);font-weight:600}
+.q{color:var(--ink-faint);font-style:normal;font-family:var(--mono);font-size:13px}
+a{color:var(--accent)}
+
+/* ── 원페이저 ── */
+.def-grid{display:grid;grid-template-columns:auto 1fr;gap:9px 14px;font-size:14.5px}
+.def-grid dt{font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-transform:uppercase;
+  letter-spacing:.06em;padding-top:2px;white-space:nowrap}
+.def-grid dd{margin:0;color:var(--ink)}
+
+/* ── 마일스톤 사다리 ── */
+.ladder{display:flex;flex-direction:column;gap:0}
+.rung{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.rung:last-child{border-bottom:none}
+.rung .dot{flex:0 0 auto;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700;margin-top:1px}
+.rung.done .dot{background:var(--good-bg);color:var(--good)}
+.rung.active .dot{background:var(--warn-bg);color:var(--warn)}
+.rung.todo .dot{background:var(--surface-2);color:var(--ink-faint);border:1px solid var(--line)}
+.rung h3{font-size:14.5px;margin:0 0 3px;color:var(--ink)}
+.rung .cond{font-family:var(--mono);font-size:12.5px;color:var(--ink-faint)}
+.rung.active .cond{color:var(--warn)}
+
+/* ── 표 ── */
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-transform:uppercase;
+  letter-spacing:.05em;font-weight:500;padding:0 8px 6px 0;border-bottom:1px solid var(--line)}
+td{padding:7px 8px 7px 0;border-bottom:1px solid var(--line);color:var(--ink-dim);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--ink)}
+
+/* ── 워크플로우 ── */
+pre.mermaid{background:transparent;margin:0}
+.flow-note{display:flex;gap:8px;align-items:flex-start;font-size:13px;padding:8px 10px;
+  border-radius:8px;background:var(--surface-2)}
+.flow-note.bad{color:var(--bad)}
+.flow-note.warn{color:var(--warn)}
+
+/* ── 2x2 (그리드 기반 — 겹침 방지) ── */
+.matrix-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;margin:8px 0}
+.matrix-axis-top{font-family:var(--mono);font-size:10px;color:var(--ink-faint);text-transform:uppercase;
+  letter-spacing:.05em}
+.matrix-row{display:flex;align-items:center;gap:6px;width:100%;max-width:360px}
+.matrix-axis-side{font-family:var(--mono);font-size:10px;color:var(--ink-faint);text-transform:uppercase;
+  letter-spacing:.05em;writing-mode:vertical-rl;flex:0 0 auto}
+.matrix{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;
+  aspect-ratio:1/1;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--line)}
+.matrix .quad{background:var(--surface-2);display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:8px;font-family:var(--mono);font-size:11px;line-height:1.4;color:var(--ink-dim)}
+.matrix .quad.us{background:color-mix(in srgb, var(--accent) 14%, var(--surface-2));color:var(--accent);
+  font-weight:700}
+.matrix .quad b{display:block;font-size:12px}
+
+/* ── SWOT ── */
+.swot{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.swot .cell{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface-2)}
+.swot .cell h4{font-family:var(--mono);font-size:11px;letter-spacing:.06em;margin:0 0 8px;
+  text-transform:uppercase}
+.swot .s h4{color:var(--good)} .swot .w h4{color:var(--bad)}
+.swot .o h4{color:#5b9bd5} .swot .t h4{color:var(--warn)}
+.swot ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.swot li{font-size:12.5px;line-height:1.45;color:var(--ink-dim)}
+.swot li .act{display:block;color:var(--ink-faint);font-size:11.5px;margin-top:2px}
+.swot li .act b{color:var(--accent);font-weight:600;font-style:normal}
+
+/* ── 트랙션 ── */
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.kpi{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--surface-2)}
+.kpi .l{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);text-transform:uppercase;
+  letter-spacing:.05em}
+.kpi .v{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--ink);margin-top:4px;
+  font-variant-numeric:tabular-nums}
+.kpi .v.q{color:var(--ink-faint);font-size:15px;font-weight:500}
+.bars{display:flex;align-items:flex-end;gap:6px;height:46px;margin-top:8px}
+.bars .b{flex:1;background:var(--accent-dim);border-radius:3px 3px 0 0;position:relative}
+.bars .b span{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);font-family:var(--mono);
+  font-size:10px;color:var(--ink-faint);margin-bottom:2px}
+
+/* ── 열린전선 ── */
+.issues{display:flex;flex-direction:column;gap:8px}
+.issue{border:1px solid var(--line);border-left:3px solid var(--warn);border-radius:8px;
+  padding:9px 12px;background:var(--surface-2)}
+.issue.crit{border-left-color:var(--bad)}
+.issue .t{font-size:13.5px;color:var(--ink);margin-bottom:3px}
+.issue .meta{font-family:var(--mono);font-size:11px;color:var(--ink-faint);display:flex;gap:10px;flex-wrap:wrap}
+.issue .meta b{color:var(--ink-dim);font-weight:500}
+
+/* ── VOC ── */
+.voc{display:flex;flex-direction:column;gap:9px}
+.voc blockquote{margin:0;padding:9px 12px;border-radius:0 8px 8px 0;border-left:3px solid var(--accent);
+  background:var(--surface-2);font-size:13.5px;color:var(--ink);font-style:normal}
+.voc .ctx{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-faint);margin-top:4px}
+
+/* ── 결정로그 ── */
+.decisions{display:flex;flex-direction:column;gap:12px}
+.decision{border:1px solid var(--line);border-radius:10px;padding:11px 13px;background:var(--surface-2)}
+.decision .d-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
+.decision h4{font-size:13.5px;margin:0;color:var(--ink)}
+.grade{font-family:var(--mono);font-size:10.5px;padding:2px 7px;border-radius:100px;white-space:nowrap}
+.grade.hit{background:var(--good-bg);color:var(--good)}
+.grade.miss{background:var(--bad-bg);color:var(--bad)}
+.grade.part{background:var(--warn-bg);color:var(--warn)}
+.decision .row{font-size:12.5px;margin-top:5px;color:var(--ink-dim)}
+.decision .row b{color:var(--ink-faint);font-family:var(--mono);font-size:10.5px;text-transform:uppercase;
+  letter-spacing:.04em;margin-right:6px}
+
+/* ── 측정 필요 콜아웃 ── */
+.callout{background:var(--warn-bg);border:1px solid color-mix(in srgb, var(--warn) 40%, var(--line));
+  border-radius:12px;padding:16px 18px;margin-top:16px}
+.callout h3{margin:0 0 8px;font-size:14px;color:var(--warn);font-family:var(--mono)}
+.callout ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--ink-dim);line-height:1.6}
+
+footer{max-width:720px;margin:20px auto 0;padding:0 14px;font-family:var(--mono);font-size:11px;
+  color:var(--ink-faint);text-align:center}
+
+@media (max-width:420px){
+  .kpis{grid-template-columns:1fr 1fr}
+  .swot{grid-template-columns:1fr}
+  .matrix-row{max-width:260px}
+}
+</style>
+
+<div class="topbar">
+  <div class="brand">buza_alarm_bot <span class="sub">· 카드 덱 · 최종갱신 2026-07-26</span></div>
+  <nav class="nav">
+    <a href="#c1">1 원페이저</a><a href="#c2">2 마스터플랜</a><a href="#c3">3 수익화</a>
+    <a href="#c4">4 워크플로우</a><a href="#c5">5 경쟁지형</a><a href="#c6">6 SWOT</a>
+    <a href="#c7">7 트랙션</a><a href="#c8">8 열린전선</a><a href="#c9">9 VOC</a><a href="#c10">10 결정로그</a>
+  </nav>
+</div>
+
+<div class="deck">
+
+<!-- 1. 원페이저 -->
+<section class="card" id="c1">
+  <div class="card-head">
+    <div><span class="eyebrow">01 · 원페이저</span><h2>buza-bot</h2></div>
+    <span class="badge stall">🟡 정체</span>
+  </div>
+  <div class="card-body">
+    <dl class="def-grid">
+      <dt>문제</dt><dd>투자 정보(유튜브 인사이트, 미국 상장사 공시·재무)가 여러 곳에 흩어져 있어 종목 하나 파악하는 데 시간이 듦</dd>
+      <dt>대상</dt><dd>지금은 나(개인 투자자 겸 엔지니어) 1명. 목표는 <strong>나 아닌 사용자 3명</strong></dd>
+      <dt>해법</dt><dd>텔레그램 봇 하나로 유튜브 채널 요약 + 미국 상장사 IR/재무 딥다이브를 통합, 전부 무료 인프라로 상시 가동</dd>
+      <dt>현재 단계</dt><dd>MVP 가동 중 — GitHub Actions 크론으로 실행, 명령 6개(<span class="q">/yt /add /ir /dd /watch /recap</span>) 동작</dd>
+      <dt>다음 마일스톤</dt><dd>외부 사용자 3명이 7일 연속 사용 (Q3 계약, 2026-09-30 점검)</dd>
+    </dl>
+  </div>
+  <div class="next"><b>그래서 다음 행동</b>봇 링크를 실제로 외부 1명에게 보내본다 — 아직 나 혼자만 씀</div>
+</section>
+
+<!-- 2. 마스터플랜 -->
+<section class="card" id="c2">
+  <div class="card-head">
+    <div><span class="eyebrow">02 · 마스터플랜</span><h2>지금 → 목표</h2></div>
+    <span class="badge stall">🟡 B1 완료, B2 미착수</span>
+  </div>
+  <div class="card-body">
+    <div class="ladder">
+      <div class="rung done"><div class="dot">✓</div><div><h3>B1 — 멀티유저 구독 + IR/딥다이브</h3>
+        <div class="cond">완료조건: 실사용자 1명이 6개 명령 전부 최소 1회 성공 실행 → 충족(본인 기준)</div></div></div>
+      <div class="rung active"><div class="dot">▶</div><div><h3>B2 — 온보딩 (관심분야→채널 추천)</h3>
+        <div class="cond">완료조건: 외부 사용자 3명이 /start 후 7일 연속 명령 사용 — 미착수, 코드 없음</div></div></div>
+      <div class="rung todo"><div class="dot">○</div><div><h3>B3 — 수익화 (텔레그램 Stars)</h3>
+        <div class="cond">완료조건: 결제 1건 발생 — B2 선행 필요, 착수 조건 미충족</div></div></div>
+    </div>
+  </div>
+  <div class="next"><b>그래서 다음 행동</b>B2 없이는 외부 사용자 3명이 안 모임 — 온보딩 플로우(관심분야 질문→채널 3~5개 추천) 설계부터</div>
+</section>
+
+<!-- 3. 수익화 구조 -->
+<section class="card" id="c3">
+  <div class="card-head">
+    <div><span class="eyebrow">03 · 수익화 구조</span><h2>누가 얼마를 왜</h2></div>
+    <span class="badge blocked">🔴 미설계</span>
+  </div>
+  <div class="card-body">
+    <dl class="def-grid">
+      <dt>누가 낸다</dt><dd class="q">❓ 미정 — 지금은 결제 로직 자체가 없음</dd>
+      <dt>얼마 낸다</dt><dd class="q">❓ 미정 — "텔레그램 Stars"라는 채널만 정해짐, 가격 없음</dd>
+      <dt>왜 낸다</dt><dd>가설 수준: 여러 유튜브 채널 직접 챙겨보는 시간 절약 + 미국 소형주 리서치를 유료 도구보다 싸게</dd>
+      <dt>몇 명이면 의미있나</dt><dd>Q3 계약 기준 <strong>외부 3명</strong>이 첫 검증선. 지금 <strong>0명</strong></dd>
+      <dt>채널</dt><dd>텔레그램 Stars (플랫폼 결제, 별도 PG 불필요) — 확정</dd>
+      <dt>비용구조</dt><dd>Gemini 무료티어 + SEC/구글뉴스/Yahoo 무료API + GitHub Actions 무료분 → 현재 월 운영비 <strong>0원</strong></dd>
+    </dl>
+  </div>
+  <div class="next"><b>그래서 다음 행동</b>이 카드는 대부분 ❓다 — B2로 외부 사용자가 붙기 전엔 가격 설계 자체가 의미 없음, 지금 손대지 말 것</div>
+</section>
+
+<!-- 4. 워크플로우 -->
+<section class="card" id="c4">
+  <div class="card-head">
+    <div><span class="eyebrow">04 · 워크플로우</span><h2>실제로 도는 것</h2></div>
+    <span class="badge stall">🟡 안정화됨(1건 구조적 한계 확정)</span>
+  </div>
+  <div class="card-body">
+<pre class="mermaid">
+flowchart TB
+  U["텔레그램 유저"] -->|명령 전송| TG["Telegram Bot API"]
+  TG -.->|"getUpdates (평균 ~100분 지연, 확정된 플랫폼 한계)"| CRON["GitHub Actions 크론\n4,19,34,49분"]
+  CRON --> RUN["run.py: bot.poll()"]
+  RUN --> GATE{"6시간 경과?"}
+  GATE -->|Yes| JOBS["engine.refresh/fanout\n+ ir.check_watches"]
+  GATE -->|No| SKIP["스킵"]
+  RUN --> GEMINI["Gemini 무료티어\n(호출 텀으로 버스트 완화)"]
+  JOBS --> GEMINI
+  GEMINI --> CARD["card.py Pillow 렌더"]
+  CARD --> TG2["텔레그램 발송"]
+  RUN --> STATE["로컬 JSON 커밋 (abort+재시도, 실패시 명시적 실패)"]
+  STATE --> REPO[("GitHub 레포")]
+  REPO -.->|다음 실행이 이어받음| RUN
+</pre>
+    <div class="flow-note bad">🔴 크론 지연(확정): guru-digest(60분 설정, 채널)와 실측 비교 — 우리 평균 104분, 채널 평균 136분(더 나쁨). GitHub 무료 스케줄의 플랫폼 한계로 증명됨, 코드로 해결 불가</div>
+    <div class="flow-note warn">🟡 YT_PROXY 무료티어(Webshare free): IpBlocked 지속 — 영상직접분석 폴백으로 정상 운영 중(설계상 수용, "미해결"에서 제외)</div>
+    <div class="flow-note warn">🟡 Gemini 무료쿼터: 호출 텀 추가로 순간버스트 완화(수정완료). 근본 한도는 그대로라 여전히 취약할 수 있음</div>
+    <div class="flow-note bad">🔴 상태커밋 실패 은폐 버그: rebase 충돌 시 조용히 포기하고도 "성공"으로 표시되던 결함 수정(abort+재시도+실패시 명시적 에러)</div>
+  </div>
+  <div class="next"><b>그래서 다음 행동</b>크론 지연은 "우리 설정 문제"가 아니라 증명된 플랫폼 한계 — 계속 불편하면 상시서버(로컬 PC / Oracle 무료 VM) 전환뿐, 코드로는 더 못 고침</div>
+</section>
+
+<!-- 5. 경쟁 지형 -->
+<section class="card" id="c5">
+  <div class="card-head">
+    <div><span class="eyebrow">05 · 경쟁 지형</span><h2>포지셔닝</h2></div>
+    <span class="badge blocked">🔴 미조사</span>
+  </div>
+  <div class="card-body">
+    <p><strong>이 카드는 정식 조사(/prior-art-check)를 돌린 적이 없어서 대부분 추정입니다.</strong>
+    아래 2×2는 카테고리 수준 배치일 뿐, 구체적 경쟁 서비스명·기능비교는 확인되지 않았습니다.</p>
+    <div class="matrix-wrap">
+      <span class="matrix-axis-top">정량 엄밀 ↑</span>
+      <div class="matrix-row">
+        <span class="matrix-axis-side">무료 →</span>
+        <div class="matrix">
+          <div class="quad us"><span><b>buza-bot</b>(우리)<br>무료 · 정량엄밀</span></div>
+          <div class="quad">유료 리서치 도구류<br><span class="q">❓ 미조사</span></div>
+          <div class="quad">무료 요약 텔레그램봇들<br><span class="q">❓ 미조사</span></div>
+          <div class="quad">유료 리딩방/애널리스트봇<br><span class="q">❓ 미조사</span></div>
+        </div>
+        <span class="matrix-axis-side">← 유료</span>
+      </div>
+      <span class="matrix-axis-top">↓ 헤드라인 요약</span>
+    </div>
+  </div>
+  <div class="next"><b>그래서 다음 행동</b><code>/prior-art-check</code>를 실제로 돌려서 이 칸을 진짜 데이터로 채울 것 — 지금은 추측 배치</div>
+</section>
+
+<!-- 6. SWOT -->
+<section class="card" id="c6">
+  <div class="card-head">
+    <div><span class="eyebrow">06 · SWOT</span><h2>강점·약점·기회·위협</h2></div>
+    <span class="badge stall">🟡</span>
+  </div>
+  <div class="card-body">
+    <div class="swot">
+      <div class="cell s"><h4>Strength</h4><ul>
+        <li>무료 인프라로 상시가동(PC 꺼져도 동작)<span class="act"><b>유지:</b> 크론 지연만 관리하면 됨</span></li>
+        <li>공시 원문 기반 정량 정확성(지어낸 숫자 없음)<span class="act"><b>강화:</b> 세그먼트 트렌드로 더 깊게</span></li>
+        <li>만든 사람이 실제로 매일 쓰는 유일한 프로젝트<span class="act"><b>레버리지:</b> 실사용 피드백을 B2 설계에 반영</span></li>
+      </ul></div>
+      <div class="cell w"><h4>Weakness</h4><ul>
+        <li>크론 응답 15분~수시간 불규칙<span class="act"><b>완화:</b> 급하면 수동 Run workflow 안내 필요</span></li>
+        <li>Gemini 무료쿼터가 명령 하나에도 순간고갈됨<span class="act"><b>대응:</b> 호출 텀 넣었으나 유료전환 검토 필요할 수도</span></li>
+        <li>뉴스는 헤드라인만, 질적 리서치 폭이 얕음<span class="act"><b>보강:</b> 기사 본문 긁기(무료, 착수 대기 중)</span></li>
+      </ul></div>
+      <div class="cell o"><h4>Opportunity</h4><ul>
+        <li>무료 개인 투자리서치 도구 수요 자체는 있음<span class="act"><b>검증:</b> B2로 외부 3명 모아 실증</span></li>
+        <li>기존 @buza_alarm 채널과 브랜드 이미 겹침<span class="act"><b>결정필요:</b> 채널 흡수/유지 여부 미정</span></li>
+      </ul></div>
+      <div class="cell t"><h4>Threat</h4><ul>
+        <li>Gemini 무료티어 정책이 언제든 바뀔 수 있음<span class="act"><b>모니터링:</b> 유료 전환 시나리오 미리 계산해둘 것</span></li>
+        <li>유튜브 영상 요약 유료화 시 저작권 그레이존<span class="act"><b>대응:</b> 원본링크·큐레이션 포지셔닝 유지</span></li>
+      </ul></div>
+    </div>
+  </div>
+  <div class="next"><b>그래서 다음 행동</b>Weakness 3개가 전부 B2(외부사용자 유치) 이전에 해결해야 할 것들 — 순서상 맞음, 계속</div>
+</section>
+
+<!-- 7. 트랙션 보드 -->
+<section class="card" id="c7">
+  <div class="card-head">
+    <div><span class="eyebrow">07 · 트랙션 보드</span><h2>실측 숫자</h2></div>
+    <span class="badge blocked">🔴 외부유저 0명</span>
+  </div>
+  <div class="card-body">
+    <div class="kpis">
+      <div class="kpi"><div class="l">외부 사용자</div><div class="v">0<span style="font-size:13px;color:var(--ink-faint)">명</span></div></div>
+      <div class="kpi"><div class="l">누적 매출</div><div class="v">0<span style="font-size:13px;color:var(--ink-faint)">원</span></div></div>
+      <div class="kpi"><div class="l">활성 /watch 등록</div><div class="v">0<span style="font-size:13px;color:var(--ink-faint)">건</span></div></div>
+      <div class="kpi"><div class="l">명령 성공률</div><div class="v q">❓ 미측정</div></div>
+    </div>
+    <table>
+      <thead><tr><th>명령어</th><th>기록된 호출</th></tr></thead>
+      <tbody>
+        <tr><td>/dd</td><td class="num">3</td></tr>
+        <tr><td>/yt</td><td class="num">2</td></tr>
+        <tr><td>/ir</td><td class="num">1</td></tr>
+        <tr><td>/watch</td><td class="num">1</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px" class="q">⚠️ cmd_log.json 기록이 2026-07-19 이후 갱신 안 됨 — 그 뒤 실제 사용(07-22·07-24 /dd 등)이 로그에 안 잡힌 것으로 보임. 로깅 자체를 점검 필요(8번 카드 참조).</p>
+  </div>
+  <div class="next"><b>그래서 다음 행동</b>측정 시작일부터 다시 잡을 것: 로깅 버그부터 고치고, 그 다음에야 "주간 활성" 같은 추이가 의미있어짐</div>
+</section>
+
+<!-- 8. 열린 전선 -->
+<section class="card" id="c8">
+  <div class="card-head">
+    <div><span class="eyebrow">08 · 열린 전선</span><h2>미해결 항목</h2></div>
+    <span class="badge stall">🟡 3건 (3건 이번 세션에 닫음)</span>
+  </div>
+  <div class="card-body">
+    <p style="font-size:12.5px" class="q">✅ 이번 세션에 닫힌 것: 크론지연(원인 확정=GitHub 플랫폼 한계, 진단 완료) · YT_PROXY(폴백으로 정상운영 확인, "문제" 아님으로 재분류) · roundup/차트(포기로 결정)</p>
+    <div class="issues">
+      <div class="issue"><div class="t">cmd_log가 07-19 이후 갱신 안 됨 — 원인 특정, 수정 반영함(검증 대기)</div>
+        <div class="meta"><b>원인:</b> 상태커밋 rebase충돌시 조용히 포기 <b>다음행동:</b> 다음 실행에서 실제로 새 항목 쌓이는지 확인 <b>담당:</b> Claude(수정완료)</div></div>
+      <div class="issue crit"><div class="t">/dd 품질 목표가 재정의됨 — "개인 참고용"이 아니라 "IR급 설명 + 블로그/SNS에 그대로 올릴 수준"</div>
+        <div class="meta"><b>며칠째:</b> 신규(스코프 확대) <b>다음행동:</b> 별도 세션에서 출력 형식·톤 설계부터 다시 논의 <b>담당:</b> 사용자·Claude 다음 논의</div></div>
+      <div class="issue"><div class="t">stock_screener 채널(3개 채널 미이관) — 통합 여부, 사용자도 맥락 재확인 필요</div>
+        <div class="meta"><b>며칠째:</b> 4일, 우선순위 낮음 <b>다음행동:</b> 급하지 않음, 여유될 때 재논의 <b>담당:</b> 보류</div></div>
+    </div>
+  </div>
+  <div class="next"><b>그래서 다음 행동</b>진짜 남은 건 사실상 1개(/dd 품질 재설계) — 이건 무게가 있어서 이 카드덱 정리 끝나면 바로 시작</div>
+</section>
+
+<!-- 9. 사용자의 목소리 -->
+<section class="card" id="c9">
+  <div class="card-head">
+    <div><span class="eyebrow">09 · 사용자의 목소리</span><h2>실사용 마찰</h2></div>
+    <span class="badge stall">🟡</span>
+  </div>
+  <div class="card-body">
+    <div class="voc">
+      <blockquote>"컴터 끈 상태에서 써봤는데, yt랑 dd 둘 다 안 되던데??"<span class="ctx">→ 로컬 PC 데몬 구조의 근본 한계 발견, GH Actions 전환 계기</span></blockquote>
+      <blockquote>"dd명령어 안 먹어"<span class="ctx">→ 쿼터초과 예외를 못 잡아 응답이 영영 안 가던 실제 버그로 판명, 수정함</span></blockquote>
+      <blockquote>"오늘 처음 쓰는데 왜 소진돼? 그리고 실행해봤는데 아무 응답 없어"<span class="ctx">→ 쿼터는 정상 리셋됐고, 진짜 원인은 크론 지연이었음</span></blockquote>
+      <blockquote>"돈 얼마 내야되는데?" → "무료로 하자 그럼"<span class="ctx">→ 비용에 민감, 유료 프록시 대신 무료 폴백 채택</span></blockquote>
+      <blockquote>"완전 처음보는 기업이면 무슨 사업을 영위하는 건지... 기본적인 정보가 필요할 거 같아"<span class="ctx">→ /dd에 회사개요(사업설명+세그먼트) 신설 배경</span></blockquote>
+      <blockquote>"진짜 기업 IR에서 설명해주는 것만큼 퀄리티를 높여서... 네이버 블로그나 X, 인스타에 업로드 할 정도로 수준 업그레이드 하고 싶은데 잘 안 된다 ㅜ"<span class="ctx">→ /dd 품질 요구가 "개인용 요약"에서 "퍼블리시 가능한 IR급 리포트"로 재정의됨. 지금 카드 포맷(짧은 불릿)으론 구조적으로 못 미침 — 별도 설계 필요</span></blockquote>
+    </div>
+  </div>
+  <div class="next"><b>그래서 다음 행동</b>마찰 7건 중 6건 해결. 마지막 하나(퍼블리시급 품질)는 포맷 자체를 다시 짜야 하는 큰 주제 — 다음 세션에서 바로 시작</div>
+</section>
+
+<!-- 10. 결정 로그 -->
+<section class="card" id="c10">
+  <div class="card-head">
+    <div><span class="eyebrow">10 · 결정 로그</span><h2>근거 vs 결과</h2></div>
+    <span class="badge stall">🟡 4건 중 3건 부분반증</span>
+  </div>
+  <div class="card-body">
+    <div class="decisions">
+      <div class="decision"><div class="d-head"><h4>로컬 PC 데몬 → GitHub Actions 크론</h4><span class="grade part">부분반증</span></div>
+        <div class="row"><b>근거</b>PC 꺼지면 봇도 죽음, 상시가동 필요</div>
+        <div class="row"><b>예측</b>"15분 크론이면 사실상 즉시 응답에 가까울 것"</div>
+        <div class="row"><b>실제</b>PC 무관하게는 동작하나, 응답이 1~2시간+ 걸린 사례 확인 — 예측은 틀렸음</div></div>
+      <div class="decision"><div class="d-head"><h4>Gemini API 키 분리(stock_screener와)</h4><span class="grade part">부분검증</span></div>
+        <div class="row"><b>근거</b>같은 키를 공유해서 쿼터를 서로 갉아먹고 있었음 발견</div>
+        <div class="row"><b>예측</b>"새 프로젝트 키면 독립 쿼터라 문제 해결"</div>
+        <div class="row"><b>실제</b>분리 자체는 확인됐으나(리셋 정상 확인), 명령 하나의 버스트만으로도 다시 소진 — 근본 해결 아님</div></div>
+      <div class="decision"><div class="d-head"><h4>YT_PROXY를 Webshare 무료티어로</h4><span class="grade miss">반증</span></div>
+        <div class="row"><b>근거</b>유료 대신 무료로 유튜브 IP차단 우회 시도</div>
+        <div class="row"><b>예측</b>"자막 텍스트뿐이라 데이터량 작으니 무료 1GB로 충분할 것"</div>
+        <div class="row"><b>실제</b>IpBlocked 지속 — 데이터량 문제가 아니라 IP 자체가 걸러짐. 영상분석 폴백으로 우회 중</div></div>
+      <div class="decision"><div class="d-head"><h4>/dd를 유료 그라운딩 대신 무료 라이트버전으로</h4><span class="grade part">부분검증</span></div>
+        <div class="row"><b>근거</b>비용 절감, 자유 소스만으로 충분한 품질 목표</div>
+        <div class="row"><b>예측</b>"무료 소스 조합으로도 쓸만한 딥다이브가 나올 것"</div>
+        <div class="row"><b>실제</b>작동은 하나, 사용자가 직접 "더 나은 아웃풋" 요청 — 질적 갭은 인정, 정량 엄밀함으로 방향 재조정 중</div></div>
+    </div>
+  </div>
+  <div class="next"><b>그래서 다음 행동</b>"무료로 되겠지"라는 예측이 4건 중 3건 빗나감 — 다음 결정부턴 이 패턴을 기본 가정에 반영할 것</div>
+</section>
+
+<div class="callout">
+  <h3>❓ 먼저 측정/확인해야 할 것</h3>
+  <ul>
+    <li>cmd_log.json이 왜 07-19 이후 안 갱신되는지 (로깅 경로 버그 의심)</li>
+    <li>명령 성공률 — 실패율을 실제로 세어본 적 없음</li>
+    <li>수익화 구조 전체(가격·전환) — B2 이전엔 설계 자체가 시기상조</li>
+    <li>경쟁 서비스 — /prior-art-check 미실행, 5번 카드는 전부 추정</li>
+  </ul>
+</div>
+
+</div>
+<footer>buza-bot 카드 덱 · docs/cards/deck.html · git으로 버전 추적됨</footer>
