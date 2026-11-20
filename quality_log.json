@@ -30614,5 +30614,432 @@
     }
    }
   ]
+ },
+ {
+  "at": "2026-11-20T23:20:59+00:00",
+  "kind": "report",
+  "n": 32,
+  "note": "module-only",
+  "mean": 67.2,
+  "median": 68.0,
+  "p10": 61,
+  "rows": [
+   {
+    "ticker": "AAPL",
+    "score": 65,
+    "metrics": {
+     "ticker": "AAPL",
+     "blocks": 0,
+     "warns": 2,
+     "infos": 3,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 10
+    }
+   },
+   {
+    "ticker": "ABCL",
+    "score": 70,
+    "metrics": {
+     "ticker": "ABCL",
+     "blocks": 0,
+     "warns": 1,
+     "infos": 2,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 11
+    }
+   },
+   {
+    "ticker": "AGL",
+    "score": 62,
+    "metrics": {
+     "ticker": "AGL",
+     "blocks": 0,
+     "warns": 3,
+     "infos": 2,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 8
+    }
+   },
+   {
+    "ticker": "AXTI",
+    "score": 71,
+    "metrics": {
+     "ticker": "AXTI",
+     "blocks": 0,
+     "warns": 1,
+     "infos": 1,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 11
+    }
+   },
+   {
+    "ticker": "BE",
+    "score": 71,
+    "metrics": {
+     "ticker": "BE",
+     "blocks": 0,
+     "warns": 1,
+     "infos": 1,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 11
+    }
+   },
+   {
+    "ticker": "CORT",
+    "score": 69,
+    "metrics": {
+     "ticker": "CORT",
+     "blocks": 0,
+     "warns": 1,
+     "infos": 3,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 11
+    }
+   },
+   {
+    "ticker": "CRWV",
+    "score": 70,
+    "metrics": {
+     "ticker": "CRWV",
+     "blocks": 0,
+     "warns": 1,
+     "infos": 2,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 11
+    }
+   },
+   {
+    "ticker": "DELL",
+    "score": 67,
+    "metrics": {
+     "ticker": "DELL",
+     "blocks": 0,
+     "warns": 2,
+     "infos": 1,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 11
+    }
+   },
+   {
+    "ticker": "FCEL",
+    "score": 70,
+    "metrics": {
+     "ticker": "FCEL",
+     "blocks": 0,
+     "warns": 1,
+     "infos": 2,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 10
+    }
+   },
+   {
+    "ticker": "FSLY",
+    "score": 70,
+    "metrics": {
+     "ticker": "FSLY",
+     "blocks": 0,
+     "warns": 1,
+     "infos": 2,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 11
+    }
+   },
+   {
+    "ticker": "IONQ",
+    "score": 71,
+    "metrics": {
+     "ticker": "IONQ",
+     "blocks": 0,
+     "warns": 1,
+     "infos": 1,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 11
+    }
+   },
+   {
+    "ticker": "005930.KS",
+    "score": 65,
+    "metrics": {
+     "ticker": "005930.KS",
+     "blocks": 0,
+     "warns": 2,
+     "infos": 3,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 9
+    }
+   },
+   {
+    "ticker": "031980.KQ",
+    "score": 57,
+    "metrics": {
+     "ticker": "031980.KQ",
+     "blocks": 0,
+     "warns": 4,
+     "infos": 3,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 8
+    }
+   },
+   {
+    "ticker": "036930.KQ",
+    "score": 58,
+    "metrics": {
+     "ticker": "036930.KQ",
+     "blocks": 0,
+     "warns": 4,
+     "infos": 2,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 9
+    }
+   },
+   {
+    "ticker": "089970.KQ",
+    "score": 65,
+    "metrics": {
+     "ticker": "089970.KQ",
+     "blocks": 0,
+     "warns": 2,
+     "infos": 3,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 9
+    }
+   },
+   {
+    "ticker": "247540.KQ",
+    "score": 66,
+    "metrics": {
+     "ticker": "247540.KQ",
+     "blocks": 0,
+     "warns": 2,
+     "infos": 2,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 10
+    }
+   },
+   {
+    "ticker": "373220.KS",
+    "score": 65,
+    "metrics": {
+     "ticker": "373220.KS",
+     "blocks": 0,
+     "warns": 2,
+     "infos": 3,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 9
+    }
+   },
+   {
+    "ticker": "417840.KQ",
+    "score": 65,
+    "metrics": {
+     "ticker": "417840.KQ",
+     "blocks": 0,
+     "warns": 2,
+     "infos": 3,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 9
+    }
+   },
+   {
+    "ticker": "LITE",
+    "score": 69,
+    "metrics": {
+     "ticker": "LITE",
+     "blocks": 0,
+     "warns": 1,
+     "infos": 3,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 11
+    }
+   },
+   {
+    "ticker": "LLY",
+    "score": 72,
+    "metrics": {
+     "ticker": "LLY",
+     "blocks": 0,
+     "warns": 0,
+     "infos": 4,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 11
+    }
+   },
+   {
+    "ticker": "LMB",
+    "score": 69,
+    "metrics": {
+     "ticker": "LMB",
+     "blocks": 0,
+     "warns": 1,
+     "infos": 3,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 10
+    }
+   },
+   {
+    "ticker": "MRNA",
+    "score": 71,
+    "metrics": {
+     "ticker": "MRNA",
+     "blocks": 0,
+     "warns": 1,
+     "infos": 1,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 11
+    }
+   },
+   {
+    "ticker": "PFE",
+    "score": 76,
+    "metrics": {
+     "ticker": "PFE",
+     "blocks": 0,
+     "warns": 0,
+     "infos": 0,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 13
+    }
+   },
+   {
+    "ticker": "PLTR",
+    "score": 61,
+    "metrics": {
+     "ticker": "PLTR",
+     "blocks": 0,
+     "warns": 3,
+     "infos": 3,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 9
+    }
+   },
+   {
+    "ticker": "PLUG",
+    "score": 66,
+    "metrics": {
+     "ticker": "PLUG",
+     "blocks": 0,
+     "warns": 2,
+     "infos": 2,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 10
+    }
+   },
+   {
+    "ticker": "QLYS",
+    "score": 70,
+    "metrics": {
+     "ticker": "QLYS",
+     "blocks": 0,
+     "warns": 1,
+     "infos": 2,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 11
+    }
+   },
+   {
+    "ticker": "RBLX",
+    "score": 69,
+    "metrics": {
+     "ticker": "RBLX",
+     "blocks": 0,
+     "warns": 1,
+     "infos": 3,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 11
+    }
+   },
+   {
+    "ticker": "SATL",
+    "score": 67,
+    "metrics": {
+     "ticker": "SATL",
+     "blocks": 0,
+     "warns": 2,
+     "infos": 1,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 11
+    }
+   },
+   {
+    "ticker": "SCCO",
+    "score": 61,
+    "metrics": {
+     "ticker": "SCCO",
+     "blocks": 0,
+     "warns": 3,
+     "infos": 3,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 9
+    }
+   },
+   {
+    "ticker": "SNDK",
+    "score": 67,
+    "metrics": {
+     "ticker": "SNDK",
+     "blocks": 0,
+     "warns": 2,
+     "infos": 1,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 11
+    }
+   },
+   {
+    "ticker": "TSLA",
+    "score": 67,
+    "metrics": {
+     "ticker": "TSLA",
+     "blocks": 0,
+     "warns": 2,
+     "infos": 1,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 10
+    }
+   },
+   {
+    "ticker": "WDAY",
+    "score": 70,
+    "metrics": {
+     "ticker": "WDAY",
+     "blocks": 0,
+     "warns": 1,
+     "infos": 2,
+     "pages": 13,
+     "unverified": 6,
+     "pages_clean": 11
+    }
+   }
+  ]
  }
 ]

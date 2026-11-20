@@ -1,18 +1,5 @@
 [
  {
-  "date": "2026-09-12",
-  "blocked": {
-   "AAPL": "AS_OF",
-   "IONQ": "AS_OF",
-   "TSLA": "AS_OF"
-  },
-  "yt": {
-   "n24": 1,
-   "ok24": 1,
-   "errs": {}
-  }
- },
- {
   "date": "2026-09-13",
   "blocked": {
    "AAPL": "AS_OF",
@@ -821,6 +808,20 @@
    "samples": [
     "Vy2KSdTuQ2w: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
     "FmOvuiAqZMU: 403 PERMISSION_DENIED. {'error': {'code': 403, 'message': 'The caller does not have permission', 'status': 'PERMISSION_D"
+   ]
+  }
+ },
+ {
+  "date": "2026-11-20",
+  "blocked": {},
+  "yt": {
+   "n24": 2,
+   "ok24": 1,
+   "errs": {
+    "503/504": 1
+   },
+   "samples": [
+    "KopQpHNgc4k: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand "
    ]
   }
  }

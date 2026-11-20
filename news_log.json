@@ -1,140 +1,5 @@
 [
  {
-  "at": "2026-11-10T23:00:48+00:00",
-  "ticker": "005930.KS",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 12,
-  "digest": 4,
-  "links_shown": 6,
-  "chars": 3516,
-  "fallback": false
- },
- {
-  "at": "2026-11-10T23:00:58+00:00",
-  "ticker": "373220.KS",
-  "lang": "ko",
-  "events": 12,
-  "result": "ok",
-  "digest": 1,
-  "model": "gemini-3.6-flash",
-  "sec": 9.4,
-  "why": ""
- },
- {
-  "at": "2026-11-10T23:01:00+00:00",
-  "ticker": "373220.KS",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 11,
-  "digest": 1,
-  "links_shown": 6,
-  "chars": 2543,
-  "fallback": false
- },
- {
-  "at": "2026-11-10T23:01:35+00:00",
-  "ticker": "PFE",
-  "events": 4,
-  "result": "error",
-  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
-  "sec": 34.8
- },
- {
-  "at": "2026-11-10T23:08:37+00:00",
-  "ticker": "PFE",
-  "lang": "ko",
-  "events": 4,
-  "result": "ok",
-  "digest": 1,
-  "model": "gemini-3.5-flash-lite",
-  "sec": 8.4,
-  "why": ""
- },
- {
-  "at": "2026-11-10T23:08:37+00:00",
-  "ticker": "PFE",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 3,
-  "digest": 1,
-  "links_shown": 3,
-  "chars": 1950,
-  "fallback": false
- },
- {
-  "at": "2026-11-11T07:13:21+00:00",
-  "ticker": "SATL",
-  "lang": "ko",
-  "events": 10,
-  "result": "ok",
-  "digest": 1,
-  "model": "gemini-3.6-flash",
-  "sec": 170.7,
-  "why": ""
- },
- {
-  "at": "2026-11-11T07:13:22+00:00",
-  "ticker": "SATL",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 4,
-  "digest": 1,
-  "links_shown": 4,
-  "chars": 2398,
-  "fallback": false
- },
- {
-  "at": "2026-11-11T07:13:28+00:00",
-  "ticker": "TSLA",
-  "lang": "ko",
-  "events": 10,
-  "result": "ok",
-  "digest": 4,
-  "model": "gemini-3.5-flash-lite",
-  "sec": 4.6,
-  "why": ""
- },
- {
-  "at": "2026-11-11T07:13:29+00:00",
-  "ticker": "TSLA",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 6,
-  "digest": 4,
-  "links_shown": 5,
-  "chars": 3699,
-  "fallback": false
- },
- {
-  "at": "2026-11-11T07:13:31+00:00",
-  "ticker": "031980.KQ",
-  "lang": "ko",
-  "events": 2,
-  "result": "ok",
-  "digest": 1,
-  "model": "gemini-3.5-flash-lite",
-  "sec": 1.2,
-  "why": ""
- },
- {
-  "at": "2026-11-11T07:13:33+00:00",
-  "ticker": "031980.KQ",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 1,
-  "digest": 1,
-  "links_shown": 1,
-  "chars": 913,
-  "fallback": false
- },
- {
   "at": "2026-11-11T07:13:56+00:00",
   "ticker": "036930.KQ",
   "lang": "ko",
@@ -1956,5 +1821,137 @@
   "ticker": "PFE",
   "stage": "skip",
   "events": 3
+ },
+ {
+  "at": "2026-11-20T23:15:32+00:00",
+  "ticker": "SATL",
+  "lang": "ko",
+  "events": 1,
+  "result": "ok",
+  "digest": 1,
+  "model": "gemini-3.8-flash",
+  "sec": 37.3,
+  "why": ""
+ },
+ {
+  "at": "2026-11-20T23:15:33+00:00",
+  "ticker": "SATL",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 0,
+  "digest": 1,
+  "links_shown": 0,
+  "chars": 687,
+  "fallback": false
+ },
+ {
+  "at": "2026-11-20T23:16:03+00:00",
+  "ticker": "TSLA",
+  "lang": "ko",
+  "events": 30,
+  "result": "ok",
+  "digest": 4,
+  "model": "gemini-3.6-flash",
+  "sec": 28.7,
+  "why": ""
+ },
+ {
+  "at": "2026-11-20T23:16:04+00:00",
+  "ticker": "TSLA",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 16,
+  "digest": 4,
+  "links_shown": 5,
+  "chars": 3840,
+  "fallback": false
+ },
+ {
+  "at": "2026-11-20T23:16:26+00:00",
+  "ticker": "036930.KQ",
+  "lang": "ko",
+  "events": 9,
+  "result": "ok",
+  "digest": 1,
+  "model": "gemini-3.6-flash",
+  "sec": 21.1,
+  "why": ""
+ },
+ {
+  "at": "2026-11-20T23:16:28+00:00",
+  "ticker": "036930.KQ",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 8,
+  "digest": 1,
+  "links_shown": 6,
+  "chars": 2640,
+  "fallback": false
+ },
+ {
+  "at": "2026-11-20T23:17:07+00:00",
+  "ticker": "417840.KQ",
+  "lang": "ko",
+  "events": 1,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.8-flash",
+  "sec": 39.1,
+  "why": "세계일류상품 선정 관련 정부 인증 보도로, 실적이나 계약 등 투자자 관점의 실질적인 사업·재무적 영향이 없습니다."
+ },
+ {
+  "at": "2026-11-20T23:17:08+00:00",
+  "ticker": "417840.KQ",
+  "stage": "skip",
+  "events": 1
+ },
+ {
+  "at": "2026-11-20T23:17:16+00:00",
+  "ticker": "373220.KS",
+  "lang": "ko",
+  "events": 20,
+  "result": "ok",
+  "digest": 1,
+  "model": "gemini-3.6-flash",
+  "sec": 7.3,
+  "why": ""
+ },
+ {
+  "at": "2026-11-20T23:17:18+00:00",
+  "ticker": "373220.KS",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 12,
+  "digest": 1,
+  "links_shown": 6,
+  "chars": 2229,
+  "fallback": false
+ },
+ {
+  "at": "2026-11-20T23:17:42+00:00",
+  "ticker": "PFE",
+  "lang": "ko",
+  "events": 7,
+  "result": "ok",
+  "digest": 1,
+  "model": "gemini-3.8-flash",
+  "sec": 23.3,
+  "why": ""
+ },
+ {
+  "at": "2026-11-20T23:17:43+00:00",
+  "ticker": "PFE",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 2,
+  "digest": 1,
+  "links_shown": 2,
+  "chars": 1569,
+  "fallback": false
  }
 ]
