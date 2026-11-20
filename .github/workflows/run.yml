@@ -52,7 +52,7 @@ jobs:
     # (/report AGL — 10분 넘게 무응답).
     # 이미 만든 종목의 렌더는 30초면 끝나므로 이 값이 커져도 비용은 안 늘어난다
     # (Actions는 실제 사용 시간만 과금/차감).
-    timeout-minutes: 30
+    timeout-minutes: 50   # 2026-11-20 공개 레포(무료) — 밀린 주기작업이 30분에 끊겨 게이트가 안 찍히던 문제
     env:
       TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
       GITHUB_TOKEN: ${{ github.token }}   # 시황 JSON 을 GitHub API 로 캐시 없이 읽기(공유 러너 IP 비인증 한도 회피), 2026-11-06

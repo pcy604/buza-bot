@@ -147,27 +147,7 @@ def main():
             H[name] = f'{len(ir.WATCH_ERRORS)}종목 조회 실패 — ' + ' · '.join(ir.WATCH_ERRORS[:3])
         ir.WATCH_ERRORS.clear()
 
-    if _should_run_jobs():
-        print(f'⏰ 주기작업 실행 (마지막 실행 후 {config.JOB_INTERVAL_H}시간 경과)')
-        for name, job in (('영상 갱신', engine.refresh), ('팬아웃', engine.fanout),
-                          ('IR 공시 감시', lambda: ir.check_watches(bot.send_ir_card)),
-                          ('IR 발표자료 감시', lambda: __import__('ir_site').check(bot.send_ir_deck))):
-            try:
-                job()
-                H[name] = None
-            except Exception:
-                print(f'❌ 주기작업 실패: {name}')
-                traceback.print_exc()
-                H[name] = _err()
-            if name == 'IR 공시 감시':
-                _watch_err(name)
-        _mark_jobs_run()
-    else:
-        print('⏭️ 주기작업 스킵 (아직 간격 안 지남)')
-
-    # 감시 뉴스 — 6시간 게이트와 무관하게 **매 크론 실행**마다 본다(크론은 매시).
-    # 사용자마다 자기 시간대의 설정 시각이 지났고 오늘 아직 안 받았을 때만 네트워크·LLM 을
-    # 쓰므로, 해당자가 없는 실행은 비용이 거의 없다(prefs.py · ir.deliver_news).
+    # 2026-11-20: 사용자에게 바로 가는 발송(감시 뉴스·시황)을 오래 걸리는 주기작업보다 먼저
     try:
         n = ir.deliver_news(bot.send_ir_news)
         print(f'📰 감시 뉴스 요약 발송 {n}건')
@@ -190,6 +170,28 @@ def main():
         H['시황'] = _err()
 
     # 일간 사용 현황 — 소유자에게 하루 한 번(KST 09시 이후 첫 크론). 2026-10-23
+    if _should_run_jobs():
+        print(f'⏰ 주기작업 실행 (마지막 실행 후 {config.JOB_INTERVAL_H}시간 경과)')
+        # 2026-11-20: 공시 감시를 먼저 — 영상 요약이 Gemini 한도·유튜브 차단으로 30분을 다 써서 공시·뉴스가 매번 못 돌았다
+        for name, job in (('IR 공시 감시', lambda: ir.check_watches(bot.send_ir_card)),
+                          ('IR 발표자료 감시', lambda: __import__('ir_site').check(bot.send_ir_deck)),
+                          ('영상 갱신', engine.refresh), ('팬아웃', engine.fanout)):
+            try:
+                job()
+                H[name] = None
+            except Exception:
+                print(f'❌ 주기작업 실패: {name}')
+                traceback.print_exc()
+                H[name] = _err()
+            if name == 'IR 공시 감시':
+                _watch_err(name)
+        _mark_jobs_run()
+    else:
+        print('⏭️ 주기작업 스킵 (아직 간격 안 지남)')
+
+    # 감시 뉴스 — 6시간 게이트와 무관하게 **매 크론 실행**마다 본다(크론은 매시).
+    # 사용자마다 자기 시간대의 설정 시각이 지났고 오늘 아직 안 받았을 때만 네트워크·LLM 을
+    # 쓰므로, 해당자가 없는 실행은 비용이 거의 없다(prefs.py · ir.deliver_news).
     try:
         import stats, brief, tg
         from datetime import timedelta as _td
