@@ -173,6 +173,7 @@ jobs:
           #   텍스트 충돌로 3회 다 실패해 '이번 실행분 유실'이 났다(10-21 14:27·10-22 06:46).
           #   .gitattributes 의 merge=jsonstate → JSON 3-way 병합(둘 다 추가된 항목 보존).
           git config merge.jsonstate.driver "python tools/state_merge.py %O %A %B"
+          git config merge.keepnew.driver "cp %B %A"   # rebase 중 %B = 이번 실행 커밋
           # git add는 pathspec이 하나라도 안 맞으면 fatal로 죽으면서 *아무것도*
           # 스테이징하지 않는다. 예전엔 7개를 한 줄에 넘겼는데 ir_state.json과
           # job_state.json은 레포에 커밋된 적이 없어(감시목록이 없거나 첫 실행이면

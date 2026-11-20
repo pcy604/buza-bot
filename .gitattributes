@@ -20,3 +20,7 @@ kr_names.json merge=jsonstate
 kr_market.json merge=jsonstate
 voc_log.json merge=jsonstate
 activity_log.json merge=jsonstate
+# 2026-11-20: 병렬 실행 충돌로 상태 커밋 유실 — 누락됐던 로그 JSON 추가, 덱 데이터(.py)는 이번 실행본을 채택
+quality_log.json merge=jsonstate
+earnings_state.json merge=jsonstate
+decks/*_data.py merge=keepnew
