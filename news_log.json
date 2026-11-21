@@ -1,33 +1,5 @@
 [
  {
-  "at": "2026-11-11T07:13:56+00:00",
-  "ticker": "036930.KQ",
-  "lang": "ko",
-  "events": 6,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.6-flash",
-  "sec": 22.7,
-  "why": "제시된 기사들이 모두 단순 주가 급등 및 수급 동향에 관한 내용으로, 투자자가 알아야 할 기업의 신규 사업 관련 사건이나 실적 발표가 없습니다."
- },
- {
-  "at": "2026-11-11T07:13:56+00:00",
-  "ticker": "036930.KQ",
-  "stage": "skip",
-  "events": 6
- },
- {
-  "at": "2026-11-11T11:00:43+00:00",
-  "ticker": "373220.KS",
-  "lang": "ko",
-  "events": 11,
-  "result": "ok",
-  "digest": 2,
-  "model": "gemini-3.8-flash",
-  "sec": 15.9,
-  "why": ""
- },
- {
   "at": "2026-11-11T11:00:45+00:00",
   "ticker": "373220.KS",
   "stage": "send",
@@ -1953,5 +1925,30 @@
   "links_shown": 2,
   "chars": 1569,
   "fallback": false
+ },
+ {
+  "at": "2026-11-21T07:16:07+00:00",
+  "ticker": "TSLA",
+  "events": 3,
+  "result": "error",
+  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+  "sec": 333.3
+ },
+ {
+  "at": "2026-11-21T07:17:16+00:00",
+  "ticker": "036930.KQ",
+  "lang": "ko",
+  "events": 1,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.6-flash",
+  "sec": 68.2,
+  "why": "주가 등락 관련 단순 뉴스 외에 투자자가 알아야 할 유의미한 사업·실적 관련 뉴스가 없습니다."
+ },
+ {
+  "at": "2026-11-21T07:17:17+00:00",
+  "ticker": "036930.KQ",
+  "stage": "skip",
+  "events": 1
  }
 ]
