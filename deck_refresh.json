@@ -99,10 +99,10 @@
   "last_ok": "2026-11-18T03:42:01.017509+00:00"
  },
  "SATL": {
-  "last_try": "2026-10-31T06:20:08.677477+00:00",
+  "last_try": "2026-11-21T23:10:49.395719+00:00",
   "last_error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
   "fails": 0,
-  "last_ok": "2026-10-31T06:20:08.677485+00:00"
+  "last_ok": "2026-11-21T23:10:49.395728+00:00"
  },
  "LMB": {
   "last_try": "2026-11-10T06:03:57.729460+00:00",
