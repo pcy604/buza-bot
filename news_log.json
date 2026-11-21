@@ -1,17 +1,5 @@
 [
  {
-  "at": "2026-11-11T11:00:45+00:00",
-  "ticker": "373220.KS",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 8,
-  "digest": 2,
-  "links_shown": 6,
-  "chars": 2809,
-  "fallback": false
- },
- {
   "at": "2026-11-11T19:08:42+00:00",
   "ticker": "SATL",
   "events": 3,
@@ -1950,5 +1938,13 @@
   "ticker": "036930.KQ",
   "stage": "skip",
   "events": 1
+ },
+ {
+  "at": "2026-11-21T11:07:03+00:00",
+  "ticker": "TSLA",
+  "events": 5,
+  "result": "error",
+  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+  "sec": 397.3
  }
 ]
