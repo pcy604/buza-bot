@@ -1,24 +1,5 @@
 [
  {
-  "at": "2026-11-11T19:08:42+00:00",
-  "ticker": "SATL",
-  "events": 3,
-  "result": "error",
-  "why": "504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'Deadline expired before operation could complete.', 'status':",
-  "sec": 492.7
- },
- {
-  "at": "2026-11-11T19:08:49+00:00",
-  "ticker": "AXTI",
-  "lang": "ko",
-  "events": 1,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.6-flash",
-  "sec": 6.6,
-  "why": "주가 등락 관련 소식 외에 실적, 계약 등 투자자가 알아야 할 주요 사건 소식이 없습니다."
- },
- {
   "at": "2026-11-11T19:08:49+00:00",
   "ticker": "AXTI",
   "stage": "skip",
@@ -1946,5 +1927,28 @@
   "result": "error",
   "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
   "sec": 397.3
+ },
+ {
+  "at": "2026-11-21T19:02:33+00:00",
+  "ticker": "TSLA",
+  "lang": "ko",
+  "events": 9,
+  "result": "ok",
+  "digest": 3,
+  "model": "gemini-3.8-flash",
+  "sec": 121.2,
+  "why": ""
+ },
+ {
+  "at": "2026-11-21T19:02:34+00:00",
+  "ticker": "TSLA",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 6,
+  "digest": 3,
+  "links_shown": 6,
+  "chars": 3739,
+  "fallback": false
  }
 ]
