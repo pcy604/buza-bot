@@ -1,28 +1,5 @@
 [
  {
-  "at": "2026-11-11T23:06:09+00:00",
-  "ticker": "PFE",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 1,
-  "digest": 1,
-  "links_shown": 1,
-  "chars": 1183,
-  "fallback": false
- },
- {
-  "at": "2026-11-12T02:50:22+00:00",
-  "ticker": "LLY",
-  "lang": "ko",
-  "events": 3,
-  "result": "ok",
-  "digest": 1,
-  "model": "gemini-3.6-flash",
-  "sec": 40.6,
-  "why": ""
- },
- {
   "at": "2026-11-12T02:50:23+00:00",
   "ticker": "LLY",
   "stage": "send",
@@ -1956,5 +1933,21 @@
   "ticker": "036930.KQ",
   "stage": "skip",
   "events": 1
+ },
+ {
+  "at": "2026-11-22T11:05:03+00:00",
+  "ticker": "373220.KS",
+  "events": 6,
+  "result": "error",
+  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+  "sec": 269.2
+ },
+ {
+  "at": "2026-11-22T11:10:35+00:00",
+  "ticker": "089970.KQ",
+  "events": 1,
+  "result": "error",
+  "why": "504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'Deadline expired before operation could complete.', 'status':",
+  "sec": 331.3
  }
 ]
