@@ -328,6 +328,9 @@ def main(argv):
     OUT.mkdir(parents=True, exist_ok=True)
     p = OUT / f"{doc['slug']}.json"
     p.write_text(json.dumps(doc, ensure_ascii=False, indent=1), encoding='utf-8')
+    if '--path-only' in argv:          # 배치 파일이 받아 쓰는 모드 — 경로 한 줄만
+        print(p)
+        return 0
     print(f"{p}  · 카드 {len(doc['cards'])}장 · 훅 후보 {len(doc['hook_candidates'])}개")
     for i, h in enumerate(doc['hook_candidates'], 1):
         print(f'  [{i}] {h}')
