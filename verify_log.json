@@ -1,22 +1,5 @@
 [
  {
-  "date": "2026-09-13",
-  "blocked": {
-   "AAPL": "AS_OF",
-   "CORT": "AS_OF",
-   "IONQ": "AS_OF",
-   "TSLA": "AS_OF"
-  },
-  "yt": {
-   "n24": 4,
-   "ok24": 1,
-   "errs": {
-    "503/504": 2,
-    "기타": 1
-   }
-  }
- },
- {
   "date": "2026-09-14",
   "blocked": {
    "AAPL": "AS_OF",
@@ -823,6 +806,16 @@
    "samples": [
     "KopQpHNgc4k: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand "
    ]
+  }
+ },
+ {
+  "date": "2026-11-22",
+  "blocked": {},
+  "yt": {
+   "n24": 7,
+   "ok24": 7,
+   "errs": {},
+   "samples": []
   }
  }
 ]

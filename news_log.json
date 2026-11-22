@@ -1,39 +1,5 @@
 [
  {
-  "at": "2026-11-11T21:32:14+00:00",
-  "ticker": "SATL",
-  "stage": "skip",
-  "events": 3
- },
- {
-  "at": "2026-11-11T23:06:05+00:00",
-  "ticker": "373220.KS",
-  "lang": "ko",
-  "events": 1,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.5-flash-lite",
-  "sec": 329.2,
-  "why": "새로운 기업 개별 공시, 실적, 대형 계약 등의 중요 소식이 없고 타사 동향 위주의 업계 일반론 기사만 있어 추릴 내용이 없습니다."
- },
- {
-  "at": "2026-11-11T23:06:06+00:00",
-  "ticker": "373220.KS",
-  "stage": "skip",
-  "events": 1
- },
- {
-  "at": "2026-11-11T23:06:08+00:00",
-  "ticker": "PFE",
-  "lang": "ko",
-  "events": 3,
-  "result": "ok",
-  "digest": 1,
-  "model": "gemini-3.5-flash-lite",
-  "sec": 1.6,
-  "why": ""
- },
- {
   "at": "2026-11-11T23:06:09+00:00",
   "ticker": "PFE",
   "stage": "send",
@@ -1954,6 +1920,40 @@
  {
   "at": "2026-11-21T23:05:41+00:00",
   "ticker": "LLY",
+  "stage": "skip",
+  "events": 1
+ },
+ {
+  "at": "2026-11-22T07:11:19+00:00",
+  "ticker": "TSLA",
+  "lang": "ko",
+  "events": 2,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.8-flash",
+  "sec": 42.8,
+  "why": "텍사스 지역 로보택시 사고 통계 및 외부 업체의 개조 차량 소식으로, 투자 판단에 영향을 줄 핵심 기업 뉴스가 없음"
+ },
+ {
+  "at": "2026-11-22T07:11:19+00:00",
+  "ticker": "TSLA",
+  "stage": "skip",
+  "events": 2
+ },
+ {
+  "at": "2026-11-22T07:12:52+00:00",
+  "ticker": "036930.KQ",
+  "lang": "ko",
+  "events": 1,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.6-flash",
+  "sec": 91.6,
+  "why": "주가 등락 관련 단순 해설 기사 외에 실적, 수주, 경영 등 주요 사업 사건 보도가 없습니다."
+ },
+ {
+  "at": "2026-11-22T07:12:53+00:00",
+  "ticker": "036930.KQ",
   "stage": "skip",
   "events": 1
  }
