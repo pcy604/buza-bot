@@ -1,57 +1,5 @@
 [
  {
-  "at": "2026-11-12T02:50:23+00:00",
-  "ticker": "LLY",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 2,
-  "digest": 1,
-  "links_shown": 2,
-  "chars": 1399,
-  "fallback": false
- },
- {
-  "at": "2026-11-12T07:10:30+00:00",
-  "ticker": "AXTI",
-  "lang": "ko",
-  "events": 2,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.5-flash-lite",
-  "sec": 1.7,
-  "why": "주가 급등과 관련된 일반적인 시장 동향 및 AI 테마 편입 기사 외에 펀더멘털에 영향을 미치는 새로운 기업 이벤트가 없어 제외합니다."
- },
- {
-  "at": "2026-11-12T07:10:30+00:00",
-  "ticker": "AXTI",
-  "stage": "skip",
-  "events": 2
- },
- {
-  "at": "2026-11-12T07:10:41+00:00",
-  "ticker": "TSLA",
-  "lang": "ko",
-  "events": 1,
-  "result": "ok",
-  "digest": 1,
-  "model": "gemini-3.6-flash",
-  "sec": 9.9,
-  "why": ""
- },
- {
-  "at": "2026-11-12T07:10:41+00:00",
-  "ticker": "TSLA",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 0,
-  "digest": 1,
-  "links_shown": 0,
-  "chars": 577,
-  "fallback": false
- },
- {
   "at": "2026-11-12T07:10:44+00:00",
   "ticker": "031980.KQ",
   "lang": "ko",
@@ -1949,5 +1897,52 @@
   "result": "error",
   "why": "504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'Deadline expired before operation could complete.', 'status':",
   "sec": 331.3
+ },
+ {
+  "at": "2026-11-22T19:05:28+00:00",
+  "ticker": "TSLA",
+  "events": 4,
+  "result": "error",
+  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+  "sec": 295.0
+ },
+ {
+  "at": "2026-11-22T19:06:26+00:00",
+  "ticker": "031980.KQ",
+  "events": 1,
+  "result": "error",
+  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+  "sec": 57.4
+ },
+ {
+  "at": "2026-11-22T19:07:15+00:00",
+  "ticker": "373220.KS",
+  "events": 3,
+  "result": "error",
+  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+  "sec": 46.8
+ },
+ {
+  "at": "2026-11-22T19:07:47+00:00",
+  "ticker": "089970.KQ",
+  "lang": "ko",
+  "events": 1,
+  "result": "ok",
+  "digest": 1,
+  "model": "gemini-3.6-flash",
+  "sec": 31.6,
+  "why": ""
+ },
+ {
+  "at": "2026-11-22T19:07:48+00:00",
+  "ticker": "089970.KQ",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 0,
+  "digest": 1,
+  "links_shown": 0,
+  "chars": 713,
+  "fallback": false
  }
 ]
