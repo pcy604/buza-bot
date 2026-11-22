@@ -1,56 +1,5 @@
 [
  {
-  "at": "2026-11-12T07:10:44+00:00",
-  "ticker": "031980.KQ",
-  "lang": "ko",
-  "events": 2,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.5-flash-lite",
-  "sec": 2.8,
-  "why": "피에스케이홀딩스(031980.KQ) 보유자가 알아야 할 실적, 수주, 계약 등 1~3순위 중요 사건에 해당하는 새로운 뉴스가 없습니다."
- },
- {
-  "at": "2026-11-12T07:10:45+00:00",
-  "ticker": "031980.KQ",
-  "stage": "skip",
-  "events": 2
- },
- {
-  "at": "2026-11-12T07:10:50+00:00",
-  "ticker": "036930.KQ",
-  "lang": "ko",
-  "events": 4,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.5-flash-lite",
-  "sec": 3.9,
-  "why": "주가 등락 및 시가총액 관련 단순 시황 기사만 있어 추릴 내용이 없습니다."
- },
- {
-  "at": "2026-11-12T07:10:51+00:00",
-  "ticker": "036930.KQ",
-  "stage": "skip",
-  "events": 4
- },
- {
-  "at": "2026-11-12T11:05:08+00:00",
-  "ticker": "373220.KS",
-  "lang": "ko",
-  "events": 6,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.8-flash",
-  "sec": 277.1,
-  "why": "BMW 배터리 셀 공급, 국내 ESS 입찰 불참, 배터리 진단 기술 등 주요 기사는 이미 안내된 내용의 중복 보도이며, 대표 연임 관련 기사는 단순 관측 기사입니다."
- },
- {
-  "at": "2026-11-12T11:05:09+00:00",
-  "ticker": "373220.KS",
-  "stage": "skip",
-  "events": 6
- },
- {
   "at": "2026-11-12T11:10:45+00:00",
   "ticker": "PFE",
   "events": 3,
@@ -1944,5 +1893,62 @@
   "links_shown": 0,
   "chars": 713,
   "fallback": false
+ },
+ {
+  "at": "2026-11-22T21:03:14+00:00",
+  "ticker": "TSLA",
+  "lang": "ko",
+  "events": 5,
+  "result": "ok",
+  "digest": 1,
+  "model": "gemini-3.6-flash",
+  "sec": 182.6,
+  "why": ""
+ },
+ {
+  "at": "2026-11-22T21:03:15+00:00",
+  "ticker": "TSLA",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 3,
+  "digest": 1,
+  "links_shown": 3,
+  "chars": 2440,
+  "fallback": false
+ },
+ {
+  "at": "2026-11-22T21:03:27+00:00",
+  "ticker": "031980.KQ",
+  "lang": "ko",
+  "events": 1,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.6-flash",
+  "sec": 11.8,
+  "why": "단순 목표주가 상향 및 관심 종목 추천 기사 외에 실질적인 기업 사건이나 경영 소식이 없습니다."
+ },
+ {
+  "at": "2026-11-22T21:03:28+00:00",
+  "ticker": "031980.KQ",
+  "stage": "skip",
+  "events": 1
+ },
+ {
+  "at": "2026-11-22T21:03:43+00:00",
+  "ticker": "373220.KS",
+  "lang": "ko",
+  "events": 3,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.6-flash",
+  "sec": 14.9,
+  "why": "이미 알려진 CEO 유임 소식 외에는 단순 기획성 기사 및 사회공헌 소식만 있어 투자자가 알아야 할 신규 주요 사건이 없습니다."
+ },
+ {
+  "at": "2026-11-22T21:03:44+00:00",
+  "ticker": "373220.KS",
+  "stage": "skip",
+  "events": 3
  }
 ]
