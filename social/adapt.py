@@ -53,7 +53,14 @@ def to_threads(c: Content) -> Post:
         body.append(_numbers_block(c))
     tail = [x for x in (c.takeaway, ('⚠️ ' + c.caveat) if c.caveat else '') if x]
     cta = f'{c.cta}\n{c.cta_url}'.strip() if c.cta else ''
-    texts = [first] + _chunk(body, THREADS_LIMIT, len) + _chunk(tail, THREADS_LIMIT, len)
+    # 2026-11-23 — 카드 구조에서는 **카드 1개 = 글 1개**다. _chunk 는 상한까지 꽉 채우려고
+    #   카드 두세 개를 한 글로 묶어 버렸다(실측 404·499자). 스레드는 짧은 글이 답글을 더 받는다.
+    #   상한(500)을 넘는 카드만 쪼갠다.
+    if c.cards:
+        body = [t for x in body for t in (_chunk([x], THREADS_LIMIT, len) if len(x) > THREADS_LIMIT else [x])]
+        texts = [first] + body + _chunk(tail, THREADS_LIMIT, len)
+    else:
+        texts = [first] + _chunk(body, THREADS_LIMIT, len) + _chunk(tail, THREADS_LIMIT, len)
     if cta:
         texts.append(cta)
     texts.append(c.disclaimer)

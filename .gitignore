@@ -62,3 +62,6 @@ nudge_state.json
 people_state.json
 corner_prefs.json
 voc_log.json
+
+# 숏츠 프레임·카드 캡처 — 매일 새로 만든다(레포에 쌓지 않는다)
+social/out/

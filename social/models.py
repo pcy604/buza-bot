@@ -19,11 +19,19 @@ class Content:
     images: list = field(default_factory=list)    # 로컬 PNG 경로. 첫 장이 대표
     tags: list = field(default_factory=list)
     disclaimer: str = DISCLAIMER
+    # ── 2026-11-23 시황 생성기(social/sihwang.py)가 채우는 것들 ────────────────
+    cards: list = field(default_factory=list)     # [{card, capture, text, say, guess, big, big_label}]
+    hook_candidates: list = field(default_factory=list)   # 승인 때 사람이 고른다
+    kind: str = ''                                # kr | daily
+    date: str = ''
+    title_naver: str = ''                         # 네이버는 검색 유입 — 제목을 따로 만든다
 
     @classmethod
     def load(cls, path):
         d = json.loads(Path(path).read_text(encoding='utf-8'))
-        return cls(**d)
+        # 생성기가 내부용 키(_v19 등)를 붙여도 깨지지 않게 — 모르는 키는 버린다
+        known = {f for f in cls.__dataclass_fields__}
+        return cls(**{k: v for k, v in d.items() if k in known})
 
 @dataclass
 class Post:
