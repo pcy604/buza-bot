@@ -32,8 +32,10 @@ OUT = Path('social/out')
 CARDS = {
     'breadth':       '시장 폭',
     'flow':          '수급',
-    'sector_strong': '강한 업종',
-    'sector_weak':   '약한 업종',
+    # 2026-11-23 화면에서 '강한/약한' → '강세/약세' 로 개명했는데 여기를 안 고쳐
+    #   다음 캡처에서 두 장이 통째로 빠졌다. 화면 문구를 바꾸면 이 표도 같이 본다.
+    'sector_strong': '강세 업종',
+    'sector_weak':   '약세 업종',
     'theme':         '강세 테마',
     'newhigh':       '52주 신고가',
     'featured':      '특징주',
@@ -43,6 +45,9 @@ CARDS = {
 REGIONS = {
     'global':  ('.hm-grid', 0),      # 글로벌 마켓 14칸 (첫 번째 그리드)
     'heatmap': ('.js-plotly-plot', -1),   # 업종 히트맵 (마지막 plotly — 종합 탭에서 히트맵이 맨 아래)
+    # 2026-11-24 — 숏츠 마지막 컷('내 규칙')에 카드가 없어 빈 화면이 나갔다.
+    #   ui_home.gate() 가 그리는 상단 배지가 그 자리다(div.hm-hero · '이번 주 시장 신호').
+    'rule':    ('.hm-hero', 0),
 }
 
 
@@ -70,9 +75,9 @@ def _settle(p, timeout=180_000, min_wait=8):
     time.sleep(3)          # plotly·폰트 렌더 여유
 
 
-def _page(pw, url, width=1300, height=1100, mobile=False, ready=None):
+def _page(pw, url, width=1300, height=1100, mobile=False, ready=None, dsf=2):
     b = pw.chromium.launch()
-    kw = dict(viewport={'width': width, 'height': height}, device_scale_factor=2, locale='ko-KR')
+    kw = dict(viewport={'width': width, 'height': height}, device_scale_factor=dsf, locale='ko-KR')
     if mobile:             # 모바일 UA 를 줘야 대시보드가 IS_MOBILE 분기로 세로 레이아웃을 그린다
         kw['user_agent'] = ('Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 '
                             '(KHTML, like Gecko) Chrome/126.0 Mobile Safari/537.36')
@@ -124,7 +129,11 @@ def shot_cards(keys=None, mobile=False, out_dir: Path = OUT) -> dict:
         #    Streamlit 의 고정 헤더가 요소 윗부분을 덮어 **글로벌 마켓 첫 줄의 지수명과 종가가
         #    통째로 잘렸다**(−3.70% 만 남고 'S&P500 6,910.39' 가 사라짐).
         #    전부 화면 안에 들어오게 해 두면 스크롤이 필요 없어 잘릴 일이 없다. shot_cycle 과 같은 수법.
-        size = ({'width': 1080, 'height': 6000, 'mobile': True} if mobile
+        # 2026-11-24 — 모바일 폭을 1080 → 430 CSS px(진짜 폰 폭)으로. 1080 은 태블릿에 가까워
+        #   규칙 배지가 가로 4:1 배너로 그려졌고, 9:16 프레임에 넣으면 세로 260px 로 줄어
+        #   폰에서 글자를 못 읽었다. 430 이면 카드가 세로로 접혀 9:16 에 맞는다.
+        #   해상도는 device_scale_factor 로 보충한다(430×3 = 1290px 출력).
+        size = ({'width': 430, 'height': 9000, 'mobile': True, 'dsf': 3} if mobile
                 else {'width': 1300, 'height': 6000})
         # 카드 하나라도 떠야 의미가 있다
         b, p = _page(pw, APP, ready='div.hm-box', **size)

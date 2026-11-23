@@ -72,6 +72,25 @@ def _wrap(draw, text, font, max_w):
     return out
 
 
+def _trim(c: Image.Image, pad=14) -> Image.Image:
+    """카드 둘레의 빈 여백을 잘라낸다.
+
+    왜: 규칙 배지는 2020x512(가로 4:1)인데 내용은 왼쪽 70%뿐이다. 그대로 폭을 맞추면
+    세로가 260px 로 줄어 폰에서 글자가 안 읽힌다(2026-11-24 실측). 여백을 떼면 같은
+    폭에서 글자가 1.4배쯤 커진다. 글로벌·히트맵처럼 꽉 찬 카드는 거의 안 잘린다.
+    """
+    # 배경색 기준으로 자르면 안 된다 — 규칙 배지는 **연분홍 상자 자체가 가로를 꽉 채우고**
+    # 글자만 왼쪽 70%에 있다. 그래서 '진한 픽셀(글자·선)'의 경계를 찾는다(2026-11-24).
+    ink = c.convert('L').point(lambda v: 255 if v < 150 else 0)
+    bb = ink.getbbox()
+    if not bb:
+        return c
+    x0, y0, x1, y1 = bb
+    box = (max(0, x0 - pad), max(0, y0 - pad), min(c.width, x1 + pad), min(c.height, y1 + pad))
+    out = c.crop(box)
+    return out if out.width > 100 and out.height > 60 else c
+
+
 def frame(card: dict, hook: str, idx: int, total: int, zoom=False) -> Image.Image:
     im = Image.new('RGB', (W, H), BG)
     d = ImageDraw.Draw(im)
@@ -82,8 +101,11 @@ def frame(card: dict, hook: str, idx: int, total: int, zoom=False) -> Image.Imag
     d.text((60, 58), card.get('card', ''), font=f_head, fill=INK2)
     big, lab = card.get('big') or '', card.get('big_label') or ''
     if big:
-        col = ACCENT if big.startswith('-') or big.startswith('−') else (
-            POS if big.startswith('+') else INK)
+        if card.get('big_tone') == 'flat':   # 등락이 아닌 숫자는 칠하지 않는다(2026-11-24)
+            col = INK
+        else:
+            col = ACCENT if big.startswith('-') or big.startswith('−') else (
+                POS if big.startswith('+') else INK)
         d.text((60, 118), big, font=f_big, fill=col)
         if lab:
             d.text((62, 268), lab, font=f_sub, fill=INK2)
@@ -95,12 +117,16 @@ def frame(card: dict, hook: str, idx: int, total: int, zoom=False) -> Image.Imag
     d.text((W - 150, 62), f'{idx} / {total}', font=f_sub, fill=INK2)
 
     # ── 가운데: 카드 이미지
-    src = CARDS / f"card_m_{card.get('capture')}.png"
-    if not src.exists():
-        src = CARDS / f"card_w_{card.get('capture')}.png"
+    # 어느 쪽 캡처를 쓸지는 카드마다 다르다(2026-11-24 실측 비율).
+    #   글로벌 마켓: 모바일은 14칸이 한 줄로 쌓여 1236x3624(0.3)가 된다 → 가로판(1.5)이 맞다.
+    #   나머지: 모바일이 9:16 에 맞게 접힌다(규칙 배지 4.0 → 1.0).
+    key = card.get('capture')
+    order = (['w', 'm'] if key in ('global', 'global_risk') else ['m', 'w'])
+    src = next((CARDS / f'card_{t}_{key}.png' for t in order
+                if (CARDS / f'card_{t}_{key}.png').exists()), CARDS / f'card_m_{key}.png')
     mid_top, mid_h = TOP_H + 20, H - TOP_H - BOT_H - 40
     if src.exists():
-        c = Image.open(src).convert('RGB')
+        c = _trim(Image.open(src).convert('RGB'))
         wide = card.get('capture') in WIDE
         scale = (W - 36) / c.width
         if zoom and not wide:
@@ -116,7 +142,8 @@ def frame(card: dict, hook: str, idx: int, total: int, zoom=False) -> Image.Imag
 
     # ── 하단: 자막 — 음성과 같은 문장을 보여 준다(무음 시청이 많다)
     f_cap = _font(42)
-    _all = _wrap(d, card.get('text', ''), f_cap, W - 120)
+    # 숏츠 자막은 글 문장이 아니라 **숏츠 대사**다. text 를 쓰면 4줄로 잘려 뜻이 끊긴다.
+    _all = _wrap(d, card.get('short') or card.get('text', ''), f_cap, W - 120)
     lines = _all[:4]
     if len(_all) > 4:                      # 숏츠 자막은 4줄이 한계다 — 넘으면 줄인다
         lines[-1] = lines[-1][:-1] + '…'

@@ -102,11 +102,24 @@ def say(text: str) -> str:
     return t
 
 
-def card(key, capture, text, guess='', big='', big_label=''):
-    """big/big_label — 숏츠 프레임 윗부분에 크게 띄울 숫자 한 개.
-    카드 이미지는 가로로 넓어 9:16 화면에서 위가 비는데, 그 자리를 '오늘의 숫자' 로 쓴다."""
+def card(key, capture, text, guess='', big='', big_label='', short='', big_tone='auto'):
+    """카드 하나 = 글 한 문단 = 포토카드 한 장 = 숏츠 한 컷.
+
+    text  — 글(스레드·네이버)과 포토카드 자막. 길어도 된다.
+    short — **숏츠 전용 대사.** 없으면 text 를 쓰는데, 그러면 숏츠가 터진다:
+            실측 2026-11-23, text 를 그대로 읽으니 6컷 190초(3분 10초)였다.
+            숏츠 적정은 35~50초 · 컷당 6~8초 = 대사 35~45자다.
+    big/big_label — 프레임 윗부분에 크게 띄울 숫자 한 개. 카드가 가로로 넓어
+            9:16 에서 위가 비는데 그 자리를 '오늘의 숫자' 로 쓴다.
+    big_tone — 'auto'(부호대로 초록/빨강) | 'flat'(중립).
+            **등락이 아닌 숫자에 색을 칠하면 뜻이 뒤집힌다.** 실측 2026-11-24:
+            '매수 재개까지 +8.8%' 가 초록으로 나왔는데 이건 이익이 아니라 거리다.
+            CLAUDE.md 표 규칙의 "높을수록 위험한 열은 칠하지 않는다" 와 같은 이유.
+    """
+    sh = short or text
     return dict(card=key, capture=capture, text=text, say=say(text), guess=guess,
-                big=big, big_label=big_label)
+                big=big, big_label=big_label, big_tone=big_tone,
+                short=sh, short_say=say(sh))
 
 
 # ── 원천 읽기 ────────────────────────────────────────────────────────────────
@@ -180,7 +193,8 @@ def build_kr():
              f"{abs(vix.get('d1') or 0):.1f}% 올랐고 5일 누적으로는 {abs(vix.get('d5') or 0):.0f}% 상승했다. "
              f"코스피 {_pct(ks.get('d1'))}, 코스닥 {_pct(kq.get('d1'))}는 이 흐름의 연장선에 있다.")
         cards.append(card('글로벌 마켓', 'global', t,
-                          big=_pct(sox['d1']), big_label='필라델피아 반도체'))
+                          big=_pct(sox['d1']), big_label='필라델피아 반도체',
+                          short='간밤 미국이 먼저 무너졌습니다. 반도체가 제일 크게 빠졌습니다.'))
         numbers += [f"필라델피아 반도체 {sox.get('close'):,.0f} · {_pct(sox['d1'])} · 5일 {_pct(sox.get('d5'))}",
                     f"VIX {vix.get('close')} · {_pct(vix.get('d1'))} · 5일 {_pct(vix.get('d5'))}"]
         hooks.append(f"코스피 {_pct(ks.get('d1'))}는 결과였다. 간밤 필라델피아 반도체가 "
@@ -192,7 +206,8 @@ def build_kr():
          f"상승 {up:,}종, 하락 {dn:,}종으로 상승 비율은 {rate:.0f}%에 그쳤다. "
          f"52주 신고가를 낸 종목은 {nh}종이다. 거래대금은 {ik.get('turnover_txt', '-')}원이었다.")
     cards.append(card('시장 폭', 'breadth', t,
-                      big=f'{up:,} / {uni:,}', big_label='오른 종목 / 전체'))
+                      big=f'{up:,} / {uni:,}', big_label='오른 종목 / 전체',
+                      short=f'{uni:,}개 종목 중 오른 건 {up:,}개. 신고가는 {nh}개뿐이었습니다.'))
     numbers += [f"시장 폭 상승 {up:,} / 하락 {dn:,} ({uni:,}종) · 상승 비율 {rate:.0f}%",
                 f"코스피 {ks.get('close'):,.0f} · {_pct(ks.get('d1'))} · 52주 고점 대비 {_pct(ks.get('from_52w_high'))}"]
     hooks.append(f"{uni:,}개 종목 중 오른 건 {up:,}개다. 52주 신고가는 {nh}개뿐이었다.")
@@ -207,6 +222,8 @@ def build_kr():
         cards.append(card('업종 히트맵', 'heatmap', t,
                           big=_pct(mega[0].get('ret')) if mega else '',
                           big_label=mega[0]['name'] if mega else '',
+                          short=(f"끌어내린 건 시총 상위주입니다. {mega[0]['name']}가 제일 무거웠습니다."
+                                 if mega else '끌어내린 건 시총 상위주입니다.'),
                           guess='미국 반도체의 하락폭이 국내 후방 산업에서 증폭되어 반영된 형태다.'))
 
     # ④ 반대쪽 — 반드시 초록을 보여 준다
@@ -223,6 +240,8 @@ def build_kr():
         cards.append(card('강세 테마·특징주', 'theme', t,
                           big=_pct(th_t[0].get('ret')) if th_t else '',
                           big_label=th_t[0]['name'] if th_t else '',
+                          short=(f"버틴 건 {th_t[0]['name']} 정도입니다. "
+                                 f"그 와중에 상한가는 {len(feat)}종목 나왔습니다." if th_t else '버틴 업종이 거의 없었습니다.'),
                           guess='지수가 크게 빠진 날 상한가가 복수로 나왔다는 것은 자금이 시장을 떠난 것이 아니라 극히 좁은 범위로 집중됐다는 신호에 가깝다.'))
 
     # ⑤ 수급
@@ -234,7 +253,9 @@ def build_kr():
             numbers.append(f"신용융자 잔고 {cr['v'] / 1e4:,.1f}조 · 고점 대비 {cr.get('from_peak', 0):+.1f}%")
         cards.append(card('수급', 'flow', t,
                           big=f"{cr['v'] / 1e4:,.1f}조" if cr.get('v') else '',
-                          big_label='신용융자 잔고', guess='빌려서 산 물량의 정리가 진행 중인 구간이다.'))
+                          big_label='신용융자 잔고',
+                          short=(f"신용융자 잔고는 {cr['v'] / 1e4:,.1f}조. 고점 대비 {cr.get('from_peak', 0):+.0f}퍼센트입니다."
+                                 if cr.get('v') else '수급은 한 방향이었습니다.'), guess='빌려서 산 물량의 정리가 진행 중인 구간이다.'))
 
     # ⑥ 내 규칙 — 이 연재의 전부
     g = ' '.join(rs['gate_lines'][:2])
@@ -246,7 +267,10 @@ def build_kr():
     _need = re.search(r'([\d.]+)% 더 올라야', ' '.join(rs['gate_lines'])) if rs['gate_lines'] else None
     cards.append(card('내 규칙', 'rule', t.strip(),
                       big=(f'+{_need.group(1)}%' if _need else '매수 중지'),
-                      big_label='매수 재개까지'))
+                      big_label='매수 재개까지',
+                      big_tone='flat',      # 이익이 아니라 '남은 거리'다 — 초록으로 칠하면 뜻이 뒤집힌다
+                      short=(f'제 규칙은 코스피가 {_need.group(1)}퍼센트 더 올라야 매수를 엽니다.'
+                             if _need else '제 규칙은 지금 신규 매수를 막고 있습니다.')))
     numbers += [re.sub(r'\*\*', '', x) for x in rs['gate_lines'][:1]]
     if rs['last_buy']:
         hooks.append(f"코스피가 {_pct(ks.get('d1'))} 빠졌다. 그런데 내 매수는 {rs['last_buy']} 이후로 멈춰 있었다.")
