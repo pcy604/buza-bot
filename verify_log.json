@@ -1,18 +1,5 @@
 [
  {
-  "date": "2026-09-14",
-  "blocked": {
-   "AAPL": "AS_OF",
-   "CORT": "AS_OF",
-   "IONQ": "AS_OF"
-  },
-  "yt": {
-   "n24": 4,
-   "ok24": 4,
-   "errs": {}
-  }
- },
- {
   "date": "2026-09-16",
   "blocked": {
    "AAPL": "AS_OF",
@@ -816,6 +803,20 @@
    "ok24": 7,
    "errs": {},
    "samples": []
+  }
+ },
+ {
+  "date": "2026-11-23",
+  "blocked": {},
+  "yt": {
+   "n24": 5,
+   "ok24": 4,
+   "errs": {
+    "기타": 1
+   },
+   "samples": [
+    "xY5-S_n1SDo: 403 PERMISSION_DENIED. {'error': {'code': 403, 'message': 'The caller does not have permission', 'status': 'PERMISSION_D"
+   ]
   }
  }
 ]

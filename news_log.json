@@ -1,55 +1,5 @@
 [
  {
-  "at": "2026-11-12T11:10:45+00:00",
-  "ticker": "PFE",
-  "events": 3,
-  "result": "error",
-  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
-  "sec": 335.7
- },
- {
-  "at": "2026-11-12T11:14:18+00:00",
-  "ticker": "LLY",
-  "events": 1,
-  "result": "error",
-  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
-  "sec": 212.3
- },
- {
-  "at": "2026-11-12T18:22:23+00:00",
-  "ticker": "PFE",
-  "lang": "ko",
-  "events": 8,
-  "result": "ok",
-  "digest": 2,
-  "model": "gemini-3.5-flash-lite",
-  "sec": 33.0,
-  "why": ""
- },
- {
-  "at": "2026-11-12T18:22:24+00:00",
-  "ticker": "PFE",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 2,
-  "digest": 2,
-  "links_shown": 2,
-  "chars": 1879,
-  "fallback": false
- },
- {
-  "at": "2026-11-12T18:22:35+00:00",
-  "ticker": "LLY",
-  "lang": "ko",
-  "events": 5,
-  "result": "ok",
-  "digest": 1,
-  "model": "gemini-3.5-flash-lite",
-  "sec": 10.1,
-  "why": ""
- },
- {
   "at": "2026-11-12T18:22:36+00:00",
   "ticker": "LLY",
   "stage": "send",
@@ -1950,5 +1900,47 @@
   "ticker": "373220.KS",
   "stage": "skip",
   "events": 3
+ },
+ {
+  "at": "2026-11-23T07:12:57+00:00",
+  "ticker": "TSLA",
+  "lang": "ko",
+  "events": 2,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.6-flash",
+  "sec": 143.1,
+  "why": "이미 보고된 스티어링 휠·페달 없는 Model Y 개발 소식 외에 비즈니스 관련 새로운 소식이 없습니다."
+ },
+ {
+  "at": "2026-11-23T07:12:57+00:00",
+  "ticker": "TSLA",
+  "stage": "skip",
+  "events": 2
+ },
+ {
+  "at": "2026-11-23T07:16:04+00:00",
+  "ticker": "031980.KQ",
+  "events": 1,
+  "result": "error",
+  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+  "sec": 186.4
+ },
+ {
+  "at": "2026-11-23T07:16:09+00:00",
+  "ticker": "036930.KQ",
+  "lang": "ko",
+  "events": 4,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.6-flash",
+  "sec": 4.6,
+  "why": "단순 주가 등락 및 장중 시황 관련 기사만 존재하여 투자자가 알아야 할 주요 경영 사건이 없습니다."
+ },
+ {
+  "at": "2026-11-23T07:16:11+00:00",
+  "ticker": "036930.KQ",
+  "stage": "skip",
+  "events": 4
  }
 ]
