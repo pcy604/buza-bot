@@ -9,6 +9,14 @@
 - Instagram: **보류** — 아래 "Instagram" 참고.
 - X: **보류** — 종량제(글 $0.015, URL 포함 글 $0.20). 카드 등록·크레딧 구매가 필요해서 다음에.
 
+## 2026-11-23~24 진행 (Instagram 완료 · 무인 발행 배선)
+- 인스타 stock_studian = 이미 프로페셔널 계정(확인).
+- 비즈니스 포트폴리오 **Stockstudian** 생성(business_id 1095368806901235; `stock_studian` 이름은 Meta 거부). 비즈니스 인증은 보류 — 본인 계정 게시엔 불필요.
+- 앱 → Instagram API → Unified login 구성(ID 1443656501313916) → 인스타 테스터 초대 수락 → 토큰 발급. **IG_USER_ID = 17841444481829287**.
+- 사용자가 `.env` + GitHub Secrets 에 `IG_TOKEN`·`IG_USER_ID`·`THREADS_TOKEN`·`THREADS_USER_ID` 등록(11-24).
+- `.github/workflows/social-publish.yml` 추가: 매일 07:41 KST 토큰 점검(FAIL 시 텔레그램) → `publish approved`. **승인 안 된 글은 안 올린다.**
+- 한계: 토큰 60일 갱신은 아직 수동(refresh 결과를 Secrets 에 다시 넣어야 함) · 승인(approve)은 아직 CLI · 이미지는 레포에 커밋된 경로여야 러너에서 올라간다.
+
 ## Threads — 남은 3단계
 1. **Threads 앱(폰)에서 초대 수락**: 프로필 → 설정 → 계정 → 웹사이트 권한 → 초대 → stock_studian 앱 수락.
 2. 개발자 포털 → 앱 stock_studian → 이용 사례 → Threads API 액세스 → **설정** 탭 → 맨 아래 **사용자 토큰 생성기** → stock_studian 행의 **토큰 생성** → 권한 동의 → 토큰 복사.

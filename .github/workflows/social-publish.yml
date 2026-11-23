@@ -1,0 +1,52 @@
+# SNS 무인 발행 — 승인(approved)된 큐만 올린다. 2026-11-24
+# 흐름: draft(텔레그램 미리보기) → approve(사람) → **이 워크플로가 publish** → published | failed
+# - 승인 안 된 글은 절대 안 올린다(cli.publish 가 status != approved 면 skip).
+# - 토큰 점검을 먼저 돌려 죽은 토큰이면 텔레그램으로 알린다(60일 만료 대비).
+# - 이미지 경로는 레포 기준 상대경로여야 한다(러너엔 노트북 파일이 없다).
+name: social-publish
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '41 22 * * *'   # 07:41 KST, 하루 1회. 공개 레포라 Actions 무료
+
+concurrency:
+  group: social-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TELEGRAM_TOKEN:  ${{ secrets.TELEGRAM_TOKEN }}
+      SUPABASE_URL:    ${{ secrets.SUPABASE_URL }}
+      SUPABASE_KEY:    ${{ secrets.SUPABASE_KEY }}
+      THREADS_TOKEN:   ${{ secrets.THREADS_TOKEN }}
+      THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+      IG_TOKEN:        ${{ secrets.IG_TOKEN }}
+      IG_USER_ID:      ${{ secrets.IG_USER_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+
+      - name: 토큰 점검 (죽은 토큰이면 텔레그램 경보)
+        run: |
+          python -m social check | tee check.txt
+          if grep -q '^FAIL' check.txt; then
+            python -c "import tg,config; tg.send_message(config.OWNER_CHAT, '⚠️ social 토큰 점검 실패\n' + open('check.txt',encoding='utf-8').read()[:1500] + '\n갱신: python -m social refresh → GitHub Secrets 교체')"
+          fi
+
+      - name: 승인된 글 발행
+        run: |
+          python -m social publish approved | tee pub.txt
+          if [ -s pub.txt ]; then
+            python -c "import tg,config; tg.send_message(config.OWNER_CHAT, '📤 social 발행 결과\n' + open('pub.txt',encoding='utf-8').read()[:1500])"
+          fi
