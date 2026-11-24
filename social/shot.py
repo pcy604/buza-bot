@@ -49,6 +49,11 @@ REGIONS = {
     #   ui_home.gate() 가 그리는 상단 배지가 그 자리다(div.hm-hero · '이번 주 시장 신호').
     'rule':    ('.hm-hero', 0),
 }
+# 2026-11-25 글자로 찾는 구역 — 시황 '이미지+문장' 카드뉴스용. ui_home 이 st.html 로 <div class='hm'> 안에 그린다.
+REGION_TEXT = {
+    'pulse': ('div.hm', '시장 추세 판정'),        # 오닐 4개 지수 카드
+    'trend': ('div.hm', '상승 종목 비율'),        # 한국·미국 상승 종목 비율 30거래일 막대
+}
 
 
 def _settle(p, timeout=180_000, min_wait=8):
@@ -122,7 +127,7 @@ def list_cards(mobile=False) -> list:
 def shot_cards(keys=None, mobile=False, out_dir: Path = OUT) -> dict:
     """🏠 종합 탭 카드를 키별 PNG 로. 돌려주는 값 {키: 경로} — 못 찾은 키는 빠진다."""
     from playwright.sync_api import sync_playwright
-    want = list(keys) if keys else list(CARDS) + list(REGIONS)
+    want = list(keys) if keys else list(CARDS) + list(REGIONS) + list(REGION_TEXT)
     done, miss = {}, []
     with sync_playwright() as pw:
         # ⚠️ 뷰포트를 아주 길게 잡는다(2026-11-22). 짧은 뷰포트에서는 요소를 스크롤해 찍는데,
@@ -140,7 +145,13 @@ def shot_cards(keys=None, mobile=False, out_dir: Path = OUT) -> dict:
         tag = 'm' if mobile else 'w'
         for k in want:
             try:
-                if k in REGIONS:
+                if k in REGION_TEXT:
+                    sel, txt = REGION_TEXT[k]
+                    loc = p.locator(sel).filter(has_text=txt).last   # 가장 안쪽(마지막) — 바깥 래퍼가 같이 걸리지 않게
+                    if loc.count() == 0:
+                        miss.append(f'{k}("{txt}" 없음)')
+                        continue
+                elif k in REGIONS:
                     sel, idx = REGIONS[k]
                     loc = p.locator(sel)
                     n = loc.count()
