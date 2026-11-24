@@ -1,114 +1,5 @@
 [
  {
-  "at": "2026-11-13T21:57:49+00:00",
-  "ticker": "AXTI",
-  "lang": "ko",
-  "events": 1,
-  "result": "ok",
-  "digest": 1,
-  "model": "gemini-3.6-flash",
-  "sec": 30.7,
-  "why": ""
- },
- {
-  "at": "2026-11-13T21:57:50+00:00",
-  "ticker": "AXTI",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 0,
-  "digest": 1,
-  "links_shown": 0,
-  "chars": 647,
-  "fallback": false
- },
- {
-  "at": "2026-11-13T23:00:54+00:00",
-  "ticker": "373220.KS",
-  "lang": "ko",
-  "events": 2,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.6-flash",
-  "sec": 15.9,
-  "why": "제시된 기사 모두 이미 알린 사건(AI 서버용 LFP 배터리 양산 추진, LG엔솔 버테크의 에어로스 인텔리전스 출시)에 해당하여 제외했습니다."
- },
- {
-  "at": "2026-11-13T23:00:55+00:00",
-  "ticker": "373220.KS",
-  "stage": "skip",
-  "events": 2
- },
- {
-  "at": "2026-11-13T23:01:22+00:00",
-  "ticker": "PFE",
-  "lang": "ko",
-  "events": 4,
-  "result": "ok",
-  "digest": 1,
-  "model": "gemini-3.6-flash",
-  "sec": 25.6,
-  "why": ""
- },
- {
-  "at": "2026-11-13T23:01:22+00:00",
-  "ticker": "PFE",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 3,
-  "digest": 1,
-  "links_shown": 3,
-  "chars": 1869,
-  "fallback": false
- },
- {
-  "at": "2026-11-14T07:13:29+00:00",
-  "ticker": "AXTI",
-  "lang": "ko",
-  "events": 1,
-  "result": "ok",
-  "digest": 1,
-  "model": "gemini-3.6-flash",
-  "sec": 174.0,
-  "why": ""
- },
- {
-  "at": "2026-11-14T07:13:29+00:00",
-  "ticker": "AXTI",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 0,
-  "digest": 1,
-  "links_shown": 0,
-  "chars": 662,
-  "fallback": false
- },
- {
-  "at": "2026-11-14T07:13:55+00:00",
-  "ticker": "TSLA",
-  "lang": "ko",
-  "events": 5,
-  "result": "ok",
-  "digest": 1,
-  "model": "gemini-3.6-flash",
-  "sec": 25.1,
-  "why": ""
- },
- {
-  "at": "2026-11-14T07:13:56+00:00",
-  "ticker": "TSLA",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 2,
-  "digest": 1,
-  "links_shown": 2,
-  "chars": 1411,
-  "fallback": false
- },
- {
   "at": "2026-11-14T07:13:58+00:00",
   "ticker": "036930.KQ",
   "lang": "ko",
@@ -1893,5 +1784,102 @@
   "result": "error",
   "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
   "sec": 183.7
+ },
+ {
+  "at": "2026-11-24T19:02:57+00:00",
+  "ticker": "AXTI",
+  "lang": "ko",
+  "events": 2,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.6-flash",
+  "sec": 144.2,
+  "why": "단순 주가 등락 소식 및 옵션 차트 정보 외에 실적, 계약 등 투자자가 알아야 할 주요 사업 사건이 없습니다."
+ },
+ {
+  "at": "2026-11-24T19:02:57+00:00",
+  "ticker": "AXTI",
+  "stage": "skip",
+  "events": 2
+ },
+ {
+  "at": "2026-11-24T19:03:30+00:00",
+  "ticker": "TSLA",
+  "lang": "ko",
+  "events": 17,
+  "result": "ok",
+  "digest": 1,
+  "model": "gemini-3.6-flash",
+  "sec": 32.5,
+  "why": ""
+ },
+ {
+  "at": "2026-11-24T19:03:31+00:00",
+  "ticker": "TSLA",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 16,
+  "digest": 1,
+  "links_shown": 6,
+  "chars": 3285,
+  "fallback": false
+ },
+ {
+  "at": "2026-11-24T19:03:35+00:00",
+  "ticker": "036930.KQ",
+  "lang": "ko",
+  "events": 2,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.6-flash",
+  "sec": 3.8,
+  "why": "주가 등락 및 기관 수급 관련 기사 외에 기업 경영과 관련된 주요 사건 소식이 없습니다."
+ },
+ {
+  "at": "2026-11-24T19:03:37+00:00",
+  "ticker": "036930.KQ",
+  "stage": "skip",
+  "events": 2
+ },
+ {
+  "at": "2026-11-24T19:04:52+00:00",
+  "ticker": "373220.KS",
+  "lang": "ko",
+  "events": 8,
+  "result": "ok",
+  "digest": 1,
+  "model": "gemini-3.6-flash",
+  "sec": 74.4,
+  "why": ""
+ },
+ {
+  "at": "2026-11-24T19:04:54+00:00",
+  "ticker": "373220.KS",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 7,
+  "digest": 1,
+  "links_shown": 6,
+  "chars": 2546,
+  "fallback": false
+ },
+ {
+  "at": "2026-11-24T19:05:05+00:00",
+  "ticker": "LLY",
+  "lang": "ko",
+  "events": 2,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.6-flash",
+  "sec": 9.9,
+  "why": "이미 알려진 LoQus23 인수 건 외에 주주가 알아야 할 주요 신규 경영 사건이 없습니다."
+ },
+ {
+  "at": "2026-11-24T19:05:05+00:00",
+  "ticker": "LLY",
+  "stage": "skip",
+  "events": 2
  }
 ]
