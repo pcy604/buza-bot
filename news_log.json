@@ -1,94 +1,5 @@
 [
  {
-  "at": "2026-11-13T15:33:05+00:00",
-  "ticker": "PFE",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 2,
-  "digest": 1,
-  "links_shown": 2,
-  "chars": 1477,
-  "fallback": false
- },
- {
-  "at": "2026-11-13T15:33:20+00:00",
-  "ticker": "LLY",
-  "lang": "ko",
-  "events": 4,
-  "result": "ok",
-  "digest": 1,
-  "model": "gemini-3.6-flash",
-  "sec": 14.2,
-  "why": ""
- },
- {
-  "at": "2026-11-13T15:33:21+00:00",
-  "ticker": "LLY",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 3,
-  "digest": 1,
-  "links_shown": 3,
-  "chars": 1891,
-  "fallback": false
- },
- {
-  "at": "2026-11-13T19:04:37+00:00",
-  "ticker": "AXTI",
-  "events": 1,
-  "result": "error",
-  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
-  "sec": 245.9
- },
- {
-  "at": "2026-11-13T19:04:48+00:00",
-  "ticker": "TSLA",
-  "lang": "ko",
-  "events": 9,
-  "result": "ok",
-  "digest": 3,
-  "model": "gemini-3.6-flash",
-  "sec": 9.9,
-  "why": ""
- },
- {
-  "at": "2026-11-13T19:04:48+00:00",
-  "ticker": "TSLA",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 6,
-  "digest": 3,
-  "links_shown": 5,
-  "chars": 3521,
-  "fallback": false
- },
- {
-  "at": "2026-11-13T19:04:53+00:00",
-  "ticker": "031980.KQ",
-  "lang": "ko",
-  "events": 1,
-  "result": "ok",
-  "digest": 1,
-  "model": "gemini-3.6-flash",
-  "sec": 4.2,
-  "why": ""
- },
- {
-  "at": "2026-11-13T19:04:55+00:00",
-  "ticker": "031980.KQ",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 0,
-  "digest": 1,
-  "links_shown": 0,
-  "chars": 557,
-  "fallback": false
- },
- {
   "at": "2026-11-13T19:05:03+00:00",
   "ticker": "417840.KQ",
   "lang": "ko",
@@ -1915,5 +1826,79 @@
   "ticker": "TSLA",
   "stage": "skip",
   "events": 1
+ },
+ {
+  "at": "2026-11-24T07:14:01+00:00",
+  "ticker": "AXTI",
+  "lang": "ko",
+  "events": 1,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.5-flash-lite",
+  "sec": 211.2,
+  "why": "AI 관련주 랠리와 업종 낙관론에 따른 주가 급등 외에 펀더멘털에 직접 영향을 주는 실적, 계약, 규제 등의 새로운 소식이 없습니다."
+ },
+ {
+  "at": "2026-11-24T07:14:01+00:00",
+  "ticker": "AXTI",
+  "stage": "skip",
+  "events": 1
+ },
+ {
+  "at": "2026-11-24T07:15:10+00:00",
+  "ticker": "TSLA",
+  "lang": "ko",
+  "events": 9,
+  "result": "ok",
+  "digest": 2,
+  "model": "gemini-3.6-flash",
+  "sec": 67.7,
+  "why": ""
+ },
+ {
+  "at": "2026-11-24T07:15:10+00:00",
+  "ticker": "TSLA",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 7,
+  "digest": 2,
+  "links_shown": 6,
+  "chars": 3487,
+  "fallback": false
+ },
+ {
+  "at": "2026-11-24T07:15:12+00:00",
+  "ticker": "031980.KQ",
+  "lang": "ko",
+  "events": 1,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.5-flash-lite",
+  "sec": 0.9,
+  "why": "피에스케이홀딩스(031980.KQ)와 관련된 개별 기업의 실적, 계약, 공시 등의 중요 사건 없이 업계 일반론 수준의 주가 상승 소식만 있어 제외합니다."
+ },
+ {
+  "at": "2026-11-24T07:15:13+00:00",
+  "ticker": "031980.KQ",
+  "stage": "skip",
+  "events": 1
+ },
+ {
+  "at": "2026-11-24T07:15:14+00:00",
+  "ticker": "036930.KQ",
+  "lang": "ko",
+  "events": 3,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.5-flash-lite",
+  "sec": 1.0,
+  "why": "주가 등락에 관한 단순 시황 및 특징주 기사들뿐이어서 보유자가 알아야 할 새로운 실적, 계약, 공시 등의 중요 사건이 없습니다."
+ },
+ {
+  "at": "2026-11-24T07:15:15+00:00",
+  "ticker": "036930.KQ",
+  "stage": "skip",
+  "events": 3
  }
 ]

@@ -88,10 +88,10 @@
   "last_ok": "2026-11-15T06:04:03.463532+00:00"
  },
  "MRNA": {
-  "last_try": "2026-11-17T23:11:18.047562+00:00",
+  "last_try": "2026-11-24T07:17:15.642864+00:00",
   "last_error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
   "fails": 0,
-  "last_ok": "2026-10-26T23:04:28.166958+00:00"
+  "last_ok": "2026-11-24T07:17:15.642870+00:00"
  },
  "SCCO": {
   "last_try": "2026-11-18T03:42:01.017501+00:00",
