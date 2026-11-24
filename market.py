@@ -447,7 +447,10 @@ def _due(rec: dict, p: dict, now=None) -> bool:
     kst = prefs.local_now({'tz': 'Asia/Seoul'}, now)   # 시계는 prefs 한 곳(테스트가 바꿔 끼운다)
     now = kst.astimezone(timezone.utc)
     try:
-        gen = datetime.strptime(str(rec.get('generated', ''))[:16], '%Y-%m-%d %H:%M').replace(tzinfo=timezone.utc)
+        # 2026-11-24: 대시보드는 11-12 부터 generated 를 **KST** 로 찍는다(market_report._now_kst). 여기서 UTC 로 읽어
+        #   리포트가 9시간 '미래'로 보였고(age < -600 → 거름), 한국판은 다음 날 08시·미국판은 그날 20시 tick 에야 갔다.
+        from zoneinfo import ZoneInfo
+        gen = datetime.strptime(str(rec.get('generated', ''))[:16], '%Y-%m-%d %H:%M').replace(tzinfo=ZoneInfo('Asia/Seoul'))
         age = (now - gen).total_seconds()
         if age > STALE_H * 3600 or age < -600:   # 미래 시각(시계 어긋남·테스트 자료)도 거른다
             return False

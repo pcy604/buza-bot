@@ -38,7 +38,7 @@ assert '코어' not in t and '위성' not in t and '현금' not in t, '자산배
 assert 'href="https://dash"' in t and '투자 권유 아님' in t
 print('✅ 미국 장 렌더: 미국만·기준일 표기·자산배분 제외')
 
-KR = {'kind': 'kr', 'date': '2026-10-21', 'generated': '2026-10-21 06:52', 'engine': 'template', 'markdown': '',
+KR = {'kind': 'kr', 'date': '2026-10-21', 'generated': '2026-10-21 15:52', 'engine': 'template', 'markdown': '',
       'facts': {'kind': 'kr', 'indices': [F['indices'][0]],
                 'stocks': {'KR': {'basis': 'd1', 'breadth_up': 70, 'top': [{'name': '삼성전자', 'ret': 4.4}], 'bottom': [{'name': 'X', 'ret': -1.0}]}},
                 'signals': {'market_direction': {'KR': '하락추세'}}}}
