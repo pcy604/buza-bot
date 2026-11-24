@@ -104,10 +104,15 @@ function plan(now) {
     { at: hhmm(c, 30), days: WEEKDAY, bot: 'market' },
     { at: hhmm(c + 1, 0), days: WEEKDAY, bot: 'market' },
     { at: '06:45', days: WEEKDAY, dash: 'kr' },          // KST 15:45 — 한국 장 마감 15:30 +15분(KRX 종목 등락 반영 대기)
+    // 2026-11-24 재시도 — 대시보드가 '종목 시세가 아직 종가가 아님'(장중 스냅샷)이면 발행을 미룬다. 16:30 이 마지막.
+    { at: '07:00', days: WEEKDAY, dash: 'kr' },
+    { at: '07:15', days: WEEKDAY, dash: 'kr' },
+    { at: '07:30', days: WEEKDAY, dash: 'kr' },
     { at: '06:50', days: WEEKDAY, bot: 'market' },
     { at: '06:55', days: WEEKDAY, bot: 'market' },
     { at: '07:05', days: WEEKDAY, bot: 'market' },
-    { at: '07:30', days: WEEKDAY, bot: 'market' },
+    { at: '07:20', days: WEEKDAY, bot: 'market' },
+    { at: '07:35', days: WEEKDAY, bot: 'market' },
     { at: '23:00', days: EVERY, bot: 'tick' },           // KST 08:00 — 뉴스 요약·주기 작업
     { at: '11:00', days: EVERY, bot: 'tick' },           // KST 20:00
     // 유럽(바르샤바) 사용자 08·20시 — 서머타임(UTC+2) 06·18시 / 겨울(UTC+1) 07·19시
