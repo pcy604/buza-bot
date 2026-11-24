@@ -24,9 +24,12 @@ RAW = 'https://raw.githubusercontent.com/pcy604/stock-dashboard/main/results/mar
 
 # (캡처 키, 문장 키, 머리말) — 종합 탭 순서
 PLAN = {
-    'kr': [('global', 'summary', '오늘 한국 장'), ('pulse', 'direction', '시장 방향'), ('trend', 'breadth', '시장 폭'),
-           ('flow', 'flow', '돈의 흐름'), ('heatmap', 'sector', '업종'), ('featured', 'stocks', '종목')],
-    'daily': [('global', 'summary', '간밤 미국 장'), ('pulse', 'direction', '시장 방향'), ('trend', 'breadth', '시장 폭')],
+    'kr': [('global', ('summary',), '오늘 한국 장'), ('pulse', ('direction',), '시장 방향'),
+           ('week52', ('week52',), '52주 신고가·신저가'), ('trend', ('breadth',), '시장 폭'),
+           ('today', ('flow', 'stocks'), '돈의 흐름과 종목'), ('heatmap', ('sector',), '업종')],
+    'daily': [('global', ('summary',), '간밤 미국 장'), ('pulse', ('direction',), '시장 방향'),
+              ('week52', ('week52',), '52주 신고가·신저가'), ('trend', ('breadth',), '시장 폭'),
+              ('today', ('stocks', 'flow'), '종목과 자산'), ('heatmap', ('sector',), '업종')],
 }
 _TITLE = {'kr': '한국 장 마감 시황', 'daily': '미국 장 마감 시황'}
 
@@ -45,8 +48,8 @@ def captions(rec: dict) -> list:
     kind = rec.get('kind')
     n = (rec.get('facts') or {}).get('narrative') or {}
     out = []
-    for i, (shot, key, head) in enumerate(PLAN.get(kind, [])):
-        body = n.get(key) or ''
+    for i, (shot, keys, head) in enumerate(PLAN.get(kind, [])):
+        body = "\n".join(n[k] for k in keys if n.get(k))
         if not body:
             continue
         cap = ''
@@ -74,7 +77,8 @@ def build(rec: dict, out_dir: Path) -> list:
     """[(png 경로 또는 None, 캡션)] — 캡처에 실패한 구역은 문장만 보낸다(빈 화면을 보내지 않는다)."""
     from social import shot
     caps = captions(rec)
-    got = shot.shot_cards([k for k, _ in caps], out_dir=out_dir) if caps else {}
+    got = (shot.shot_cards([k for k, _ in caps], out_dir=out_dir, mkt='US' if rec.get('kind') == 'daily' else 'KR')
+           if caps else {})
     return [(str(got[k]) if k in got else None, c) for k, c in caps]
 
 

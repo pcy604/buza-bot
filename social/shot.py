@@ -54,6 +54,36 @@ REGION_TEXT = {
     'pulse': ('div.hm', '시장 추세 판정'),        # 오닐 4개 지수 카드
     'trend': ('div.hm', '상승 종목 비율'),        # 한국·미국 상승 종목 비율 30거래일 막대
 }
+# 2026-11-25 두 글자 사이를 통째로 — 머리(st.html)와 차트(plotly)가 따로 그려지는 구역.
+#   (위 글자, 아래 글자, 아래 여백 px). 차니: "실컷 만들어둔 이것들은 왜 활용 안 해?"
+REGION_CLIP = {
+    'week52': ('주간 52주 신고가 · 신저가', '출처: perf_run.py', 28),   # 한·미 주간 신고가·신저가 막대
+    'today':  ('지수 아래 실제 등락 종목 수', '시총 상위 10', 44),       # 오늘의 시장 8칸 + 시총 상위 10 줄
+}
+
+
+def _clip_between(p, top_txt, bot_txt, pad_bottom, out: Path, width=1300):
+    top = p.get_by_text(top_txt, exact=False).first
+    bot = p.get_by_text(bot_txt, exact=False).last
+    top.scroll_into_view_if_needed(timeout=30_000)
+    a, b = top.bounding_box(), bot.bounding_box()
+    if not a or not b:
+        raise RuntimeError('위치 없음')
+    y0 = max(a['y'] - 40, 0)                       # 머리 줄 위 여백(오른쪽 설명 글이 위 글자인 구역은 제목 줄까지)
+    y1 = b['y'] + b['height'] + pad_bottom
+    out.parent.mkdir(parents=True, exist_ok=True)
+    p.screenshot(path=str(out), clip={'x': 0, 'y': y0, 'width': width, 'height': y1 - y0}, full_page=True)
+    return out
+
+
+def _switch_market(p, mkt):
+    """종합 탭 '오늘의 시장'의 🇰🇷/🇺🇸 토글. 미국 리포트는 미국 화면을 찍는다."""
+    lab = '🇺🇸 미국' if mkt == 'US' else '🇰🇷 한국'
+    btn = p.get_by_text(lab, exact=True).first
+    if btn.count():
+        btn.click()
+        _settle(p, min_wait=6)
+
 
 
 def _settle(p, timeout=180_000, min_wait=8):
@@ -124,7 +154,7 @@ def list_cards(mobile=False) -> list:
         return got, extra
 
 
-def shot_cards(keys=None, mobile=False, out_dir: Path = OUT) -> dict:
+def shot_cards(keys=None, mobile=False, out_dir: Path = OUT, mkt: str = 'KR') -> dict:
     """🏠 종합 탭 카드를 키별 PNG 로. 돌려주는 값 {키: 경로} — 못 찾은 키는 빠진다."""
     from playwright.sync_api import sync_playwright
     want = list(keys) if keys else list(CARDS) + list(REGIONS) + list(REGION_TEXT)
@@ -143,8 +173,14 @@ def shot_cards(keys=None, mobile=False, out_dir: Path = OUT) -> dict:
         # 카드 하나라도 떠야 의미가 있다
         b, p = _page(pw, APP, ready='div.hm-box', **size)
         tag = 'm' if mobile else 'w'
+        if mkt == 'US':
+            _switch_market(p, 'US')
         for k in want:
             try:
+                if k in REGION_CLIP:
+                    a, z, pad = REGION_CLIP[k]
+                    done[k] = _clip_between(p, a, z, pad, out_dir / f'card_{tag}_{k}.png', width=size['width'])
+                    continue
                 if k in REGION_TEXT:
                     sel, txt = REGION_TEXT[k]
                     loc = p.locator(sel).filter(has_text=txt).last   # 가장 안쪽(마지막) — 바깥 래퍼가 같이 걸리지 않게
