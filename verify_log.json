@@ -1,23 +1,5 @@
 [
  {
-  "date": "2026-09-16",
-  "blocked": {
-   "AAPL": "AS_OF",
-   "CORT": "AS_OF",
-   "CRWV": "AS_OF",
-   "IONQ": "AS_OF",
-   "PLUG": "AS_OF"
-  },
-  "yt": {
-   "n24": 6,
-   "ok24": 4,
-   "errs": {
-    "토큰초과": 1,
-    "503/504": 1
-   }
-  }
- },
- {
   "date": "2026-09-17",
   "blocked": {
    "AAPL": "AS_OF",
@@ -816,6 +798,21 @@
    },
    "samples": [
     "xY5-S_n1SDo: 403 PERMISSION_DENIED. {'error': {'code': 403, 'message': 'The caller does not have permission', 'status': 'PERMISSION_D"
+   ]
+  }
+ },
+ {
+  "date": "2026-11-24",
+  "blocked": {},
+  "yt": {
+   "n24": 10,
+   "ok24": 8,
+   "errs": {
+    "503/504": 2
+   },
+   "samples": [
+    "mZ1tM9sflvg: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+    "YBPuplDBzU4: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand "
    ]
   }
  }
