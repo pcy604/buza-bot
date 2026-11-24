@@ -20,11 +20,24 @@ jobs:
           pip install -r requirements.txt
           pip install playwright
           python -m playwright install --with-deps chromium
+      # 발행된 판을 덮지 않고, 대시보드 최신 코드로 새 판을 만들어(MR_PREVIEW — 저장·커밋 없음) 그걸 보낸다
+      - uses: actions/checkout@v4
+        with:
+          repository: pcy604/stock-dashboard
+          path: dash
+      - name: 새 판 만들기(미리보기)
+        working-directory: dash
+        env:
+          MR_PREVIEW: '1'
+          REPORT_FORCE: '1'
+        run: |
+          pip install -r requirements.txt
+          python market_report.py "${{ inputs.kind }}"
       - name: 미리보기 발송
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           OWNER_CHAT: ${{ secrets.OWNER_CHAT }}
-        run: python -m report_album preview "${{ inputs.kind }}"
+        run: python -m report_album preview "${{ inputs.kind }}" "dash/preview_${{ inputs.kind }}.json"
       - name: 캡처 실패 화면
         if: always()
         uses: actions/upload-artifact@v4

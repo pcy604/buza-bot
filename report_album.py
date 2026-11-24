@@ -6,6 +6,7 @@
 
   python -m report_album preview kr      → 차니에게만(OWNER_CHAT)
   python -m report_album preview daily
+  python -m report_album preview kr dash/preview_kr.json   → 발행 전 새 판으로
 """
 import html
 import json
@@ -91,7 +92,8 @@ def main(argv):
         print(__doc__)
         return 2
     kind = argv[2]
-    rec = load(kind)
+    # 세 번째 인자 = 대시보드 미리보기 JSON(발행 안 한 새 판). 없으면 발행된 판
+    rec = json.load(open(argv[3], encoding="utf-8")) if len(argv) > 3 else load(kind)
     if not (rec.get('facts') or {}).get('narrative'):
         print(f'⚠️ {kind} 리포트에 규칙 문장(narrative)이 없다 — 대시보드가 새 경로로 만든 판인지 확인 · engine={rec.get("engine")}')
         return 1
