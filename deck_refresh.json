@@ -127,9 +127,9 @@
   "last_ok": "2026-11-14T02:14:03.494854+00:00"
  },
  "FCEL": {
-  "last_try": "2026-11-16T01:57:26.067915+00:00",
+  "last_try": "2026-11-24T02:25:11.300911+00:00",
   "fails": 0,
-  "last_ok": "2026-10-25T06:01:29.309933+00:00",
+  "last_ok": "2026-11-24T02:25:11.300918+00:00",
   "last_error": "ServerError: 504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'Deadline expired before operation could complete.', 'status': 'DEADLINE_EXCEEDED'}}"
  },
  "RBLX": {

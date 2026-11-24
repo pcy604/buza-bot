@@ -1,28 +1,5 @@
 [
  {
-  "at": "2026-11-13T15:32:29+00:00",
-  "ticker": "373220.KS",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 4,
-  "digest": 3,
-  "links_shown": 4,
-  "chars": 2643,
-  "fallback": false
- },
- {
-  "at": "2026-11-13T15:33:05+00:00",
-  "ticker": "PFE",
-  "lang": "ko",
-  "events": 3,
-  "result": "ok",
-  "digest": 1,
-  "model": "gemini-3.6-flash",
-  "sec": 35.3,
-  "why": ""
- },
- {
   "at": "2026-11-13T15:33:05+00:00",
   "ticker": "PFE",
   "stage": "send",
@@ -1921,5 +1898,22 @@
   "links_shown": 2,
   "chars": 2036,
   "fallback": false
+ },
+ {
+  "at": "2026-11-24T02:08:13+00:00",
+  "ticker": "TSLA",
+  "lang": "ko",
+  "events": 1,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.8-flash",
+  "sec": 8.9,
+  "why": "새로운 주요 경영·사업 이슈 없이 기보고된 베를린 투자와 애널리스트 목표가 상향을 다룬 요약 기사만 있습니다."
+ },
+ {
+  "at": "2026-11-24T02:08:13+00:00",
+  "ticker": "TSLA",
+  "stage": "skip",
+  "events": 1
  }
 ]
