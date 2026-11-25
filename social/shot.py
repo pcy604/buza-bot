@@ -154,7 +154,7 @@ def list_cards(mobile=False) -> list:
         return got, extra
 
 
-def shot_cards(keys=None, mobile=False, out_dir: Path = OUT, mkt: str = 'KR') -> dict:
+def shot_cards(keys=None, mobile=False, out_dir: Path = OUT, mkt: str = 'KR', expect: str = None) -> dict:
     """🏠 종합 탭 카드를 키별 PNG 로. 돌려주는 값 {키: 경로} — 못 찾은 키는 빠진다."""
     from playwright.sync_api import sync_playwright
     want = list(keys) if keys else list(CARDS) + list(REGIONS) + list(REGION_TEXT)
@@ -173,6 +173,18 @@ def shot_cards(keys=None, mobile=False, out_dir: Path = OUT, mkt: str = 'KR') ->
         # 카드 하나라도 떠야 의미가 있다
         b, p = _page(pw, APP, ready='div.hm-box', **size)
         tag = 'm' if mobile else 'w'
+        if expect:
+            # 2026-11-26 사이트가 새 결과를 아직 안 읽었으면(배포 직후) 어제 화면을 찍게 된다 — 오늘 날짜가 보일 때까지 다시 연다
+            for i in range(4):
+                if p.get_by_text(expect, exact=False).count():
+                    break
+                print(f'[shot] 화면에 {expect} 없음 → 45초 뒤 새로고침({i + 1}/4)')
+                p.wait_for_timeout(45_000)
+                p.reload()
+                _settle(p)
+            else:
+                b.close()
+                raise RuntimeError(f'사이트가 {expect} 자료를 아직 안 보여 준다 — 캡처 안 함')
         if mkt == 'US':
             _switch_market(p, 'US')
         for k in want:

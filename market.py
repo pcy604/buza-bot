@@ -378,6 +378,29 @@ def caption(rec: dict, dash_url: str = '') -> str:
     return (body + tail)[:1024]
 
 
+def _album(rec: dict):
+    """규칙 문장(narrative)이 있는 판만 카드뉴스로. 캡처가 절반 넘게 실패하면 쓰지 않는다(예전 카드로)."""
+    if not ((rec.get('facts') or {}).get('narrative')):
+        return None
+    try:
+        import tempfile
+        from pathlib import Path
+        import report_album
+        report_album.ensure_browser()
+        items = report_album.build(rec, Path(tempfile.mkdtemp()))
+        ok = sum(1 for p, _ in items if p)
+        print(f'[카드뉴스] {rec.get("kind")} {rec.get("date")} 이미지 {ok}/{len(items)}')
+        return items if items and ok * 2 >= len(items) else None
+    except Exception as e:
+        print(f'[카드뉴스 실패 → 예전 카드] {e}')
+        return None
+
+
+def _send_album(chat, rec: dict, items: list) -> bool:
+    import report_album
+    return report_album.send(chat, items, report_album.closing(rec)) > 0
+
+
 def _send_one(chat, rec: dict, dash_url: str = '') -> bool:
     """기본은 포토카드(이미지+캡션). /market text 로 바꾼 사람·이미지 실패 때는 예전 텍스트.
     2026-11-11 3장 앨범(히트맵)은 차니 판단 '작게 보면 별로·종목명 잘림'으로 접고 1장 카드에 엣지를 더함."""
@@ -468,11 +491,17 @@ def deliver(dash_url: str = '') -> int:
         return 0
     import tg
     n = 0
+    album = {}   # 2026-11-26 카드뉴스(사이트 화면 + 문장) — 종류마다 한 번만 캡처해 모든 구독자에게
     for chat in subs:
         p = prefs.get(chat)
         for kind in KINDS:
             rec = db.get(f'latest_{kind}')
-            if _due(rec, p) and _send_one(chat, rec, dash_url):
+            if not _due(rec, p):
+                continue
+            if p.get('market_fmt') != 'text' and kind in ('kr', 'daily') and kind not in album:
+                album[kind] = _album(rec)
+            items = album.get(kind)
+            if (items and _send_album(chat, rec, items)) or _send_one(chat, rec, dash_url):
                 prefs._set(chat, **{f'market_sent_{kind}': rec.get('date')})
                 n += 1
     return n

@@ -73,13 +73,51 @@ def closing(rec: dict) -> str:
     return '\n'.join(L)
 
 
+# 2026-11-26 차니: "한국·미국 카드뉴스 보낼 때 종목 각 시장에 맞게" — 한·미가 나란히 그려진 구역은 반쪽만.
+#   왼쪽 = 한국(코스피·코스닥 / KR 막대), 오른쪽 = 미국(S&P500·나스닥 / US 막대). 오늘의 시장·히트맵은 토글로 이미 시장별.
+HALF = {'pulse', 'week52', 'trend'}
+
+
+def _half(path: str, side: str) -> str:
+    from PIL import Image
+    im = Image.open(path)
+    w, h = im.size
+    box = (0, 0, w // 2 + 6, h) if side == 'L' else (w // 2 - 6, 0, w, h)
+    out = path.replace('.png', f'_{side}.png')
+    im.crop(box).save(out)
+    return out
+
+
+def ensure_browser():
+    """실제 발송 실행(run.yml)에는 브라우저가 없다 — 보낼 리포트가 있을 때만 설치(매 실행 설치는 분 낭비)."""
+    try:
+        import playwright  # noqa: F401
+    except ImportError:
+        import subprocess
+        subprocess.run([sys.executable, '-m', 'pip', 'install', '-q', 'playwright'], check=True)
+    marker = Path.home() / '.cache' / 'ms-playwright'
+    if not any(marker.glob('chromium*')) if marker.exists() else True:
+        import subprocess
+        subprocess.run([sys.executable, '-m', 'playwright', 'install', '--with-deps', 'chromium'], check=True)
+
+
 def build(rec: dict, out_dir: Path) -> list:
     """[(png 경로 또는 None, 캡션)] — 캡처에 실패한 구역은 문장만 보낸다(빈 화면을 보내지 않는다)."""
     from social import shot
     caps = captions(rec)
-    got = (shot.shot_cards([k for k, _ in caps], out_dir=out_dir, mkt='US' if rec.get('kind') == 'daily' else 'KR')
-           if caps else {})
-    return [(str(got[k]) if k in got else None, c) for k, c in caps]
+    us = rec.get('kind') == 'daily'
+    got = (shot.shot_cards([k for k, _ in caps], out_dir=out_dir, mkt='US' if us else 'KR',
+                           expect=None if os.environ.get('ALBUM_NO_EXPECT') else rec.get('date')) if caps else {})
+    out = []
+    for k, c in caps:
+        png = str(got[k]) if k in got else None
+        if png and k in HALF:
+            try:
+                png = _half(png, 'R' if us else 'L')
+            except Exception as e:
+                print(f'[카드뉴스] 반쪽 자르기 실패 {k}: {e}')
+        out.append((png, c))
+    return out
 
 
 def send(chat, items: list, tail: str) -> int:
