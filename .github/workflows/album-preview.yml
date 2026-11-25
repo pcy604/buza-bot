@@ -30,6 +30,7 @@ jobs:
         env:
           MR_PREVIEW: '1'
           REPORT_FORCE: '1'
+          GEMINI_KEY: ${{ secrets.GEMINI_KEY }}   # 재료 해설 2문장
         run: |
           pip install -r requirements.txt
           python market_report.py "${{ inputs.kind }}"
