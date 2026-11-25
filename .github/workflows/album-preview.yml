@@ -57,4 +57,5 @@ jobs:
           GEMINI_KEY: ${{ secrets.GEMINI_KEY }}
         run: |
           sudo apt-get update -y -q >/dev/null && sudo apt-get install -y -q fonts-nanum ffmpeg >/dev/null
+          pip install -q -U google-genai   # TTS(speech_config)는 새 버전 필요 — 고정 버전은 400 INVALID_ARGUMENT
           python -m report_shorts preview "${{ inputs.kind }}" "dash/preview_${{ inputs.kind }}.json"
