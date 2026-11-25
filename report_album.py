@@ -35,24 +35,26 @@ def _e(s):
 
 
 def _first(s: str) -> str:
-    """문단의 첫 문장(마침표까지) — 캡션 한도를 넘을 때 줄이는 단위."""
+    """줄이는 단위 — 여러 줄이면 앞 2줄, 한 줄이면 첫 문장."""
     s = str(s or '')
+    if '\n' in s:
+        return '\n'.join(s.split('\n')[:2])
     i = s.find('. ')
     return s[: i + 1] if i > 0 else s
 
 
 def caption(rec: dict, limit: int = 1020) -> str:
-    """한 통 캡션. 우선순위 낮은 문단부터 첫 문장만 남기고, 그래도 넘치면 뺀다."""
+    """한 통 캡션 — ①~⑤ 가 사진 순서와 같다. 넘치면 우선순위 낮은 문단부터 줄이고, 그래도 넘치면 뺀다."""
     kind = rec.get('kind')
     n = (rec.get('facts') or {}).get('narrative') or {}
     head = f"<b>{FLAG.get(kind, '')} {TITLE.get(kind, '시황')} · {_e(rec.get('date'))}" + (' (현지)' if kind == 'daily' else '') + '</b>'
-    why = [_e(w) for w in (n.get('why') or [])[:2]]
-    # (머리, 본문, 우선순위 — 클수록 먼저 줄인다)
-    parts = [('', n.get('summary'), 0),
-             ('📰 시장을 움직인 재료', '\n'.join('· ' + w for w in why) if why else '', 1),
+    why = '\n'.join(x for x in ([_e(n['explain'])] if n.get('explain') else []) +
+                    ['· ' + _e(w) for w in (n.get('why') or [])[:2]] if x)
+    parts = [('① 오늘 시장', n.get('summary'), 0),
+             ('📰 시장을 움직인 재료', why, 1),
              (f"② 투자 신호등 {n.get('light', '')}", n.get('signal'), 0),
              ('③ 시장 폭 · 52주 신고가·신저가', n.get('breadth'), 3),
-             ('④ 돈의 흐름 · 종목', ' '.join(x for x in (n.get('flow'), n.get('stocks')) if x), 4),
+             ('④ 돈의 흐름 · 종목', '\n'.join(x for x in (n.get('flow'), n.get('stocks')) if x), 4),
              ('⑤ 업종', n.get('sector'), 5)]
     if n.get('ledger'):
         parts.append(('실전 원장', n['ledger'], 2))
@@ -63,24 +65,53 @@ def caption(rec: dict, limit: int = 1020) -> str:
     def render(ps):
         out = [head]
         for h, body, _ in ps:
-            if not body:
-                continue
-            b = body if h.startswith('📰') else _e(body)
-            out.append((f'<b>{_e(h) if not h.startswith("📰") else h}</b>\n' if h else '') + b)
+            if body:
+                out.append(f'<b>{_e(h)}</b>\n' + (body if h.startswith('📰') else _e(body)))
         out.append(foot)
         return '\n\n'.join(out)
 
     ps = list(parts)
-    for pri in (5, 4, 3, 2, 1):        # 1단계: 첫 문장만
+    for pri in (5, 4, 3, 2, 1):
         if len(render(ps)) <= limit:
             break
-        ps = [(h, _first(b) if p_ == pri and not h.startswith('📰') else b, p_) for h, b, p_ in ps]
-    for pri in (5, 4, 3, 2):           # 2단계: 통째로 빼기
+        ps = [(h, _first(b) if p_ == pri else b, p_) for h, b, p_ in ps]
+    for pri in (5, 4, 3, 2):
         if len(render(ps)) <= limit:
             break
         ps = [x for x in ps if x[2] != pri]
     txt = render(ps)
     return txt if len(txt) <= limit else txt[: limit - 1] + '…'
+
+
+def quality(rec: dict, photos: list, cap: str) -> list:
+    """발송 전 채점 — 빈 목록이면 만점. 2026-11-26 차니: '기준 미달이면 자동으로 고치고 바로 올려야지'."""
+    n = (rec.get('facts') or {}).get('narrative') or {}
+    bad = []
+    if len(photos) < len(SHOTS):
+        bad.append(f'사진 {len(photos)}/{len(SHOTS)}')
+    for k, lab in (('summary', '① 요약'), ('signal', '② 신호등'), ('breadth', '③ 시장 폭'), ('stocks', '④ 종목'), ('sector', '⑤ 업종')):
+        if not n.get(k):
+            bad.append(f'{lab} 없음')
+    if not n.get('why'):
+        bad.append('재료 뉴스 없음')
+    for k in ('③', '④', '⑤'):
+        if k not in cap:
+            bad.append(f'캡션에서 {k} 잘림')
+    return bad
+
+
+def _trim(path: str, pad: int = 14) -> str:
+    """사이트 양옆·위아래 빈 공간을 잘라 낸다(2026-11-26 — 사이트는 가운데로 세로로 쌓여 가로 끝이 비어 있다)."""
+    from PIL import Image, ImageChops
+    im = Image.open(path).convert('RGB')
+    bg = Image.new('RGB', im.size, im.getpixel((2, 2)))
+    diff = ImageChops.add(ImageChops.difference(im, bg), ImageChops.difference(im, bg), 2.0, -6)   # 배경 회색 vs 흰 카드도 잡게
+    box = diff.getbbox()
+    if box:
+        x0, y0, x1, y1 = box
+        im = im.crop((max(x0 - pad, 0), max(y0 - pad, 0), min(x1 + pad, im.width), min(y1 + pad, im.height)))
+        im.save(path)
+    return path
 
 
 def _half(path: str, side: str) -> str:
@@ -131,11 +162,33 @@ def build(rec: dict, out_dir: Path) -> list:
         for k in s.split('+'):
             if k in got:
                 p = str(got[k])
-                ps.append(_half(p, side) if k in HALF else p)
+                p = _half(p, side) if k in HALF else p
+                try:
+                    p = _trim(p)
+                except Exception as e:
+                    print(f'[카드뉴스] 여백 자르기 실패 {k}: {e}')
+                ps.append(p)
         if not ps:
             continue
         out.append(ps[0] if len(ps) == 1 else _stack(ps, str(out_dir / f'stack_{s.replace("+", "_")}.png')))
     return out
+
+
+def build_checked(rec: dict, tries: int = 2):
+    """채점 → 사진이 모자라면 1분 뒤 다시 찍어 고친다. 글 결함은 대시보드 쪽(재시도·보류)이 고친다 — 여기선 기록만."""
+    import time
+    best = ([], caption(rec), ['미실행'])
+    for i in range(tries):
+        photos = build(rec, Path(tempfile.mkdtemp()))
+        cap = caption(rec)
+        bad = quality(rec, photos, cap)
+        if len(photos) >= len(best[0]):
+            best = (photos, cap, bad)
+        if not any(b.startswith('사진') for b in bad):
+            break
+        print(f'[카드뉴스 채점] {bad} → 60초 뒤 다시 찍기({i + 1}/{tries})')
+        time.sleep(60)
+    return best
 
 
 def send(chat, photos: list, cap: str) -> bool:
@@ -156,9 +209,8 @@ def main(argv):
         print(f'⚠️ {kind} 리포트에 규칙 문장(narrative)이 없다 · engine={rec.get("engine")}')
         return 1
     chat = os.environ.get('OWNER_CHAT', '').strip() or str(getattr(config, 'OWNER_CHAT', ''))
-    photos = build(rec, Path(tempfile.mkdtemp()))
-    cap = caption(rec)
-    print(f'{kind} {rec.get("date")} · 사진 {len(photos)}/{len(SHOTS)} · 캡션 {len(cap)}자')
+    photos, cap, bad = build_checked(rec)
+    print(f'{kind} {rec.get("date")} · 사진 {len(photos)}/{len(SHOTS)} · 캡션 {len(cap)}자 · 채점 {bad or "만점"}')
     ok = send(chat, photos, cap)
     print('보냄 1통 → 소유자만' if ok else '발송 실패')
     return 0 if ok else 1

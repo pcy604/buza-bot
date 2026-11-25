@@ -387,8 +387,8 @@ def _album(rec: dict):
         from pathlib import Path
         import report_album
         report_album.ensure_browser()
-        photos = report_album.build(rec, Path(tempfile.mkdtemp()))
-        print(f'[카드뉴스] {rec.get("kind")} {rec.get("date")} 사진 {len(photos)}/{len(report_album.SHOTS)}')
+        photos, _cap, bad = report_album.build_checked(rec)
+        print(f'[카드뉴스] {rec.get("kind")} {rec.get("date")} 사진 {len(photos)}/{len(report_album.SHOTS)} · 채점 {bad or "만점"}')
         return photos if len(photos) >= 3 else None
     except Exception as e:
         print(f'[카드뉴스 실패 → 예전 카드] {e}')
