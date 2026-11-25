@@ -48,7 +48,8 @@ def caption(rec: dict, limit: int = 1020) -> str:
     kind = rec.get('kind')
     n = (rec.get('facts') or {}).get('narrative') or {}
     head = f"<b>{FLAG.get(kind, '')} {TITLE.get(kind, '시황')} · {_e(rec.get('date'))}" + (' (현지)' if kind == 'daily' else '') + '</b>'
-    why = '\n'.join(x for x in ([_e(n['explain'])] if n.get('explain') else []) +
+    why = '\n'.join(x for x in ['📊 ' + _e(e) for e in (n.get('econ') or [])[:3]] +
+                    ([_e(n['explain'])] if n.get('explain') else []) +
                     ['· ' + _e(w) for w in (n.get('why') or [])[:2]] if x)
     parts = [('① 오늘 시장', n.get('summary'), 0),
              ('📰 시장을 움직인 재료', why, 1),

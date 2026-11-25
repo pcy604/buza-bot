@@ -6,6 +6,9 @@ on:
       kind:
         description: 'kr | daily'
         default: 'kr'
+      shorts:
+        description: '쇼츠 mp4 도 만들어 보내기(true)'
+        default: 'false'
 jobs:
   preview:
     runs-on: ubuntu-latest
@@ -46,3 +49,12 @@ jobs:
           name: shots
           path: /tmp/tmp*/card_*.png
           if-no-files-found: ignore
+      - name: 쇼츠 미리보기
+        if: inputs.shorts == 'true'
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          OWNER_CHAT: ${{ secrets.OWNER_CHAT }}
+          GEMINI_KEY: ${{ secrets.GEMINI_KEY }}
+        run: |
+          sudo apt-get update -y -q >/dev/null && sudo apt-get install -y -q fonts-nanum ffmpeg >/dev/null
+          python -m report_shorts preview "${{ inputs.kind }}" "dash/preview_${{ inputs.kind }}.json"
