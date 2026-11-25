@@ -6,10 +6,11 @@
   "last_ok": "2026-11-17T03:47:24.569844+00:00"
  },
  "AXTI": {
-  "last_try": "2026-11-04T06:04:59.475146+00:00",
-  "fails": 0,
+  "last_try": "2026-11-25T07:16:48.388079+00:00",
+  "fails": 1,
   "last_error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
-  "last_ok": "2026-11-04T06:04:59.475153+00:00"
+  "last_ok": "2026-11-04T06:04:59.475153+00:00",
+  "last_reason": "BUSINESS: 표지 3줄(무엇을/누가/어떻게) 중 2줄만 있음 — 이 산업을 모르는 독자가 무슨 회사인지 알 방법이 없음"
  },
  "BE": {
   "last_try": "2026-11-22T07:19:05.741613+00:00",

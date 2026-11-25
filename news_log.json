@@ -1,68 +1,5 @@
 [
  {
-  "at": "2026-11-14T18:18:01+00:00",
-  "ticker": "PFE",
-  "lang": "ko",
-  "events": 7,
-  "result": "ok",
-  "digest": 4,
-  "model": "gemini-3.6-flash",
-  "sec": 16.1,
-  "why": ""
- },
- {
-  "at": "2026-11-14T18:18:02+00:00",
-  "ticker": "PFE",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 3,
-  "digest": 4,
-  "links_shown": 3,
-  "chars": 3137,
-  "fallback": false
- },
- {
-  "at": "2026-11-14T19:01:06+00:00",
-  "ticker": "TSLA",
-  "lang": "ko",
-  "events": 12,
-  "result": "ok",
-  "digest": 1,
-  "model": "gemini-3.6-flash",
-  "sec": 29.7,
-  "why": ""
- },
- {
-  "at": "2026-11-14T19:01:07+00:00",
-  "ticker": "TSLA",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 10,
-  "digest": 1,
-  "links_shown": 6,
-  "chars": 3449,
-  "fallback": false
- },
- {
-  "at": "2026-11-14T23:05:50+00:00",
-  "ticker": "373220.KS",
-  "lang": "ko",
-  "events": 2,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.6-flash",
-  "sec": 317.5,
-  "why": "이미 알린 ESS 입찰 불참 소식과 단순 업계 재무 비교 보도 외에 새로운 주요 경영 사건이 없습니다."
- },
- {
-  "at": "2026-11-14T23:05:51+00:00",
-  "ticker": "373220.KS",
-  "stage": "skip",
-  "events": 2
- },
- {
   "at": "2026-11-14T23:06:05+00:00",
   "ticker": "LLY",
   "lang": "ko",
@@ -1876,5 +1813,62 @@
   "ticker": "LLY",
   "stage": "skip",
   "events": 1
+ },
+ {
+  "at": "2026-11-25T07:10:40+00:00",
+  "ticker": "AXTI",
+  "lang": "ko",
+  "events": 1,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.6-flash",
+  "sec": 12.1,
+  "why": "단순 주가 등락 및 차익 실현에 관한 보도만 존재하여 추릴 만한 주요 기업 사건이 없습니다."
+ },
+ {
+  "at": "2026-11-25T07:10:40+00:00",
+  "ticker": "AXTI",
+  "stage": "skip",
+  "events": 1
+ },
+ {
+  "at": "2026-11-25T07:10:53+00:00",
+  "ticker": "TSLA",
+  "lang": "ko",
+  "events": 9,
+  "result": "ok",
+  "digest": 1,
+  "model": "gemini-3.6-flash",
+  "sec": 12.0,
+  "why": ""
+ },
+ {
+  "at": "2026-11-25T07:10:53+00:00",
+  "ticker": "TSLA",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 8,
+  "digest": 1,
+  "links_shown": 6,
+  "chars": 3290,
+  "fallback": false
+ },
+ {
+  "at": "2026-11-25T07:11:10+00:00",
+  "ticker": "036930.KQ",
+  "lang": "ko",
+  "events": 3,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.5-flash-lite",
+  "sec": 15.7,
+  "why": "외국인 순매도 및 단순 주가 하락 소식 외에 투자 판단에 영향을 줄 새로운 실적, 계약, 공시 등 중요 사건이 없습니다."
+ },
+ {
+  "at": "2026-11-25T07:11:11+00:00",
+  "ticker": "036930.KQ",
+  "stage": "skip",
+  "events": 3
  }
 ]
