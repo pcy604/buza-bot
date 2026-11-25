@@ -1,56 +1,5 @@
 [
  {
-  "at": "2026-11-15T23:02:48+00:00",
-  "ticker": "373220.KS",
-  "lang": "ko",
-  "events": 7,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.8-flash",
-  "sec": 141.7,
-  "why": "전시회(RE+ 2026) 참가 및 솔루션 홍보성 보도와 협력사 관련 기사뿐이며, 투자 판단에 영향을 줄 핵심 경영 사건(실적·수주·계약 등)은 없습니다."
- },
- {
-  "at": "2026-11-15T23:02:50+00:00",
-  "ticker": "373220.KS",
-  "stage": "skip",
-  "events": 7
- },
- {
-  "at": "2026-11-15T23:02:54+00:00",
-  "ticker": "PFE",
-  "lang": "ko",
-  "events": 1,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.6-flash",
-  "sec": 3.6,
-  "why": "실적 발표, 인수합병, 임상·승인 등 투자자가 알아야 할 주요 기업 사건 보도가 없습니다."
- },
- {
-  "at": "2026-11-15T23:02:54+00:00",
-  "ticker": "PFE",
-  "stage": "skip",
-  "events": 1
- },
- {
-  "at": "2026-11-16T07:10:36+00:00",
-  "ticker": "TSLA",
-  "lang": "ko",
-  "events": 2,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.6-flash",
-  "sec": 3.8,
-  "why": "투자자가 주목할 만한 주요 실적, 규제, 공식 계약 등 핵심 소식이 없습니다."
- },
- {
-  "at": "2026-11-16T07:10:36+00:00",
-  "ticker": "TSLA",
-  "stage": "skip",
-  "events": 2
- },
- {
   "at": "2026-11-16T07:10:42+00:00",
   "ticker": "036930.KQ",
   "lang": "ko",
@@ -1874,6 +1823,75 @@
   "digest": 1,
   "links_shown": 4,
   "chars": 2305,
+  "fallback": false
+ },
+ {
+  "at": "2026-11-25T23:00:35+00:00",
+  "ticker": "TSLA",
+  "lang": "ko",
+  "events": 14,
+  "result": "ok",
+  "digest": 3,
+  "model": "gemini-3.5-flash-lite",
+  "sec": 6.6,
+  "why": ""
+ },
+ {
+  "at": "2026-11-25T23:00:35+00:00",
+  "ticker": "TSLA",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 8,
+  "digest": 3,
+  "links_shown": 6,
+  "chars": 3759,
+  "fallback": false
+ },
+ {
+  "at": "2026-11-25T23:00:40+00:00",
+  "ticker": "373220.KS",
+  "lang": "ko",
+  "events": 1,
+  "result": "ok",
+  "digest": 1,
+  "model": "gemini-3.5-flash-lite",
+  "sec": 3.9,
+  "why": ""
+ },
+ {
+  "at": "2026-11-25T23:00:42+00:00",
+  "ticker": "373220.KS",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 0,
+  "digest": 1,
+  "links_shown": 0,
+  "chars": 555,
+  "fallback": false
+ },
+ {
+  "at": "2026-11-25T23:01:32+00:00",
+  "ticker": "LLY",
+  "lang": "ko",
+  "events": 1,
+  "result": "ok",
+  "digest": 1,
+  "model": "gemini-3.5-flash-lite",
+  "sec": 47.6,
+  "why": ""
+ },
+ {
+  "at": "2026-11-25T23:01:32+00:00",
+  "ticker": "LLY",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 0,
+  "digest": 1,
+  "links_shown": 0,
+  "chars": 589,
   "fallback": false
  }
 ]
