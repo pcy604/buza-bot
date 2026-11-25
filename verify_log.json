@@ -1,20 +1,5 @@
 [
  {
-  "date": "2026-09-17",
-  "blocked": {
-   "AAPL": "AS_OF",
-   "CORT": "AS_OF",
-   "IONQ": "AS_OF",
-   "PLUG": "AS_OF",
-   "WDAY": "AS_OF"
-  },
-  "yt": {
-   "n24": 6,
-   "ok24": 6,
-   "errs": {}
-  }
- },
- {
   "date": "2026-09-18",
   "blocked": {
    "AAPL": "AS_OF",
@@ -813,6 +798,24 @@
    "samples": [
     "mZ1tM9sflvg: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
     "YBPuplDBzU4: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand "
+   ]
+  }
+ },
+ {
+  "date": "2026-11-25",
+  "blocked": {
+   "AXTI": "BUSINESS"
+  },
+  "yt": {
+   "n24": 8,
+   "ok24": 6,
+   "errs": {
+    "503/504": 1,
+    "기타": 1
+   },
+   "samples": [
+    "wcnQXFLs93g: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+    "p7VzsJTeqmw: 403 PERMISSION_DENIED. {'error': {'code': 403, 'message': 'The caller does not have permission', 'status': 'PERMISSION_D"
    ]
   }
  }

@@ -1,81 +1,5 @@
 [
  {
-  "at": "2026-11-15T11:24:02+00:00",
-  "ticker": "373220.KS",
-  "events": 11,
-  "result": "error",
-  "why": "504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'Deadline expired before operation could complete.', 'status':",
-  "sec": 622.9
- },
- {
-  "at": "2026-11-15T16:57:48+00:00",
-  "ticker": "373220.KS",
-  "lang": "ko",
-  "events": 12,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.8-flash",
-  "sec": 61.0,
-  "why": "전시회(RE+ 2026) 참가 홍보 및 업계 일반 동향 기사 외에 실적, 수주, 경영상 중요 사건이 없습니다."
- },
- {
-  "at": "2026-11-15T16:57:49+00:00",
-  "ticker": "373220.KS",
-  "stage": "skip",
-  "events": 12
- },
- {
-  "at": "2026-11-15T16:57:52+00:00",
-  "ticker": "LLY",
-  "lang": "ko",
-  "events": 2,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.6-flash",
-  "sec": 2.0,
-  "why": "제공된 보도 목록에 LLY(일라이 릴리) 관련 주요 소식이 없습니다."
- },
- {
-  "at": "2026-11-15T16:57:52+00:00",
-  "ticker": "LLY",
-  "stage": "skip",
-  "events": 2
- },
- {
-  "at": "2026-11-15T19:02:41+00:00",
-  "ticker": "TSLA",
-  "lang": "ko",
-  "events": 5,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.8-flash",
-  "sec": 130.7,
-  "why": "Cybercab 판매 및 SpaceX 합병 등 이미 보도된 사건의 반복이거나 주간 뉴스 요약으로 신규 중요 사실 없음"
- },
- {
-  "at": "2026-11-15T19:02:41+00:00",
-  "ticker": "TSLA",
-  "stage": "skip",
-  "events": 5
- },
- {
-  "at": "2026-11-15T19:10:39+00:00",
-  "ticker": "036930.KQ",
-  "lang": "ko",
-  "events": 1,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.6-flash",
-  "sec": 477.5,
-  "why": "주요 실적·수주·경영상의 변화 등 투자에 직결되는 핵심 사건 보도가 없습니다."
- },
- {
-  "at": "2026-11-15T19:10:41+00:00",
-  "ticker": "036930.KQ",
-  "stage": "skip",
-  "events": 1
- },
- {
   "at": "2026-11-15T23:02:48+00:00",
   "ticker": "373220.KS",
   "lang": "ko",
@@ -1863,5 +1787,93 @@
   "result": "error",
   "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
   "sec": 188.0
+ },
+ {
+  "at": "2026-11-25T19:02:08+00:00",
+  "ticker": "TSLA",
+  "events": 11,
+  "result": "error",
+  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+  "sec": 92.3
+ },
+ {
+  "at": "2026-11-25T19:02:30+00:00",
+  "ticker": "036930.KQ",
+  "lang": "ko",
+  "events": 2,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.6-flash",
+  "sec": 21.7,
+  "why": "단순 주가 등락 및 지수 시황 관련 보도 외에 실적, 계약 등 주주가 알아야 할 주요 경영 사건 소식이 없습니다."
+ },
+ {
+  "at": "2026-11-25T19:02:32+00:00",
+  "ticker": "036930.KQ",
+  "stage": "skip",
+  "events": 2
+ },
+ {
+  "at": "2026-11-25T19:02:44+00:00",
+  "ticker": "417840.KQ",
+  "lang": "ko",
+  "events": 1,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.6-flash",
+  "sec": 12.4,
+  "why": "단순 사업 포부 인터뷰 기사 외에 실적, 수주, M&A 등 투자 판단에 유의미한 주요 사건이 없습니다."
+ },
+ {
+  "at": "2026-11-25T19:02:45+00:00",
+  "ticker": "417840.KQ",
+  "stage": "skip",
+  "events": 1
+ },
+ {
+  "at": "2026-11-25T19:02:58+00:00",
+  "ticker": "373220.KS",
+  "lang": "ko",
+  "events": 22,
+  "result": "ok",
+  "digest": 4,
+  "model": "gemini-3.6-flash",
+  "sec": 12.2,
+  "why": ""
+ },
+ {
+  "at": "2026-11-25T19:02:59+00:00",
+  "ticker": "373220.KS",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 16,
+  "digest": 4,
+  "links_shown": 6,
+  "chars": 3181,
+  "fallback": false
+ },
+ {
+  "at": "2026-11-25T19:03:08+00:00",
+  "ticker": "LLY",
+  "lang": "ko",
+  "events": 5,
+  "result": "ok",
+  "digest": 1,
+  "model": "gemini-3.6-flash",
+  "sec": 8.2,
+  "why": ""
+ },
+ {
+  "at": "2026-11-25T19:03:09+00:00",
+  "ticker": "LLY",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 4,
+  "digest": 1,
+  "links_shown": 4,
+  "chars": 2305,
+  "fallback": false
  }
 ]
