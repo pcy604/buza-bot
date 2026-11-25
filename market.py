@@ -379,7 +379,7 @@ def caption(rec: dict, dash_url: str = '') -> str:
 
 
 def _album(rec: dict):
-    """규칙 문장(narrative)이 있는 판만 카드뉴스로. 캡처가 절반 넘게 실패하면 쓰지 않는다(예전 카드로)."""
+    """규칙 문장(narrative)이 있는 판만 카드뉴스로. 사진이 3장 미만이면 쓰지 않는다(예전 카드로)."""
     if not ((rec.get('facts') or {}).get('narrative')):
         return None
     try:
@@ -387,18 +387,17 @@ def _album(rec: dict):
         from pathlib import Path
         import report_album
         report_album.ensure_browser()
-        items = report_album.build(rec, Path(tempfile.mkdtemp()))
-        ok = sum(1 for p, _ in items if p)
-        print(f'[카드뉴스] {rec.get("kind")} {rec.get("date")} 이미지 {ok}/{len(items)}')
-        return items if items and ok * 2 >= len(items) else None
+        photos = report_album.build(rec, Path(tempfile.mkdtemp()))
+        print(f'[카드뉴스] {rec.get("kind")} {rec.get("date")} 사진 {len(photos)}/{len(report_album.SHOTS)}')
+        return photos if len(photos) >= 3 else None
     except Exception as e:
         print(f'[카드뉴스 실패 → 예전 카드] {e}')
         return None
 
 
-def _send_album(chat, rec: dict, items: list) -> bool:
+def _send_album(chat, rec: dict, photos: list) -> bool:
     import report_album
-    return report_album.send(chat, items, report_album.closing(rec)) > 0
+    return report_album.send(chat, photos, report_album.caption(rec))
 
 
 def _send_one(chat, rec: dict, dash_url: str = '') -> bool:

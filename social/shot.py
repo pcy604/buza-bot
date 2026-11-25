@@ -69,7 +69,8 @@ def _clip_between(p, top_txt, bot_txt, pad_bottom, out: Path, width=1300):
     a, b = top.bounding_box(), bot.bounding_box()
     if not a or not b:
         raise RuntimeError('위치 없음')
-    y0 = max(a['y'] - 40, 0)                       # 머리 줄 위 여백(오른쪽 설명 글이 위 글자인 구역은 제목 줄까지)
+    # 2026-11-26 차니: '52주 캡처에 위쪽 다른 게 들어감' — 위 여백 40 → 6(머리 줄만)
+    y0 = max(a['y'] - (40 if top_txt.startswith('지수 아래') else 6), 0)
     y1 = b['y'] + b['height'] + pad_bottom
     out.parent.mkdir(parents=True, exist_ok=True)
     p.screenshot(path=str(out), clip={'x': 0, 'y': y0, 'width': width, 'height': y1 - y0}, full_page=True)
@@ -171,7 +172,8 @@ def shot_cards(keys=None, mobile=False, out_dir: Path = OUT, mkt: str = 'KR', ex
         size = ({'width': 430, 'height': 9000, 'mobile': True, 'dsf': 3} if mobile
                 else {'width': 1300, 'height': 6000})
         # 카드 하나라도 떠야 의미가 있다
-        b, p = _page(pw, APP, ready='div.hm-box', **size)
+        # 2026-11-26 미국 화면은 주소로 연다(?home=US) — 토글 버튼 클릭이 실패해 미국판에 한국 화면이 찍혔다
+        b, p = _page(pw, APP + ('?home=US' if mkt == 'US' else ''), ready='div.hm-box', **size)
         tag = 'm' if mobile else 'w'
         if expect:
             # 2026-11-26 사이트가 새 결과를 아직 안 읽었으면(배포 직후) 어제 화면을 찍게 된다 — 오늘 날짜가 보일 때까지 다시 연다
@@ -185,8 +187,6 @@ def shot_cards(keys=None, mobile=False, out_dir: Path = OUT, mkt: str = 'KR', ex
             else:
                 b.close()
                 raise RuntimeError(f'사이트가 {expect} 자료를 아직 안 보여 준다 — 캡처 안 함')
-        if mkt == 'US':
-            _switch_market(p, 'US')
         for k in want:
             try:
                 if k in REGION_CLIP:
