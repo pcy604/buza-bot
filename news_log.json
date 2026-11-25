@@ -1,28 +1,5 @@
 [
  {
-  "at": "2026-11-14T23:06:05+00:00",
-  "ticker": "LLY",
-  "lang": "ko",
-  "events": 5,
-  "result": "ok",
-  "digest": 2,
-  "model": "gemini-3.6-flash",
-  "sec": 12.1,
-  "why": ""
- },
- {
-  "at": "2026-11-14T23:06:06+00:00",
-  "ticker": "LLY",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 1,
-  "digest": 2,
-  "links_shown": 1,
-  "chars": 1270,
-  "fallback": false
- },
- {
   "at": "2026-11-15T11:24:02+00:00",
   "ticker": "373220.KS",
   "events": 11,
@@ -1870,5 +1847,21 @@
   "ticker": "036930.KQ",
   "stage": "skip",
   "events": 3
+ },
+ {
+  "at": "2026-11-25T11:03:35+00:00",
+  "ticker": "373220.KS",
+  "events": 20,
+  "result": "error",
+  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+  "sec": 183.7
+ },
+ {
+  "at": "2026-11-25T11:06:45+00:00",
+  "ticker": "LLY",
+  "events": 1,
+  "result": "error",
+  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+  "sec": 188.0
  }
 ]
