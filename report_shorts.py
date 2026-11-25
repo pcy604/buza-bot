@@ -96,6 +96,36 @@ def frame(title, big, big_label, sub, photo, idx, total) -> Image.Image:
     return im
 
 
+_ENGINE = {"name": None}
+
+
+def tts(text: str, w: Path, FF: str):
+    """Gemini TTS(차니 노트북에서 쓰던 목소리) → 실패하면 edge-tts(무료·키 없음, ko-KR-InJoonNeural).
+    2026-11-26 Actions 에서 Gemini TTS 가 400(speechConfig 거부) — 모델·SDK 가 바뀌면 영상이 통째로 멈추지 않게."""
+    if _ENGINE["name"] != "edge":
+        for attempt in range(4):        # Gemini TTS 무료 = 분당 3건
+            try:
+                VO.tts(text, w)
+                _ENGINE["name"] = "gemini"
+                return
+            except Exception as e:
+                if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
+                    time.sleep(25)
+                    continue
+                print(f"  Gemini TTS 실패 → edge-tts: {str(e)[:90]}")
+                break
+        _ENGINE["name"] = "edge"
+    import asyncio
+    try:
+        import edge_tts
+    except ImportError:
+        subprocess.run([sys.executable, "-m", "pip", "install", "-q", "edge-tts"], check=True)
+        import edge_tts
+    mp3 = w.with_suffix(".mp3")
+    asyncio.run(edge_tts.Communicate(text, os.environ.get("TTS_VOICE", "ko-KR-InJoonNeural"), rate="+8%").save(str(mp3)))
+    subprocess.run([FF, "-y", "-i", str(mp3), "-ar", "24000", "-ac", "1", str(w)], check=True, capture_output=True)
+
+
 def build(rec: dict, photos: list, out_dir: Path) -> Path:
     C = cuts(rec)
     FF = VO.ffmpeg()
@@ -105,14 +135,7 @@ def build(rec: dict, photos: list, out_dir: Path) -> Path:
         frame(title, big, lab, sub, photos[i] if i < len(photos) else None, i + 1, len(C)).save(p)
         pngs.append(p)
         w = out_dir / f"cut{i + 1:02d}.wav"
-        for attempt in range(6):            # Gemini TTS 무료 = 분당 3건
-            try:
-                VO.tts(speak(sub), w)
-                break
-            except Exception as e:
-                if "429" not in str(e) and "RESOURCE_EXHAUSTED" not in str(e):
-                    raise
-                time.sleep(25)
+        tts(speak(sub), w, FF)
         secs.append(VO.wav_sec(w) + 0.4)
         wavs.append(w)
     lst = out_dir / "_a.txt"
@@ -127,7 +150,7 @@ def build(rec: dict, photos: list, out_dir: Path) -> Path:
     subprocess.run([FF, "-y", "-f", "concat", "-safe", "0", "-i", str(fl), "-i", str(allwav), "-c:v", "libx264",
                     "-preset", "veryfast", "-pix_fmt", "yuv420p", "-r", "30", "-c:a", "aac", "-b:a", "128k", "-shortest", str(out)],
                    check=True, capture_output=True)
-    print(f"쇼츠 {sum(secs):.0f}초 · {out}")
+    print(f"쇼츠 {sum(secs):.0f}초 · 음성 {_ENGINE['name']} · {out}")
     return out
 
 
