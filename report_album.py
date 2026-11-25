@@ -212,6 +212,10 @@ def main(argv):
     photos, cap, bad = build_checked(rec)
     print(f'{kind} {rec.get("date")} · 사진 {len(photos)}/{len(SHOTS)} · 캡션 {len(cap)}자 · 채점 {bad or "만점"}')
     ok = send(chat, photos, cap)
+    en = ((rec.get('facts') or {}).get('narrative_en') or {}).get('text')
+    if en:   # 2026-11-26 글로벌판 1단계 미리보기 — 같은 사진에 영어 글(발송 채널은 차니 결정 후)
+        ok_en = send(chat, photos, _e(en)[:1020])
+        print(f'영어판 {len(en)}자 → 소유자만 {"보냄" if ok_en else "실패"}')
     print('보냄 1통 → 소유자만' if ok else '발송 실패')
     return 0 if ok else 1
 
