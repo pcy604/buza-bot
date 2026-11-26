@@ -1,24 +1,5 @@
 [
  {
-  "at": "2026-11-16T23:03:42+00:00",
-  "ticker": "036930.KQ",
-  "events": 2,
-  "result": "error",
-  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
-  "sec": 192.4
- },
- {
-  "at": "2026-11-16T23:06:22+00:00",
-  "ticker": "417840.KQ",
-  "lang": "ko",
-  "events": 1,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.6-flash",
-  "sec": 159.6,
-  "why": "투자 판단에 직결되는 주요 실적, 수주, 경영 관련 주요 보도가 없습니다."
- },
- {
   "at": "2026-11-16T23:06:23+00:00",
   "ticker": "417840.KQ",
   "stage": "skip",
@@ -1881,5 +1862,21 @@
   "ticker": "036930.KQ",
   "stage": "skip",
   "events": 8
+ },
+ {
+  "at": "2026-11-26T11:01:55+00:00",
+  "ticker": "373220.KS",
+  "events": 14,
+  "result": "error",
+  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+  "sec": 83.7
+ },
+ {
+  "at": "2026-11-26T11:02:44+00:00",
+  "ticker": "089970.KQ",
+  "events": 6,
+  "result": "error",
+  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+  "sec": 48.4
  }
 ]
