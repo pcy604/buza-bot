@@ -1,23 +1,5 @@
 [
  {
-  "date": "2026-09-18",
-  "blocked": {
-   "AAPL": "AS_OF",
-   "CORT": "AS_OF",
-   "IONQ": "AS_OF",
-   "WDAY": "AS_OF"
-  },
-  "yt": {
-   "n24": 7,
-   "ok24": 3,
-   "errs": {
-    "토큰초과": 1,
-    "503/504": 1,
-    "타임아웃": 2
-   }
-  }
- },
- {
   "date": "2026-09-19",
   "blocked": {
    "AAPL": "AS_OF",
@@ -816,6 +798,24 @@
    "samples": [
     "wcnQXFLs93g: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
     "p7VzsJTeqmw: 403 PERMISSION_DENIED. {'error': {'code': 403, 'message': 'The caller does not have permission', 'status': 'PERMISSION_D"
+   ]
+  }
+ },
+ {
+  "date": "2026-11-26",
+  "blocked": {
+   "AXTI": "BUSINESS"
+  },
+  "yt": {
+   "n24": 8,
+   "ok24": 5,
+   "errs": {
+    "503/504": 3
+   },
+   "samples": [
+    "v-lAkGvb1qc: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+    "7WFDTIPC4X0: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+    "VzvtFMbVxi4: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand "
    ]
   }
  }

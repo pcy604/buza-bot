@@ -1,108 +1,5 @@
 [
  {
-  "at": "2026-11-16T23:06:23+00:00",
-  "ticker": "417840.KQ",
-  "stage": "skip",
-  "events": 1
- },
- {
-  "at": "2026-11-16T23:06:28+00:00",
-  "ticker": "089970.KQ",
-  "lang": "ko",
-  "events": 3,
-  "result": "ok",
-  "digest": 1,
-  "model": "gemini-3.6-flash",
-  "sec": 5.2,
-  "why": ""
- },
- {
-  "at": "2026-11-16T23:06:30+00:00",
-  "ticker": "089970.KQ",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 1,
-  "digest": 1,
-  "links_shown": 1,
-  "chars": 943,
-  "fallback": false
- },
- {
-  "at": "2026-11-17T03:46:17+00:00",
-  "ticker": "036930.KQ",
-  "lang": "ko",
-  "events": 2,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.5-flash-lite",
-  "sec": 1.1,
-  "why": "주가 등락 및 일반적인 시장 하락 관련 기사뿐이므로 투자 관점에서 새로 반영할 실질적 기업 이벤트가 없습니다."
- },
- {
-  "at": "2026-11-17T03:46:18+00:00",
-  "ticker": "036930.KQ",
-  "stage": "skip",
-  "events": 2
- },
- {
-  "at": "2026-11-17T07:13:17+00:00",
-  "ticker": "TSLA",
-  "lang": "ko",
-  "events": 13,
-  "result": "ok",
-  "digest": 2,
-  "model": "gemini-3.5-flash-lite",
-  "sec": 160.7,
-  "why": ""
- },
- {
-  "at": "2026-11-17T07:13:19+00:00",
-  "ticker": "TSLA",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 8,
-  "digest": 2,
-  "links_shown": 6,
-  "chars": 3242,
-  "fallback": false
- },
- {
-  "at": "2026-11-17T07:13:20+00:00",
-  "ticker": "036930.KQ",
-  "lang": "ko",
-  "events": 2,
-  "result": "ok",
-  "digest": 1,
-  "model": "gemini-3.5-flash-lite",
-  "sec": 1.1,
-  "why": ""
- },
- {
-  "at": "2026-11-17T07:13:22+00:00",
-  "ticker": "036930.KQ",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 0,
-  "digest": 1,
-  "links_shown": 0,
-  "chars": 708,
-  "fallback": false
- },
- {
-  "at": "2026-11-17T07:13:45+00:00",
-  "ticker": "417840.KQ",
-  "lang": "ko",
-  "events": 2,
-  "result": "ok",
-  "digest": 2,
-  "model": "gemini-3.5-flash-lite",
-  "sec": 22.3,
-  "why": ""
- },
- {
   "at": "2026-11-17T07:13:46+00:00",
   "ticker": "417840.KQ",
   "stage": "send",
@@ -1878,5 +1775,101 @@
   "result": "error",
   "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
   "sec": 48.4
+ },
+ {
+  "at": "2026-11-26T19:07:58+00:00",
+  "ticker": "AXTI",
+  "events": 1,
+  "result": "error",
+  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+  "sec": 447.4
+ },
+ {
+  "at": "2026-11-26T19:08:28+00:00",
+  "ticker": "TSLA",
+  "lang": "ko",
+  "events": 5,
+  "result": "ok",
+  "digest": 1,
+  "model": "gemini-3.6-flash",
+  "sec": 29.1,
+  "why": ""
+ },
+ {
+  "at": "2026-11-26T19:08:29+00:00",
+  "ticker": "TSLA",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 3,
+  "digest": 1,
+  "links_shown": 3,
+  "chars": 1918,
+  "fallback": false
+ },
+ {
+  "at": "2026-11-26T19:08:45+00:00",
+  "ticker": "031980.KQ",
+  "lang": "ko",
+  "events": 1,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.6-flash",
+  "sec": 15.1,
+  "why": "투자자가 알아야 할 실적, 수주, M&A 등 기업 경영상의 주요 사건 관련 보도가 없습니다."
+ },
+ {
+  "at": "2026-11-26T19:08:46+00:00",
+  "ticker": "031980.KQ",
+  "stage": "skip",
+  "events": 1
+ },
+ {
+  "at": "2026-11-26T19:08:51+00:00",
+  "ticker": "036930.KQ",
+  "lang": "ko",
+  "events": 3,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.6-flash",
+  "sec": 5.2,
+  "why": "제시된 기사들이 단순 주가 등락 및 업계 일반론·관심 종목 언급에 불과하여 주주가 알아야 할 기업의 중요한 경영·사업 관련 소식이 없습니다."
+ },
+ {
+  "at": "2026-11-26T19:08:52+00:00",
+  "ticker": "036930.KQ",
+  "stage": "skip",
+  "events": 3
+ },
+ {
+  "at": "2026-11-26T19:09:03+00:00",
+  "ticker": "373220.KS",
+  "lang": "ko",
+  "events": 12,
+  "result": "ok",
+  "digest": 2,
+  "model": "gemini-3.6-flash",
+  "sec": 10.2,
+  "why": ""
+ },
+ {
+  "at": "2026-11-26T19:09:05+00:00",
+  "ticker": "373220.KS",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 8,
+  "digest": 2,
+  "links_shown": 6,
+  "chars": 2776,
+  "fallback": false
+ },
+ {
+  "at": "2026-11-26T19:13:53+00:00",
+  "ticker": "089970.KQ",
+  "events": 5,
+  "result": "error",
+  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+  "sec": 287.9
  }
 ]
