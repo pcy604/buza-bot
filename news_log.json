@@ -1,45 +1,5 @@
 [
  {
-  "at": "2026-11-17T07:13:46+00:00",
-  "ticker": "417840.KQ",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 0,
-  "digest": 2,
-  "links_shown": 0,
-  "chars": 856,
-  "fallback": false
- },
- {
-  "at": "2026-11-17T22:04:49+00:00",
-  "ticker": "AXTI",
-  "lang": "ko",
-  "events": 1,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.5-flash-lite",
-  "sec": 61.8,
-  "why": "AXTI(AXT INC) 보유자가 알아야 할 새로운 실적, 계약, 규제 등 1·2순위 중요 사건이 없고, 애널리스트 목표가 조정(B.Riley의 $56에서 $43로 하향)만 있어 제외함."
- },
- {
-  "at": "2026-11-17T22:04:49+00:00",
-  "ticker": "AXTI",
-  "stage": "skip",
-  "events": 1
- },
- {
-  "at": "2026-11-17T22:05:00+00:00",
-  "ticker": "TSLA",
-  "lang": "ko",
-  "events": 15,
-  "result": "ok",
-  "digest": 3,
-  "model": "gemini-3.5-flash-lite",
-  "sec": 10.5,
-  "why": ""
- },
- {
   "at": "2026-11-17T22:05:01+00:00",
   "ticker": "TSLA",
   "stage": "send",
@@ -1871,5 +1831,45 @@
   "result": "error",
   "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
   "sec": 287.9
+ },
+ {
+  "at": "2026-11-26T23:04:13+00:00",
+  "ticker": "373220.KS",
+  "lang": "ko",
+  "events": 2,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.8-flash",
+  "sec": 225.1,
+  "why": "업계 일반 현황 및 시장 동향 분석 기사 외에 기업 고유의 주요 공시나 신규 수주 등 핵심 소식이 없습니다."
+ },
+ {
+  "at": "2026-11-26T23:04:14+00:00",
+  "ticker": "373220.KS",
+  "stage": "skip",
+  "events": 2
+ },
+ {
+  "at": "2026-11-26T23:06:59+00:00",
+  "ticker": "089970.KQ",
+  "lang": "ko",
+  "events": 7,
+  "result": "ok",
+  "digest": 1,
+  "model": "gemini-3.5-flash-lite",
+  "sec": 164.1,
+  "why": ""
+ },
+ {
+  "at": "2026-11-26T23:07:01+00:00",
+  "ticker": "089970.KQ",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 6,
+  "digest": 1,
+  "links_shown": 6,
+  "chars": 2795,
+  "fallback": false
  }
 ]
