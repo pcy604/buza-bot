@@ -70,9 +70,9 @@ def cuts(rec: dict) -> list:
         (f"{RA.TITLE.get(kind, '시황')} · {rec.get('date')}", f"{lead.get('d1', 0):+.1f}%" if lead else "", lead.get("name", ""),
          _cut(n.get("summary", "").split(". ")[0] + ". " + why)),
         ("투자 신호등", f"{n.get('light', '')} {light_word}", "", _cut(n.get("signal", ""))),
-        ("시장 폭 · 52주 신고가·신저가", f"{bc.get('today')}%" if bc else "", "대형주 중 오른 종목 비율",
+        ("시장 폭 · 52주 신고가·신저가", f"{bc.get('today')}%" if bc else "", "오른 종목 비율(시총 1,000억+/$3억+)",
          _cut(". ".join(str(n.get("breadth", "")).split("\n")[:3]))),
-        ("돈의 흐름 · 종목", "", "", _cut(first(n.get("stocks")) + ". " + first(n.get("flow")))),
+        ("돈의 흐름 · 종목", "", "", _cut(". ".join(x for x in (first(n.get("stocks")), first(n.get("flow"))) if x.strip()))),
         ("업종", "", "", _cut(". ".join(str(n.get("sector", "")).split("\n")[:2]))),
     ]
     return C
@@ -119,7 +119,7 @@ def tts(text: str, w: Path, FF: str):
                 if "429" in str(e) or "RESOURCE_EXHAUSTED" in str(e):
                     time.sleep(25)
                     continue
-                print(f"  Gemini TTS 실패 → edge-tts: {str(e)[:90]}")
+                print(f"  Gemini TTS 실패 → edge-tts: {str(e)[:400]}")
                 break
         _ENGINE["name"] = "edge"
     import asyncio
@@ -129,12 +129,14 @@ def tts(text: str, w: Path, FF: str):
         subprocess.run([sys.executable, "-m", "pip", "install", "-q", "edge-tts"], check=True)
         import edge_tts
     mp3 = w.with_suffix(".mp3")
-    asyncio.run(edge_tts.Communicate(text, os.environ.get("TTS_VOICE", "ko-KR-InJoonNeural"), rate="+8%").save(str(mp3)))
+    # 2026-11-28 'AI 날티' — InJoon 은 낭독체가 강하다. 대화체에 가까운 Hyunsu(다국어 신경망 음성)를 기본으로, 속도는 조금만 올린다.
+    asyncio.run(edge_tts.Communicate(text, os.environ.get("TTS_VOICE", "ko-KR-HyunsuMultilingualNeural"), rate="+4%").save(str(mp3)))
     subprocess.run([FF, "-y", "-i", str(mp3), "-ar", "24000", "-ac", "1", str(w)], check=True, capture_output=True)
 
 
 def build(rec: dict, photos: list, out_dir: Path) -> Path:
-    C = cuts(rec)
+    # 2026-11-28 빈 자막 컷(재료가 비는 날)은 빼고 순서를 당긴다 — 빈 문장을 TTS 에 보내 영상이 통째로 실패했다
+    C = [c for c in cuts(rec) if len(re.sub(r"[\s.·,]", "", c[3] or "")) >= 5]
     FF = VO.ffmpeg()
     wavs, secs, pngs = [], [], []
     for i, (title, big, lab, sub) in enumerate(C):
