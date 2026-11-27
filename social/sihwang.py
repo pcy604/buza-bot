@@ -80,8 +80,15 @@ def _say_int(n: str) -> str:
         v = int(n)
     except ValueError:
         return n
-    if v >= 10000:
-        return f'{v:,}'
+    if v >= 10000:   # 2026-11-28 '17,250' 을 TTS 가 '일만 칠천…'·'십칠 쉼표 이백오십'으로 읽었다 → 만·억·조 단위로 직접
+        out = []
+        for unit, base in (('조', 10**12), ('억', 10**8), ('만', 10**4)):
+            q_, v = divmod(v, base)
+            if q_:
+                out.append(_say_int(str(q_)) + unit)
+        if v:
+            out.append(_say_int(str(v)))
+        return ' '.join(out)
     units = ['', '십', '백', '천']
     out, s = '', str(v)
     for i, c in enumerate(s):
@@ -92,12 +99,46 @@ def _say_int(n: str) -> str:
     return out or '영'
 
 
+# 2026-11-28 발음 사전 — 영문 약어·티커를 TTS 가 철자대로/영어식으로 읽어 'AI가 읽는 티'가 났다.
+#   긴 것부터 바꾼다(S&P500 이 S&P 보다 먼저). 새 약어가 자막에 나오면 lint_say 가 잡는다 → 여기 추가.
+LEX = [('S&P500', '에스앤피 오백'), ('S&P', '에스앤피'), ('KOSPI', '코스피'), ('KOSDAQ', '코스닥'),
+       ('NASDAQ', '나스닥'), ('VIX', '빅스'), ('WTI', '더블유티아이'), ('PCE', '피씨이'), ('CPI', '씨피아이'),
+       ('PPI', '피피아이'), ('FOMC', '에프오엠씨'), ('ETF', '이티에프'), ('AI', '에이아이'), ('RS', '알에스'),
+       ('MDD', '최대 낙폭'), ('CAGR', '연평균 수익률'), ('YoY', '전년 대비'), ('EPS', '이피에스'), ('PER', '퍼'),
+       ('PBR', '피비알'), ('NVDA', '엔비디아'), ('TSLA', '테슬라'), ('AAPL', '애플'), ('MSFT', '마이크로소프트'),
+       ('AMZN', '아마존'), ('GOOGL', '구글'), ('META', '메타'), ('SK하이닉스', '에스케이하이닉스'), ('LG', '엘지'), ('MU', '마이크론'), ('ORCL', '오라클'), ('AMD', '에이엠디'), ('LRCX', '램리서치'),
+       ('$', ' 달러 '), ('&', ' 앤 '), ('·', ', '), ('→', ', 그리고 '), ('~', '에서 ')]
+
+
+def lint_say(t: str) -> list:
+    """음성 문장 점검 — 빈 목록이면 통과. 숏츠 '기계 낭독' 신호를 기계로 잡는다."""
+    bad = []
+    left = sorted(set(re.findall(r'[A-Za-z]{2,}', t)))
+    if left:
+        bad.append(f'사전에 없는 영문 {left} → LEX 추가')
+    for sen in re.split(r'(?<=[.?!])\s+', t):
+        if len(sen) > 60:
+            bad.append(f'문장 {len(sen)}자(60↑ — 숨이 찬다): {sen[:24]}…')
+        if len(re.findall(r'(?:퍼센트|원|달러|포인트|배)', sen)) > 3:
+            bad.append(f'한 문장에 수치 4개↑(귀로 못 따라간다): {sen[:24]}…')
+    if re.search(r'점 [영일이삼사오육칠팔구]{2,}', t):
+        bad.append('소수 둘째 자리까지 읽음 — 자막 단계에서 소수 1자리로')
+    return bad
+
+
 def say(text: str) -> str:
     """자막 문장 → 음성 문장. 평서 종결을 높임말로 바꾸고 숫자를 한글로."""
+    for a, b in LEX:
+        text = text.replace(a, b)
+    # 귀로 듣는 숫자는 짧게 — %는 소수 1자리, 지수·가격(세 자리 이상)은 정수, 1만억↑ 은 조·억
+    text = re.sub(r'(\d+\.\d{2,})(?=\s*%)', lambda m: f'{float(m.group(1)):.1f}', text)
+    text = re.sub(r'(\d{1,3}(?:,\d{3})+|\d{3,})\.\d+', r'\1', text)
+    text = re.sub(r'([\d,]+)억', lambda m: (lambda v: f"{v // 10000}조 {v % 10000}억" if v >= 10000 and v % 10000
+                                            else (f"{v // 10000}조" if v >= 10000 else m.group(0)))(int(m.group(1).replace(',', ''))), text)
     t = _say_num(text)
     for a, b in (('했다.', '했습니다.'), ('이다.', '입니다.'), ('았다.', '았습니다.'), ('었다.', '었습니다.'),
                  ('린다.', '립니다.'), ('린다 ', '립니다 '), ('없다.', '없습니다.'), ('있다.', '있습니다.'),
-                 ('아니다.', '아닙니다.'), ('된다.', '됩니다.'), ('난다.', '납니다.'), ('진다.', '집니다.')):
+                 ('아니다.', '아닙니다.'), ('아래다.', '아래입니다.'), ('위다.', '위입니다.'), ('였다.', '였습니다.'), ('랐다.', '랐습니다.'), ('렸다.', '렸습니다.'), ('졌다.', '졌습니다.'), ('된다.', '됩니다.'), ('난다.', '납니다.'), ('진다.', '집니다.')):
         t = t.replace(a, b)
     return t
 
@@ -117,7 +158,8 @@ def card(key, capture, text, guess='', big='', big_label='', short='', big_tone=
             CLAUDE.md 표 규칙의 "높을수록 위험한 열은 칠하지 않는다" 와 같은 이유.
     """
     sh = short or text
-    return dict(card=key, capture=capture, text=text, say=say(text), guess=guess,
+    _sv = say(text)
+    return dict(card=key, capture=capture, text=text, say=_sv, say_lint=lint_say(_sv), guess=guess,
                 big=big, big_label=big_label, big_tone=big_tone,
                 short=sh, short_say=say(sh))
 
