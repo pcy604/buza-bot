@@ -207,7 +207,7 @@ def main(argv):
     if len(argv) < 4 or argv[1] != "preview":
         print(__doc__)
         return 2
-    rec = json.load(open(argv[3], encoding="utf-8"))
+    rec = json.load(open(argv[3], encoding="utf-8")) if os.path.exists(argv[3]) else RA.load(argv[2])   # 주말 = 발행된 최신 판
     if not (rec.get("facts") or {}).get("narrative"):
         print("규칙 문장 없음")
         return 1

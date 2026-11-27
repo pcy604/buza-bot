@@ -205,7 +205,8 @@ def main(argv):
         print(__doc__)
         return 2
     kind = argv[2]
-    rec = json.load(open(argv[3], encoding='utf-8')) if len(argv) > 3 else load(kind)
+    # 2026-11-28 장이 없는 날(주말)은 미리보기 판이 안 만들어진다 → 발행된 최신 판으로
+    rec = json.load(open(argv[3], encoding='utf-8')) if len(argv) > 3 and os.path.exists(argv[3]) else load(kind)
     if not (rec.get('facts') or {}).get('narrative'):
         print(f'⚠️ {kind} 리포트에 규칙 문장(narrative)이 없다 · engine={rec.get("engine")}')
         return 1
