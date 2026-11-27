@@ -61,19 +61,20 @@ def cuts(rec: dict) -> list:
     f = rec.get("facts") or {}
     n = f.get("narrative") or {}
     kind = rec.get("kind")
-    lead = next((x for x in f.get("indices") or [] if x.get("sym") == ("^KS11" if kind == "kr" else "^IXIC")), {})
+    ix = {x.get("sym"): x for x in f.get("indices") or []}
+    heads = ("^KS11", "^KQ11") if kind == "kr" else ("^GSPC", "^IXIC", "^DJI")   # 2026-11-28 미국은 3대 지수 다
+    big = "\n".join(f"{ix[s_].get('name')} {ix[s_].get('d1', 0):+.1f}%" for s_ in heads if s_ in ix and ix[s_].get("d1") is not None)
     bc = (f.get("ctx") or {}).get("breadth") or {}
     first = lambda s: (str(s or "").split("\n") + [""])[0]
-    why = (n.get("econ") or [""])[0] or n.get("explain") or ""
-    light_word = {"🟢": "초록불", "🟡": "노란불", "🔴": "빨간불"}.get(n.get("light"), "")
+    why = n.get("explain") or (n.get("econ") or [""])[0] or ""
+    # 컷 = 사진(SHOTS) 순서: 글로벌 마켓 → 업종 히트맵 → 시장 폭·신고가 → 오늘의 시장. 투자 신호등은 뺐다(차니 11-28)
     C = [
-        (f"{RA.TITLE.get(kind, '시황')} · {rec.get('date')}", f"{lead.get('d1', 0):+.1f}%" if lead else "", lead.get("name", ""),
-         _cut(n.get("summary", "").split(". ")[0] + ". " + why)),
-        ("투자 신호등", f"{n.get('light', '')} {light_word}", "", _cut(n.get("signal", ""))),
-        ("시장 폭 · 52주 신고가·신저가", f"{bc.get('today')}%" if bc else "", "오른 종목 비율(시총 1,000억+/$3억+)",
+        (f"{RA.TITLE.get(kind, '시황')} · {rec.get('date')}", big, "",
+         _cut(n.get("summary", "").split(". ")[0] + ". " + re.sub(r"\[\d+\]", "", why))),
+        ("업종 히트맵", "", "", _cut(". ".join(str(n.get("sector", "")).split("\n")[:2]))),
+        ("시장 폭 · 52주 신고가·신저가", f"{bc.get('today')}%" if bc.get('today') is not None else "", "오른 종목 비율",
          _cut(". ".join(str(n.get("breadth", "")).split("\n")[:3]))),
-        ("돈의 흐름 · 종목", "", "", _cut(". ".join(x for x in (first(n.get("stocks")), first(n.get("flow"))) if x.strip()))),
-        ("업종", "", "", _cut(". ".join(str(n.get("sector", "")).split("\n")[:2]))),
+        ("오늘의 시장 · 돈이 몰린 종목", "", "", _cut(". ".join(x for x in (first(n.get("stocks")), first(n.get("flow"))) if x.strip()))),
     ]
     return C
 
@@ -83,6 +84,13 @@ def frame(title, big, big_label, sub, photo, idx, total) -> Image.Image:
     d = ImageDraw.Draw(im)
     d.text((60, 58), title, font=FR._font(46), fill=FR.INK2)
     d.text((W - 150, 62), f"{idx} / {total}", font=FR._font(32), fill=FR.INK2)
+    if big and "\n" in big:      # 여러 지수 — 줄마다 색
+        y0 = 118
+        for ln in big.split("\n")[:3]:
+            v = ln.rsplit(" ", 1)[-1]
+            d.text((60, y0), ln, font=FR._font(64), fill=FR.ACCENT if v.startswith("-") else FR.POS if v.startswith("+") else FR.INK)
+            y0 += 72
+        big = ""
     if big:
         col = FR.ACCENT if big.startswith("-") else FR.POS if big.startswith("+") else FR.INK
         d.text((60, 118), big, font=FR._font(120), fill=col)
@@ -128,10 +136,27 @@ def tts(text: str, w: Path, FF: str):
     except ImportError:
         subprocess.run([sys.executable, "-m", "pip", "install", "-q", "edge-tts"], check=True)
         import edge_tts
-    mp3 = w.with_suffix(".mp3")
     # 2026-11-28 'AI 날티' — InJoon 은 낭독체가 강하다. 대화체에 가까운 Hyunsu(다국어 신경망 음성)를 기본으로, 속도는 조금만 올린다.
-    asyncio.run(edge_tts.Communicate(text, os.environ.get("TTS_VOICE", "ko-KR-HyunsuMultilingualNeural"), rate="+4%").save(str(mp3)))
-    subprocess.run([FF, "-y", "-i", str(mp3), "-ar", "24000", "-ac", "1", str(w)], check=True, capture_output=True)
+    # 2026-11-28 차니 '높낮이 없고 속도가 너무 균일' — 문장마다 따로 읽혀 속도·높낮이를 조금씩 바꾸고, 문장 사이에 짧은 쉼.
+    #   (edge 는 SSML 스타일을 막아 둬서 문장 단위로 rate·pitch 를 주는 게 할 수 있는 최대치다)
+    voice = os.environ.get("TTS_VOICE", "ko-KR-HyunsuMultilingualNeural")
+    sents = [x.strip() for x in re.split(r"(?<=[.?!])\s+", text) if x.strip()] or [text]
+    pros = [("+6%", "+0Hz"), ("+0%", "-4Hz"), ("+10%", "+3Hz"), ("+3%", "-2Hz")]
+    parts = []
+    for i, sen in enumerate(sents):
+        rate, pitch = pros[i % len(pros)]
+        if i == 0:
+            rate, pitch = "+4%", "+2Hz"          # 첫 문장 = 훅 — 조금 높게
+        pm = w.with_name(f"{w.stem}_{i}.mp3")
+        asyncio.run(edge_tts.Communicate(sen, voice, rate=rate, pitch=pitch).save(str(pm)))
+        pw_ = w.with_name(f"{w.stem}_{i}.wav")
+        subprocess.run([FF, "-y", "-i", str(pm), "-ar", "24000", "-ac", "1", "-af", "apad=pad_dur=0.18", str(pw_)],
+                       check=True, capture_output=True)
+        parts.append(pw_)
+    lst = w.with_name(f"{w.stem}_list.txt")
+    lst.write_text("\n".join(f"file '{x.as_posix()}'" for x in parts))
+    subprocess.run([FF, "-y", "-f", "concat", "-safe", "0", "-i", str(lst), "-ar", "24000", "-ac", "1", str(w)],
+                   check=True, capture_output=True)
 
 
 def build(rec: dict, photos: list, out_dir: Path) -> Path:
@@ -141,7 +166,13 @@ def build(rec: dict, photos: list, out_dir: Path) -> Path:
     wavs, secs, pngs = [], [], []
     for i, (title, big, lab, sub) in enumerate(C):
         p = out_dir / f"cut{i + 1:02d}.png"
-        frame(title, big, lab, sub, photos[i] if i < len(photos) else None, i + 1, len(C)).save(p)
+        ph = photos[i] if i < len(photos) else None
+        if ph and title == "업종 히트맵":      # 가로로 긴 히트맵 → 왼쪽·오른쪽 반을 위아래로 이어 세로 화면을 채운다
+            try:
+                ph = RA._stack([RA._half(str(ph), "L"), RA._half(str(ph), "R")], str(out_dir / "heat_stack.png"))
+            except Exception as e:
+                print("  히트맵 세로 이어붙이기 실패:", e)
+        frame(title, big, lab, sub, ph, i + 1, len(C)).save(p)
         pngs.append(p)
         w = out_dir / f"cut{i + 1:02d}.wav"
         tts(speak(sub), w, FF)
@@ -182,7 +213,7 @@ def main(argv):
         return 1
     import config
     chat = os.environ.get("OWNER_CHAT", "").strip() or str(getattr(config, "OWNER_CHAT", ""))
-    photos, _cap, _bad = RA.build_checked(rec)
+    photos = RA.build(rec, Path(tempfile.mkdtemp()), width=600)   # 2026-11-28 쇼츠 전용 600px 캡처(3열·2×4)
     for c in cuts(rec):
         print("  ·", speak(c[3]))
     mp4 = build(rec, photos, Path(tempfile.mkdtemp()))

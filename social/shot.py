@@ -155,7 +155,7 @@ def list_cards(mobile=False) -> list:
         return got, extra
 
 
-def shot_cards(keys=None, mobile=False, out_dir: Path = OUT, mkt: str = 'KR', expect: str = None) -> dict:
+def shot_cards(keys=None, mobile=False, out_dir: Path = OUT, mkt: str = 'KR', expect: str = None, width: int = None) -> dict:
     """🏠 종합 탭 카드를 키별 PNG 로. 돌려주는 값 {키: 경로} — 못 찾은 키는 빠진다."""
     from playwright.sync_api import sync_playwright
     want = list(keys) if keys else list(CARDS) + list(REGIONS) + list(REGION_TEXT)
@@ -171,6 +171,8 @@ def shot_cards(keys=None, mobile=False, out_dir: Path = OUT, mkt: str = 'KR', ex
         #   해상도는 device_scale_factor 로 보충한다(430×3 = 1290px 출력).
         size = ({'width': 430, 'height': 9000, 'mobile': True, 'dsf': 3} if mobile
                 else {'width': 1300, 'height': 6000})
+        if width:   # 2026-11-28 쇼츠 = 600px(2배) — 글로벌 마켓 3열·오늘의 시장 2×4 가 사이트 반응형 그대로 나온다
+            size = {'width': width, 'height': 9000, 'dsf': 2}
         # 카드 하나라도 떠야 의미가 있다
         # 2026-11-26 미국 화면은 주소로 연다(?home=US) — 토글 버튼 클릭이 실패해 미국판에 한국 화면이 찍혔다
         b, p = _page(pw, APP + ('?home=US' if mkt == 'US' else ''), ready='div.hm-box', **size)

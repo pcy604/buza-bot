@@ -22,8 +22,8 @@ RAW = 'https://raw.githubusercontent.com/pcy604/stock-dashboard/main/results/mar
 FLAG = {'kr': '🇰🇷', 'daily': '🇺🇸'}
 TITLE = {'kr': '한국 증시 마감', 'daily': '미국 증시 마감'}
 # 사진 순서 = 캡션의 ①~⑤. ('a+b' = 두 구역 반쪽을 위아래로 한 장)
-# 2026-11-28 대시보드에서 오닐 카드(pulse) 제거 → 그 자리에 실전 규칙 배지(rule). 순서 = 종합 탭 탑다운(지수 → 히트맵 → 폭 → 오늘)
-SHOTS = ['global', 'rule', 'heatmap', 'trend+week52', 'today']
+# 2026-11-28 순서 = 종합 탭 탑다운(지수 → 히트맵 → 폭·신고가 → 오늘의 시장). 오닐(pulse)·투자 신호등(rule)은 차니 결정으로 뺐다
+SHOTS = ['global', 'heatmap', 'trend+week52', 'today']
 HALF = {'week52', 'trend'}
 
 
@@ -54,7 +54,6 @@ def caption(rec: dict, limit: int = 1020) -> str:
                     ['· ' + _e(w) for w in (n.get('why') or [])[:2]] if x)
     parts = [('① 오늘 시장', n.get('summary'), 0),
              ('📰 시장을 움직인 재료', why, 1),
-             (f"② 투자 신호등 {n.get('light', '')}", n.get('signal'), 0),
              ('③ 시장 폭 · 52주 신고가·신저가', n.get('breadth'), 3),
              ('④ 돈의 흐름 · 종목', '\n'.join(x for x in (n.get('flow'), n.get('stocks')) if x), 4),
              ('⑤ 업종', n.get('sector'), 5)]
@@ -91,7 +90,7 @@ def quality(rec: dict, photos: list, cap: str) -> list:
     bad = []
     if len(photos) < len(SHOTS):
         bad.append(f'사진 {len(photos)}/{len(SHOTS)}')
-    for k, lab in (('summary', '① 요약'), ('signal', '② 신호등'), ('breadth', '③ 시장 폭'), ('stocks', '④ 종목'), ('sector', '⑤ 업종')):
+    for k, lab in (('summary', '① 요약'), ('breadth', '③ 시장 폭'), ('stocks', '④ 종목'), ('sector', '⑤ 업종')):
         if not n.get(k):
             bad.append(f'{lab} 없음')
     if not n.get('why'):
@@ -150,13 +149,13 @@ def ensure_browser():
         subprocess.run([sys.executable, '-m', 'playwright', 'install', '--with-deps', 'chromium'], check=True)
 
 
-def build(rec: dict, out_dir: Path) -> list:
+def build(rec: dict, out_dir: Path, width: int = None) -> list:
     """사진 경로 목록(SHOTS 순서, 실패한 건 빠짐)."""
     from social import shot
     us = rec.get('kind') == 'daily'
     keys = sorted({k for s in SHOTS for k in s.split('+')})
     got = shot.shot_cards(keys, out_dir=out_dir, mkt='US' if us else 'KR',
-                          expect=None if os.environ.get('ALBUM_NO_EXPECT') else rec.get('date'))
+                          expect=None if os.environ.get('ALBUM_NO_EXPECT') else rec.get('date'), width=width)
     side = 'R' if us else 'L'
     out = []
     for s in SHOTS:

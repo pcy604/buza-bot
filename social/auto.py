@@ -48,8 +48,7 @@ def content_from_rec(rec: dict, photos: list):
     core = []
     if why:
         core.append('📰 시장을 움직인 재료\n' + '\n'.join(_plain(x) for x in why))
-    if n.get('signal'):
-        core.append(f"🚦 내 규칙의 판정 {n.get('light', '')}\n{_plain(n['signal'])}")
+    # 2026-11-28 투자 신호등 제거(차니)
     if n.get('ledger'):
         core.append('📒 실전 원장\n' + _plain(n['ledger']))
     for lab, k in (('📊 시장 폭', 'breadth'), ('💰 돈의 흐름', 'flow'), ('🏷 업종', 'sector'), ('📈 종목', 'stocks')):
@@ -60,6 +59,18 @@ def content_from_rec(rec: dict, photos: list):
                    takeaway=('체크포인트 — ' + ' / '.join(_plain(c) for c in (n.get('checkpoints') or [])[:2])) if n.get('checkpoints') else '',
                    caveat=CAVEAT, cta='오늘 수치의 원본 화면', cta_url=DASH, images=list(photos),
                    kind=kind, date=str(date))
+
+
+def report_album_photos_600(rec):
+    """쇼츠용 600px 캡처(글로벌 마켓 3열 · 오늘의 시장 2×4). 실패하면 None → 카드뉴스 사진으로."""
+    try:
+        import tempfile
+        from pathlib import Path
+        import report_album as RA
+        return RA.build(rec, Path(tempfile.mkdtemp()), width=600) or None
+    except Exception as e:
+        print('[social auto] 600px 캡처 실패', e)
+        return None
 
 
 def _keyboard(ids):
@@ -99,7 +110,7 @@ def draft_from_market(rec: dict, photos: list) -> list:
         import tempfile
         from pathlib import Path
         import report_shorts as RS
-        mp4 = RS.build(rec, photos, Path(tempfile.mkdtemp()))
+        mp4 = RS.build(rec, report_album_photos_600(rec) or photos, Path(tempfile.mkdtemp()))
         vid = public_url(str(mp4))
         title = f"{TITLE.get(c.kind, '시황')} {str(c.date)[5:].replace('-', '/')} — {_plain(((rec.get('facts') or {}).get('narrative') or {}).get('summary'))}"
         desc = f"오늘 수치의 원본 화면: {DASH}?src=shorts\n\n{c.caveat}\n{c.disclaimer}"
