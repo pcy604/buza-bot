@@ -23,7 +23,7 @@ from social import frame as FR
 from social import voice as VO
 
 W, H = 1080, 1920
-CUT_CHARS = 115          # 한 컷 낭독 상한(한국어 TTS ≈ 초당 7자 → 5컷 ≈ 60초)
+CUT_CHARS = 80           # 2026-11-28 Gemini 낭독(쉼·억양)이 edge 보다 느려 4컷 102초 → 컷당 80자(목표 60초 안)
 _EMOJI = re.compile(r"[🔺🔻▫️📊📰🟢🟡🔴🇰🇷🇺🇸①②③④⑤→]")
 
 
