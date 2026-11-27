@@ -1,108 +1,5 @@
 [
  {
-  "at": "2026-11-17T22:05:27+00:00",
-  "ticker": "PFE",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 4,
-  "digest": 1,
-  "links_shown": 4,
-  "chars": 2499,
-  "fallback": false
- },
- {
-  "at": "2026-11-17T22:05:34+00:00",
-  "ticker": "LLY",
-  "lang": "ko",
-  "events": 11,
-  "result": "ok",
-  "digest": 3,
-  "model": "gemini-3.5-flash-lite",
-  "sec": 5.7,
-  "why": ""
- },
- {
-  "at": "2026-11-17T22:05:35+00:00",
-  "ticker": "LLY",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 6,
-  "digest": 3,
-  "links_shown": 6,
-  "chars": 3824,
-  "fallback": false
- },
- {
-  "at": "2026-11-17T23:05:24+00:00",
-  "ticker": "373220.KS",
-  "lang": "ko",
-  "events": 2,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.8-flash",
-  "sec": 289.7,
-  "why": "실적·수주 등 핵심 경영 이벤트 없이 채권 전문가 설문조사(SRE) 결과 및 단순 수상 보도만 있어 제외합니다."
- },
- {
-  "at": "2026-11-17T23:05:25+00:00",
-  "ticker": "373220.KS",
-  "stage": "skip",
-  "events": 2
- },
- {
-  "at": "2026-11-18T07:10:35+00:00",
-  "ticker": "TSLA",
-  "lang": "ko",
-  "events": 11,
-  "result": "ok",
-  "digest": 3,
-  "model": "gemini-3.5-flash-lite",
-  "sec": 2.4,
-  "why": ""
- },
- {
-  "at": "2026-11-18T07:10:36+00:00",
-  "ticker": "TSLA",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 8,
-  "digest": 3,
-  "links_shown": 6,
-  "chars": 3658,
-  "fallback": false
- },
- {
-  "at": "2026-11-18T07:10:37+00:00",
-  "ticker": "031980.KQ",
-  "lang": "ko",
-  "events": 1,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.5-flash-lite",
-  "sec": 0.9,
-  "why": "주가 등락 및 수급 동향에 관한 일반적인 기사 외에 투자자가 알아야 할 새로운 실적, 수주, 공시 등 핵심 사건이 없습니다."
- },
- {
-  "at": "2026-11-18T07:10:38+00:00",
-  "ticker": "031980.KQ",
-  "stage": "skip",
-  "events": 1
- },
- {
-  "at": "2026-11-18T07:10:45+00:00",
-  "ticker": "036930.KQ",
-  "lang": "ko",
-  "events": 2,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.5-flash-lite",
-  "sec": 6.3,
-  "why": "제공된 보도는 이미 알려진 3분기 실적 관련 내용으로, 새로운 사실이 없어 제외합니다."
- },
- {
   "at": "2026-11-18T07:10:46+00:00",
   "ticker": "036930.KQ",
   "stage": "skip",
@@ -1875,5 +1772,96 @@
   "result": "error",
   "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
   "sec": 192.6
+ },
+ {
+  "at": "2026-11-27T19:01:21+00:00",
+  "ticker": "AXTI",
+  "lang": "ko",
+  "events": 1,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.8-flash",
+  "sec": 52.4,
+  "why": "단순 주가 상승 및 업황에 따른 시황성 기사 외에 새로운 주요 기업 이벤트가 없습니다."
+ },
+ {
+  "at": "2026-11-27T19:01:21+00:00",
+  "ticker": "AXTI",
+  "stage": "skip",
+  "events": 1
+ },
+ {
+  "at": "2026-11-27T19:02:45+00:00",
+  "ticker": "TSLA",
+  "lang": "ko",
+  "events": 1,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.8-flash",
+  "sec": 83.3,
+  "why": "유럽 주행 보조 기술 승인 관련 보도는 기보고된 EU FSD 승인 검토 사안의 반복이며 새로운 사실이 없음"
+ },
+ {
+  "at": "2026-11-27T19:02:46+00:00",
+  "ticker": "TSLA",
+  "stage": "skip",
+  "events": 1
+ },
+ {
+  "at": "2026-11-27T19:04:43+00:00",
+  "ticker": "036930.KQ",
+  "lang": "ko",
+  "events": 4,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.8-flash",
+  "sec": 115.8,
+  "why": "단순 주가 급등락 및 추천·특징주 관련 시황 기사 외에 주요 경영·사업 관련 소식이 없습니다."
+ },
+ {
+  "at": "2026-11-27T19:04:44+00:00",
+  "ticker": "036930.KQ",
+  "stage": "skip",
+  "events": 4
+ },
+ {
+  "at": "2026-11-27T19:05:55+00:00",
+  "ticker": "373220.KS",
+  "lang": "ko",
+  "events": 13,
+  "result": "ok",
+  "digest": 4,
+  "model": "gemini-3.8-flash",
+  "sec": 70.0,
+  "why": ""
+ },
+ {
+  "at": "2026-11-27T19:05:57+00:00",
+  "ticker": "373220.KS",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 7,
+  "digest": 4,
+  "links_shown": 6,
+  "chars": 3326,
+  "fallback": false
+ },
+ {
+  "at": "2026-11-27T19:07:03+00:00",
+  "ticker": "089970.KQ",
+  "lang": "ko",
+  "events": 1,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.6-flash",
+  "sec": 65.6,
+  "why": "투자 판단에 영향을 미치는 주요 경영 및 실적 관련 신규 사건이 없으며 일반 업계 동향 기사만 포함되어 있습니다."
+ },
+ {
+  "at": "2026-11-27T19:07:04+00:00",
+  "ticker": "089970.KQ",
+  "stage": "skip",
+  "events": 1
  }
 ]
