@@ -30,6 +30,13 @@ _EMOJI = re.compile(r"[🔺🔻▫️📊📰🟢🟡🔴🇰🇷🇺🇸①②�
 def speak(s: str) -> str:
     """귀로 듣는 숫자 읽기 — 뜻은 그대로."""
     s = _EMOJI.sub("", str(s or ""))
+    # 2026-11-28 발음 사전·숫자 반올림을 sihwang 과 한 곳에서(영문 약어를 철자로 읽던 'AI 낭독 티')
+    from social.sihwang import LEX
+    for a, b in LEX:
+        if a not in ("·", "$", "&", "→", "~"):
+            s = s.replace(a, b)
+    s = re.sub(r"(\d+\.\d{2,})(?=\s*%)", lambda m: f"{float(m.group(1)):.1f}", s)
+    s = re.sub(r"(\d{1,3}(?:,\d{3})+|\d{3,})\.\d+", r"\1", s)
     s = s.replace("S&P500", "S&P 500").replace(" · ", ", ").replace("·", ", ").replace("%p", "퍼센트포인트")
     s = re.sub(r"\+(\d+(?:\.\d+)?)%", r"플러스 \1퍼센트", s)
     s = re.sub(r"(?<![\w.])-(\d+(?:\.\d+)?)%", r"마이너스 \1퍼센트", s)

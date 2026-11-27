@@ -64,6 +64,9 @@ jobs:
       THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
       IG_TOKEN:        ${{ secrets.IG_TOKEN }}
       IG_USER_ID:      ${{ secrets.IG_USER_ID }}
+      YT_CLIENT_ID:     ${{ secrets.YT_CLIENT_ID }}
+      YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+      YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
       YT_PROXY:       ${{ secrets.YT_PROXY }}
       # 한국주식 포토카드용(DART 전자공시). 없으면 KR 종목만 못 만들고 나머지는 정상 동작 —
       # decks/dart_client.py 가 파일 없으면 os.environ['DART_KEY'] 로 폴백한다.

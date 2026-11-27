@@ -20,7 +20,9 @@ import re
 import config
 
 DASH = 'https://stock-dashboard-dmfvhcig7brge7utl7et5r.streamlit.app/'
-PLATFORMS = ('threads', 'instagram')          # X 는 보류(차니 11-28)
+# 2026-11-28 차니: 게시글 = 스레드 + 네이버(초안·수동) · 쇼츠 = 유튜브 쇼츠 + 인스타 릴스 · 인스타 피드(4:5 잘림)·X 는 안 함
+PLATFORMS = ('threads',)
+VIDEO = ('reels', 'youtube')
 TITLE = {'kr': '한국 증시 마감', 'daily': '미국 증시 마감'}
 # 채널마다 다른 것 '만' — 문장 내용은 같다
 CHANNEL = {
@@ -91,6 +93,33 @@ def draft_from_market(rec: dict, photos: list) -> list:
         ids.append(pid)
         preview.append(f"<b>[{post.platform} #{pid}]</b> 글 {len(post.texts)}개 · 사진 {len(post.images)}장\n"
                        + tg_esc(post.texts[0][:350]))
+    # 쇼츠 — 같은 사진·같은 문장(report_shorts). 실패해도 글 초안은 그대로 간다
+    vid = None
+    try:
+        import tempfile
+        from pathlib import Path
+        import report_shorts as RS
+        mp4 = RS.build(rec, photos, Path(tempfile.mkdtemp()))
+        vid = public_url(str(mp4))
+        title = f"{TITLE.get(c.kind, '시황')} {str(c.date)[5:].replace('-', '/')} — {_plain(((rec.get('facts') or {}).get('narrative') or {}).get('summary'))}"
+        desc = f"오늘 수치의 원본 화면: {DASH}?src=shorts\n\n{c.caveat}\n{c.disclaimer}"
+        from .models import Post
+        for plat, texts in (('reels', [title + '\n\n' + desc + '\n\n#주식 #시황 #쇼츠']), ('youtube', [title, desc])):
+            pid = queue.enqueue(c.slug, Post(plat, texts, [vid], note='쇼츠 1080x1920'))
+            ids.append(pid)
+            preview.append(f"<b>[{plat} #{pid}]</b> 쇼츠 · {tg_esc(title[:80])}")
+        try:
+            RS.send_video(config.OWNER_CHAT, mp4, '쇼츠 미리보기 — 아래 버튼으로 발행')
+        except Exception as e:
+            print('[social auto] 쇼츠 미리보기 전송 실패', e)
+    except Exception as e:
+        preview.append(f'⚠️ 쇼츠 생성 실패: {tg_esc(str(e)[:150])}')
+    # 네이버 — API 없음 → 마크다운 초안을 텔레그램으로(복사해 붙여넣기)
+    try:
+        nv = adapt(c, ['naver'])[0].texts[0].replace(DASH, DASH + '?src=naver')
+        tg.send_message(config.OWNER_CHAT, '📗 <b>네이버 블로그 초안</b> (복사해 붙여넣기)\n\n' + tg_esc(nv)[:3800])
+    except Exception as e:
+        print('[social auto] 네이버 초안 실패', e)
     msg = (f"📝 <b>SNS 초안</b> {c.slug}\n\n" + '\n\n'.join(preview)
            + "\n\n아래 버튼: ✅ 발행 = 바로 게시 · 🗑 버리기")
     tg.send_message(config.OWNER_CHAT, msg[:4000], reply_markup=_keyboard(ids))
@@ -128,7 +157,7 @@ def handle_owner_text(chat, text: str) -> bool:
             continue
         if not ok:
             queue.set_status(pid, 'failed', error='버림(차니 · 텔레그램)')   # status check 제약에 rejected 없음
-            out.append(f"#{pid} {r['platform']} 버림")
+            out.append(f"#{pid} {r['platform']} 버림")  # noqa
             continue
         queue.set_status(pid, 'approved')
         pl = r['payload']
