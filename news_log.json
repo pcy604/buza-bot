@@ -1,51 +1,5 @@
 [
  {
-  "at": "2026-11-17T22:05:01+00:00",
-  "ticker": "TSLA",
-  "stage": "send",
-  "sent": true,
-  "lang": "ko",
-  "events": 12,
-  "digest": 3,
-  "links_shown": 5,
-  "chars": 3851,
-  "fallback": false
- },
- {
-  "at": "2026-11-17T22:05:03+00:00",
-  "ticker": "417840.KQ",
-  "lang": "ko",
-  "events": 1,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.5-flash-lite",
-  "sec": 1.1,
-  "why": "새로운 사실 없이 이미 알린 사건(세계일류상품 선정)을 반복 보도한 내용뿐이므로 추릴 게 없습니다."
- },
- {
-  "at": "2026-11-17T22:05:04+00:00",
-  "ticker": "417840.KQ",
-  "stage": "skip",
-  "events": 1
- },
- {
-  "at": "2026-11-17T22:05:14+00:00",
-  "ticker": "089970.KQ",
-  "lang": "ko",
-  "events": 1,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.5-flash-lite",
-  "sec": 9.0,
-  "why": "새로운 기업 실적, 계약, 규제 등 투자 판단에 유의미한 주요 공시나 뉴스가 없습니다."
- },
- {
-  "at": "2026-11-17T22:05:15+00:00",
-  "ticker": "089970.KQ",
-  "stage": "skip",
-  "events": 1
- },
- {
   "at": "2026-11-17T22:05:23+00:00",
   "ticker": "373220.KS",
   "lang": "ko",
@@ -1870,6 +1824,60 @@
   "digest": 1,
   "links_shown": 6,
   "chars": 2795,
+  "fallback": false
+ },
+ {
+  "at": "2026-11-27T07:13:43+00:00",
+  "ticker": "AXTI",
+  "events": 1,
+  "result": "error",
+  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+  "sec": 196.3
+ },
+ {
+  "at": "2026-11-27T07:13:53+00:00",
+  "ticker": "TSLA",
+  "lang": "ko",
+  "events": 5,
+  "result": "ok",
+  "digest": 2,
+  "model": "gemini-3.6-flash",
+  "sec": 8.9,
+  "why": ""
+ },
+ {
+  "at": "2026-11-27T07:13:54+00:00",
+  "ticker": "TSLA",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 3,
+  "digest": 2,
+  "links_shown": 3,
+  "chars": 2405,
+  "fallback": false
+ },
+ {
+  "at": "2026-11-27T07:14:45+00:00",
+  "ticker": "036930.KQ",
+  "lang": "ko",
+  "events": 6,
+  "result": "ok",
+  "digest": 1,
+  "model": "gemini-3.6-flash",
+  "sec": 50.6,
+  "why": ""
+ },
+ {
+  "at": "2026-11-27T07:14:47+00:00",
+  "ticker": "036930.KQ",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 5,
+  "digest": 1,
+  "links_shown": 5,
+  "chars": 2326,
   "fallback": false
  }
 ]
