@@ -22,6 +22,8 @@ def content_type(path) -> str:
 
 
 def public_url(local_path: str) -> str:
+    if str(local_path).startswith(('http://', 'https://')):   # 2026-11-28 초안 때 이미 올린 URL(러너가 바뀌면 파일이 없다)
+        return str(local_path)
     p = Path(local_path)
     key = f"{hashlib.md5(p.read_bytes()).hexdigest()[:12]}_{p.name}"
     st = _sb.storage.from_(BUCKET)

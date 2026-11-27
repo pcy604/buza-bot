@@ -59,6 +59,11 @@ jobs:
       GEMINI_KEY:     ${{ secrets.GEMINI_KEY }}
       SUPABASE_URL:   ${{ secrets.SUPABASE_URL }}
       SUPABASE_KEY:   ${{ secrets.SUPABASE_KEY }}
+      # 2026-11-28 SNS 초안 승인 버튼(✅ 발행)을 누르면 웹훅 실행 안에서 바로 게시한다 — 토큰이 여기에도 필요
+      THREADS_TOKEN:   ${{ secrets.THREADS_TOKEN }}
+      THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+      IG_TOKEN:        ${{ secrets.IG_TOKEN }}
+      IG_USER_ID:      ${{ secrets.IG_USER_ID }}
       YT_PROXY:       ${{ secrets.YT_PROXY }}
       # 한국주식 포토카드용(DART 전자공시). 없으면 KR 종목만 못 만들고 나머지는 정상 동작 —
       # decks/dart_client.py 가 파일 없으면 os.environ['DART_KEY'] 로 폴백한다.

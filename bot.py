@@ -884,6 +884,12 @@ def handle(msg: dict):
     if not chat:
         return
     text = _from_reply(msg, (msg.get('text') or '').strip())
+    try:   # 2026-11-28 SNS 초안 승인 — 차니의 '✅ 발행 #id' 버튼(하단 키보드) · /ok /no
+        from social import auto as _sa
+        if _sa.handle_owner_text(chat, text):
+            return
+    except Exception as e:
+        print(f'[social 승인 실패] {e}')
     uname = (msg.get('from') or {}).get('username')
     db.upsert_user(chat, uname)
     try:   # 활동 집계(명령 이름만, 내용 X) — /stats·일간 사용 현황(2026-10-23)

@@ -22,8 +22,9 @@ RAW = 'https://raw.githubusercontent.com/pcy604/stock-dashboard/main/results/mar
 FLAG = {'kr': '🇰🇷', 'daily': '🇺🇸'}
 TITLE = {'kr': '한국 증시 마감', 'daily': '미국 증시 마감'}
 # 사진 순서 = 캡션의 ①~⑤. ('a+b' = 두 구역 반쪽을 위아래로 한 장)
-SHOTS = ['global', 'pulse', 'trend+week52', 'today', 'heatmap']
-HALF = {'pulse', 'week52', 'trend'}
+# 2026-11-28 대시보드에서 오닐 카드(pulse) 제거 → 그 자리에 실전 규칙 배지(rule). 순서 = 종합 탭 탑다운(지수 → 히트맵 → 폭 → 오늘)
+SHOTS = ['global', 'rule', 'heatmap', 'trend+week52', 'today']
+HALF = {'week52', 'trend'}
 
 
 def load(kind: str) -> dict:

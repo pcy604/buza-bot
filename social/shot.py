@@ -39,12 +39,12 @@ CARDS = {
     'theme':         '강세 테마',
     'newhigh':       '52주 신고가',
     'featured':      '특징주',
-    'bigcap':        '대형주 상승 상위',
+    'bigcap':        '상승 상위',          # 2026-11-28 대시보드 이름 변경(모수 통일)
 }
 # 카드가 아니라 구역 단위로 잡는 것
 REGIONS = {
     'global':  ('.hm-grid', 0),      # 글로벌 마켓 14칸 (첫 번째 그리드)
-    'heatmap': ('.js-plotly-plot', -1),   # 업종 히트맵 (마지막 plotly — 종합 탭에서 히트맵이 맨 아래)
+    'heatmap': ('[data-testid="stExpander"]:has-text("업종 히트맵") .js-plotly-plot', 0),   # 2026-11-28 히트맵이 위로 옮겨 '마지막 plotly'가 아니다
     # 2026-11-24 — 숏츠 마지막 컷('내 규칙')에 카드가 없어 빈 화면이 나갔다.
     #   ui_home.gate() 가 그리는 상단 배지가 그 자리다(div.hm-hero · '이번 주 시장 신호').
     'rule':    ('.hm-hero', 0),

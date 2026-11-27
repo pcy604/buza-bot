@@ -499,6 +499,12 @@ def deliver(dash_url: str = '') -> int:
                 continue
             if p.get('market_fmt') != 'text' and kind in ('kr', 'daily') and kind not in album:
                 album[kind] = _album(rec)
+                if album[kind]:   # 2026-11-28 같은 문장·같은 사진으로 SNS 초안(차니 승인 버튼) — 판마다 한 번
+                    try:
+                        from social import auto as _sa
+                        _sa.draft_from_market(rec, album[kind])
+                    except Exception as e:
+                        print(f'[social 초안 실패] {e}')
             items = album.get(kind)
             if (items and _send_album(chat, rec, items)) or _send_one(chat, rec, dash_url):
                 prefs._set(chat, **{f'market_sent_{kind}': rec.get('date')})
