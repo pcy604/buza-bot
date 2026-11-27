@@ -53,7 +53,8 @@ def tts(text: str, out: Path):
     import config
     from google import genai
     from google.genai import types
-    cl = genai.Client(api_key=config.GEMINI_KEY)
+    # 2026-11-28 Actions 에서 400 'Unknown name speechConfig at generation_config' — 음성 출력은 v1beta 에만 있다. 판을 못 박는다.
+    cl = genai.Client(api_key=config.GEMINI_KEY, http_options=types.HttpOptions(api_version='v1beta'))
     r = cl.models.generate_content(
         model=MODEL, contents=STYLE + text,
         config=types.GenerateContentConfig(
