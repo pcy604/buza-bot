@@ -1,19 +1,5 @@
 [
  {
-  "date": "2026-09-19",
-  "blocked": {
-   "AAPL": "AS_OF",
-   "CORT": "AS_OF",
-   "FSLY": "AS_OF",
-   "IONQ": "AS_OF"
-  },
-  "yt": {
-   "n24": 4,
-   "ok24": 4,
-   "errs": {}
-  }
- },
- {
   "date": "2026-09-20",
   "blocked": {
    "AAPL": "AS_OF",
@@ -817,6 +803,18 @@
     "7WFDTIPC4X0: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
     "VzvtFMbVxi4: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand "
    ]
+  }
+ },
+ {
+  "date": "2026-11-27",
+  "blocked": {
+   "AXTI": "BUSINESS"
+  },
+  "yt": {
+   "n24": 5,
+   "ok24": 5,
+   "errs": {},
+   "samples": []
   }
  }
 ]

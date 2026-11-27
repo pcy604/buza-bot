@@ -1,19 +1,5 @@
 [
  {
-  "at": "2026-11-18T07:10:46+00:00",
-  "ticker": "036930.KQ",
-  "stage": "skip",
-  "events": 2
- },
- {
-  "at": "2026-11-18T11:03:12+00:00",
-  "ticker": "089970.KQ",
-  "events": 3,
-  "result": "error",
-  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
-  "sec": 161.3
- },
- {
   "at": "2026-11-18T11:05:51+00:00",
   "ticker": "373220.KS",
   "events": 14,
@@ -1863,5 +1849,22 @@
   "ticker": "089970.KQ",
   "stage": "skip",
   "events": 1
+ },
+ {
+  "at": "2026-11-27T23:00:39+00:00",
+  "ticker": "373220.KS",
+  "lang": "ko",
+  "events": 3,
+  "result": "empty",
+  "digest": 0,
+  "model": "gemini-3.6-flash",
+  "sec": 5.7,
+  "why": "투자자의 투자 판단에 영향을 줄 만한 주요 실적, 대형 수주, 경영상의 중대한 새 소식이 없습니다."
+ },
+ {
+  "at": "2026-11-27T23:00:40+00:00",
+  "ticker": "373220.KS",
+  "stage": "skip",
+  "events": 3
  }
 ]
