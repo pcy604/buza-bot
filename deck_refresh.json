@@ -118,9 +118,10 @@
   "last_error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}"
  },
  "TSLA": {
-  "last_try": "2026-11-07T00:58:52.131096+00:00",
+  "last_try": "2026-11-28T11:19:33.408613+00:00",
   "fails": 0,
-  "last_ok": "2026-11-07T00:58:52.131104+00:00"
+  "last_ok": "2026-11-07T00:58:52.131104+00:00",
+  "last_error": "ServerError: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}"
  },
  "036930.KQ": {
   "last_try": "2026-11-14T02:14:03.494846+00:00",

@@ -1,44 +1,5 @@
 [
  {
-  "at": "2026-11-18T11:15:54+00:00",
-  "ticker": "LLY",
-  "stage": "skip",
-  "events": 2
- },
- {
-  "at": "2026-11-18T18:03:53+00:00",
-  "ticker": "089970.KQ",
-  "events": 3,
-  "result": "error",
-  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
-  "sec": 196.7
- },
- {
-  "at": "2026-11-18T18:07:47+00:00",
-  "ticker": "373220.KS",
-  "lang": "ko",
-  "events": 13,
-  "result": "empty",
-  "digest": 0,
-  "model": "gemini-3.6-flash",
-  "sec": 233.9,
-  "why": "전시회(RE+ 2026) 참가 및 기술 공개, 업계 동향 기사 위주로 실적·대형 수주 등 보유자가 알아야 할 핵심 사건이 없습니다."
- },
- {
-  "at": "2026-11-18T18:07:49+00:00",
-  "ticker": "373220.KS",
-  "stage": "skip",
-  "events": 13
- },
- {
-  "at": "2026-11-18T19:04:00+00:00",
-  "ticker": "AXTI",
-  "events": 1,
-  "result": "error",
-  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
-  "sec": 207.6
- },
- {
   "at": "2026-11-18T19:04:07+00:00",
   "ticker": "TSLA",
   "lang": "ko",
@@ -1863,5 +1824,52 @@
   "ticker": "036930.KQ",
   "stage": "skip",
   "events": 4
+ },
+ {
+  "at": "2026-11-28T11:04:31+00:00",
+  "ticker": "TSLA",
+  "lang": "ko",
+  "events": 14,
+  "result": "ok",
+  "digest": 3,
+  "model": "gemini-3.8-flash",
+  "sec": 238.1,
+  "why": ""
+ },
+ {
+  "at": "2026-11-28T11:04:32+00:00",
+  "ticker": "TSLA",
+  "stage": "send",
+  "sent": true,
+  "lang": "ko",
+  "events": 7,
+  "digest": 3,
+  "links_shown": 5,
+  "chars": 3521,
+  "fallback": false
+ },
+ {
+  "at": "2026-11-28T11:10:08+00:00",
+  "ticker": "373220.KS",
+  "events": 2,
+  "result": "error",
+  "why": "504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'Deadline expired before operation could complete.', 'status':",
+  "sec": 335.3
+ },
+ {
+  "at": "2026-11-28T11:15:38+00:00",
+  "ticker": "PFE",
+  "events": 3,
+  "result": "error",
+  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+  "sec": 329.4
+ },
+ {
+  "at": "2026-11-28T11:16:16+00:00",
+  "ticker": "LLY",
+  "events": 1,
+  "result": "error",
+  "why": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand ",
+  "sec": 37.3
  }
 ]
